@@ -1,0 +1,1255 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 七岗位 · 招聘要求与技能学习路线 (2025–2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;600;800&family=Inter+Tight:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0f1c;
+    --bg-2:#070b15;
+    --ink:#e9efff;
+    --ink-dim:#a8b3cf;
+    --line:rgba(180,200,230,0.14);
+    --line-2:rgba(180,200,230,0.28);
+    --amber:#f4b740;
+    --amber-soft:rgba(244,183,64,0.14);
+    --rose:#ff8a7a;
+    --teal:#5be0c0;
+    --indigo:#8a9bff;
+    --paper:#f2ede1;
+    --paper-ink:#1d1a14;
+    --shadow:0 32px 80px rgba(0,0,0,0.55);
+    --radius:18px;
+    --grid:rgba(255,255,255,0.035);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Inter Tight","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 600px at 110% -10%, rgba(244,183,64,0.10), transparent 60%),
+      radial-gradient(900px 600px at -10% 30%, rgba(91,224,192,0.08), transparent 55%),
+      radial-gradient(700px 500px at 50% 110%, rgba(138,155,255,0.10), transparent 60%),
+      linear-gradient(180deg,#070b15 0%, #0a0f1c 40%, #060912 100%);
+    background-attachment: fixed;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 80%);
+  }
+  a{color:var(--amber); text-decoration:none; border-bottom:1px dashed rgba(244,183,64,0.35)}
+  a:hover{color:#fff; border-bottom-color:#fff}
+
+  .page{position:relative; z-index:1; width:min(1240px, calc(100% - 40px)); margin:0 auto; padding:48px 0 96px}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    padding:56px 44px 48px;
+    border:1px solid var(--line);
+    border-radius:28px;
+    background:
+      linear-gradient(180deg, rgba(20,28,46,0.86), rgba(10,15,28,0.86));
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"DOSSIER · 2026"; position:absolute; right:-30px; top:32px;
+    transform:rotate(90deg); transform-origin:right top;
+    color:rgba(244,183,64,0.22); font-family:"JetBrains Mono",monospace;
+    font-size:12px; letter-spacing:0.6em;
+  }
+  .stamp{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:6px 12px; border:1px solid rgba(244,183,64,0.45);
+    color:var(--amber); font-family:"JetBrains Mono",monospace;
+    font-size:11px; letter-spacing:0.32em; text-transform:uppercase;
+    border-radius:4px; background:rgba(244,183,64,0.06);
+  }
+  .stamp::before{content:"●"; color:var(--amber)}
+  h1{
+    font-family:"Fraunces", "Songti SC", serif;
+    font-weight:900;
+    font-size:clamp(40px, 6vw, 80px);
+    line-height:0.96;
+    letter-spacing:-0.04em;
+    margin:18px 0 14px;
+  }
+  h1 em{font-style:italic; color:var(--amber); font-weight:700}
+  .lead{
+    font-size:19px;
+    color:#dbe2f4;
+    max-width:880px;
+    margin:8px 0 24px;
+  }
+  .hero-meta{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap:14px;
+    margin-top:30px; padding-top:24px;
+    border-top:1px dashed var(--line-2);
+  }
+  .hero-meta .cell{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-dim)}
+  .hero-meta .cell b{display:block; color:var(--ink); font-size:15px; margin-top:2px; font-family:"Inter Tight",sans-serif; letter-spacing:-0.01em}
+  .hero-meta .cell.accent b{color:var(--amber)}
+
+  /* SECTION */
+  section{margin:72px 0; scroll-margin-top:20px}
+  .section-head{display:flex; align-items:baseline; gap:18px; margin-bottom:22px; flex-wrap:wrap}
+  .section-no{
+    font-family:"JetBrains Mono", monospace;
+    font-size:13px; color:var(--amber);
+    letter-spacing:0.3em;
+  }
+  h2{
+    font-family:"Fraunces", serif;
+    font-weight:700;
+    font-size:clamp(28px, 3.4vw, 44px);
+    letter-spacing:-0.03em;
+    margin:0;
+  }
+  h2 .accent{font-style:italic; color:var(--amber)}
+  .section-sub{color:var(--ink-dim); max-width:760px; margin:6px 0 0}
+
+  /* CARDS */
+  .card{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:linear-gradient(180deg, rgba(16,22,38,0.85), rgba(10,15,26,0.85));
+    padding:22px;
+    position:relative;
+  }
+  .card.outline{
+    background:transparent; border-style:dashed;
+  }
+  .grid{display:grid; gap:18px}
+  .grid.cols-3{grid-template-columns:repeat(3, 1fr)}
+  .grid.cols-2{grid-template-columns:repeat(2, 1fr)}
+  @media (max-width:880px){
+    .grid.cols-3,.grid.cols-2{grid-template-columns:1fr}
+    .hero-meta{grid-template-columns:repeat(2,1fr)}
+    .hero{padding:40px 24px}
+  }
+
+  /* OVERVIEW TABLE */
+  .overview{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .overview table{width:100%; border-collapse:collapse}
+  .overview th, .overview td{
+    padding:14px 16px; text-align:left; vertical-align:top;
+    border-bottom:1px solid var(--line);
+    font-size:14.5px;
+  }
+  .overview th{
+    background:rgba(244,183,64,0.06);
+    color:var(--amber);
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.16em;
+    font-weight:700;
+  }
+  .overview tr:last-child td{border-bottom:none}
+  .overview td b{color:#fff}
+  .overview .role-name{
+    font-family:"Fraunces",serif;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    color:#fff;
+  }
+  .overview .role-sub{
+    display:block; color:var(--ink-dim);
+    font-size:12px; margin-top:3px;
+    font-family:"JetBrains Mono",monospace;
+  }
+
+  /* TAGS */
+  .tag{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 9px; border-radius:4px;
+    border:1px solid var(--line-2);
+    background:rgba(255,255,255,0.04);
+    color:#d8e0f4;
+    font-family:"JetBrains Mono",monospace;
+    font-size:11.5px;
+    margin:3px 4px 3px 0;
+    letter-spacing:0.02em;
+  }
+  .tag.p0{border-color:rgba(255,138,122,0.5); color:var(--rose); background:rgba(255,138,122,0.08)}
+  .tag.p1{border-color:rgba(244,183,64,0.55); color:var(--amber); background:rgba(244,183,64,0.08)}
+  .tag.p2{border-color:rgba(91,224,192,0.45); color:var(--teal); background:rgba(91,224,192,0.06)}
+  .tag.cat{border-color:rgba(138,155,255,0.45); color:var(--indigo); background:rgba(138,155,255,0.07)}
+
+  /* ROLE CARD */
+  .role{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px;
+    margin:18px 0;
+    background:
+      linear-gradient(180deg, rgba(17,24,40,0.9), rgba(10,15,26,0.92));
+    position:relative;
+  }
+  .role::before{
+    content:""; position:absolute; left:0; top:24px; bottom:24px; width:3px;
+    background:linear-gradient(180deg, var(--amber), transparent);
+    border-radius:3px;
+  }
+  .role-head{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap}
+  .role-id{
+    font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--amber);
+    letter-spacing:0.3em; margin-bottom:8px;
+  }
+  .role h3{
+    font-family:"Fraunces",serif;
+    font-size:30px; font-weight:700; letter-spacing:-0.02em;
+    margin:0 0 6px;
+    color:#fff;
+  }
+  .role-alias{color:var(--ink-dim); font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:0.04em}
+  .role-pitch{
+    font-size:17px; color:#dde4f6;
+    border-left:2px solid var(--amber);
+    padding:4px 0 4px 14px;
+    margin:14px 0 18px;
+    background:linear-gradient(90deg, var(--amber-soft), transparent 50%);
+  }
+  .role-grid{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:22px;
+    margin-top:8px;
+  }
+  @media (max-width:880px){ .role-grid{grid-template-columns:1fr} }
+  .block-title{
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px; letter-spacing:0.26em; text-transform:uppercase;
+    color:var(--amber);
+    margin:0 0 8px;
+  }
+  .role ul{margin:6px 0 0; padding-left:18px; color:#cfd6ea}
+  .role ul li{margin:6px 0}
+  .role ul li b{color:#fff}
+  .freq-list{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+  .jd-quotes{display:grid; gap:10px; margin-top:8px}
+  .jd-quote{
+    padding:12px 14px;
+    border:1px dashed var(--line-2);
+    border-radius:12px;
+    background:rgba(255,255,255,0.025);
+    font-size:13.5px; color:#d6dcef;
+  }
+  .jd-quote b{color:var(--amber)}
+
+  /* SHARED BASE */
+  .base-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:14px}
+  @media (max-width:980px){ .base-grid{grid-template-columns:repeat(2,1fr)} }
+  .base-card{
+    padding:18px; border-radius:14px;
+    border:1px solid var(--line);
+    background:rgba(244,183,64,0.04);
+    position:relative;
+  }
+  .base-card .idx{
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px; color:var(--amber); letter-spacing:0.24em;
+  }
+  .base-card h4{
+    font-family:"Fraunces",serif; font-size:18px;
+    margin:6px 0 8px; color:#fff; letter-spacing:-0.01em;
+  }
+  .base-card p{margin:0; font-size:13.5px; color:var(--ink-dim)}
+
+  /* MAIN BRANCHES */
+  .branches{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;
+    margin-top:18px;
+  }
+  @media (max-width:880px){ .branches{grid-template-columns:1fr} }
+  .branch{
+    padding:20px; border-radius:16px;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(20,28,46,0.7), rgba(10,15,26,0.7));
+  }
+  .branch.eng{border-top:3px solid var(--rose)}
+  .branch.mod{border-top:3px solid var(--amber)}
+  .branch.app{border-top:3px solid var(--teal)}
+  .branch h4{
+    font-family:"Fraunces",serif; font-size:20px; margin:0 0 6px; color:#fff;
+  }
+  .branch p{color:var(--ink-dim); margin:0 0 10px; font-size:13.5px}
+  .branch .arrow{
+    font-family:"JetBrains Mono",monospace; font-size:12px;
+    color:var(--amber); margin:6px 0;
+  }
+
+  /* DAG */
+  .dag{
+    padding:24px; border:1px solid var(--line); border-radius:var(--radius);
+    background:rgba(8,12,22,0.7);
+    overflow:auto;
+  }
+  .chain{
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    font-family:"JetBrains Mono",monospace; font-size:13px;
+    margin:10px 0; color:#dbe2f4;
+  }
+  .chain .node{
+    padding:6px 10px; border:1px solid var(--line-2);
+    border-radius:6px; background:rgba(255,255,255,0.04);
+    white-space:nowrap;
+  }
+  .chain .node.p0{border-color:rgba(255,138,122,0.5); color:var(--rose)}
+  .chain .node.p1{border-color:rgba(244,183,64,0.55); color:var(--amber)}
+  .chain .node.p2{border-color:rgba(91,224,192,0.45); color:var(--teal)}
+  .chain .sep{color:var(--amber)}
+  .chain .label{
+    color:var(--ink-dim); padding-right:6px; min-width:140px;
+    text-transform:uppercase; letter-spacing:0.16em; font-size:11px;
+  }
+
+  /* ROADMAP STEPS */
+  .phases{display:grid; gap:14px; margin-top:14px}
+  .phase{
+    display:grid; grid-template-columns:160px 1fr; gap:18px;
+    padding:18px 20px;
+    border:1px solid var(--line); border-radius:16px;
+    background:linear-gradient(90deg, rgba(244,183,64,0.07), rgba(10,15,26,0.4));
+  }
+  @media (max-width:760px){ .phase{grid-template-columns:1fr} }
+  .phase .name{
+    font-family:"Fraunces",serif; font-size:22px; color:#fff;
+  }
+  .phase .name small{
+    display:block; font-family:"JetBrains Mono",monospace;
+    font-size:11px; color:var(--amber); letter-spacing:0.24em; margin-bottom:4px;
+  }
+  .phase .body{color:#cfd6ea; font-size:14.5px}
+  .phase .body b{color:#fff}
+
+  /* TRACK SELECTOR */
+  .track-index{
+    border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .track-index table{width:100%; border-collapse:collapse}
+  .track-index th,.track-index td{
+    padding:12px 14px; border-bottom:1px solid var(--line);
+    font-size:14px; text-align:left; vertical-align:top;
+  }
+  .track-index th{
+    background:rgba(91,224,192,0.06); color:var(--teal);
+    font-family:"JetBrains Mono",monospace; font-size:11px;
+    letter-spacing:0.2em; text-transform:uppercase;
+  }
+  .track-index tr:last-child td{border-bottom:none}
+  .track-index td:first-child{font-family:"Fraunces",serif; font-size:16px; color:#fff; width:30%}
+
+  /* SOURCES */
+  .sources{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+  @media (max-width:880px){ .sources{grid-template-columns:1fr} }
+  .sources .card h4{
+    font-family:"Fraunces",serif; font-size:18px; margin:0 0 10px; color:var(--amber);
+  }
+  .sources ul{margin:0; padding-left:18px; color:#cfd6ea; font-size:13.5px}
+  .sources ul li{margin:5px 0}
+
+  /* LEGEND */
+  .legend{
+    display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+    font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-dim);
+  }
+  .legend span b{color:#fff}
+
+  /* FOOTER */
+  .footer{
+    margin-top:80px; padding-top:24px;
+    border-top:1px dashed var(--line-2);
+    color:var(--ink-dim);
+    font-family:"JetBrains Mono",monospace; font-size:12px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  }
+  .footer .marks{color:var(--amber)}
+
+  /* NAV */
+  .nav{
+    position:sticky; top:0; z-index:5;
+    margin: -48px 0 24px;
+    padding:14px 0;
+    background:linear-gradient(180deg, rgba(7,11,21,0.95), rgba(7,11,21,0.7));
+    backdrop-filter: blur(8px);
+    border-bottom:1px dashed var(--line);
+    display:flex; gap:6px; flex-wrap:wrap; align-items:center;
+    font-family:"JetBrains Mono",monospace; font-size:11px;
+  }
+  .nav a{
+    border:none;
+    padding:6px 10px; border-radius:4px;
+    color:var(--ink-dim);
+    border:1px solid transparent;
+  }
+  .nav a:hover{color:#fff; border-color:var(--line-2); background:rgba(255,255,255,0.04)}
+  .nav .brand{color:var(--amber); padding-right:14px; letter-spacing:0.3em}
+
+  @media print{
+    body{background:#fff; color:#111}
+    .card, .role, .overview, .phase, .track-index, .dag, .hero{
+      background:#fff; color:#111; box-shadow:none; border-color:#d0d4dd;
+    }
+    .nav{display:none}
+    a{color:#1e40af}
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <nav class="nav">
+    <span class="brand">▌ AI · ROLE · DOSSIER</span>
+    <a href="#overview">01 速览</a>
+    <a href="#base">02 共享底座</a>
+    <a href="#roles">03 七岗位详解</a>
+    <a href="#dag">04 技能依赖</a>
+    <a href="#roadmap">05 学习路线</a>
+    <a href="#sources">06 来源索引</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <span class="stamp">CONFIDENTIAL · CAREER INTELLIGENCE</span>
+    <h1>七种 AI <em>岗位</em>，<br>一张可执行的<em>学习路线</em>。</h1>
+    <p class="lead">面向 AI Agent / Harness / 算法 / 预训练 / 后训练 / Infra / 产品经理 七大角色。基于 2025–2026 年海内外大模型公司、互联网大厂、独角兽、工具公司真实在招 JD 归纳，给出硬性要求、加分项、高频技能与一条「共享底座 + 岗位分支」的学习路径。</p>
+    <div class="hero-meta">
+      <div class="cell">// SCOPE<b>7 个岗位 × 4 类公司</b></div>
+      <div class="cell">// SOURCES<b>30+ 真实 JD + 工程博客</b></div>
+      <div class="cell accent">// METHOD<b>共享底座 + 岗位分支</b></div>
+      <div class="cell">// AS OF<b>2026-06-28</b></div>
+    </div>
+  </section>
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <div class="section-head">
+      <span class="section-no">// 01</span>
+      <h2>七岗位 <span class="accent">全景速览</span></h2>
+    </div>
+    <p class="section-sub">一屏读完：每个岗位的定位、硬门槛、与底层模型的距离，以及 JD 出现频率最高的核心技能。</p>
+
+    <div class="overview" style="margin-top:18px">
+      <table>
+        <thead>
+          <tr>
+            <th>岗位</th>
+            <th>核心交付物</th>
+            <th>学历倾向</th>
+            <th>核心硬技能</th>
+            <th>与模型的距离</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="role-name">AI Agent 开发工程师</span><span class="role-sub">Application Engineer</span></td>
+            <td>让 agent 在真实任务上可靠、可评测、可上线</td>
+            <td>本科及以上（不卡论文）</td>
+            <td>Python · Prompt · 工具调用 · RAG · MCP · Evals</td>
+            <td>远 · 应用层</td>
+          </tr>
+          <tr>
+            <td><span class="role-name">AI Harness 工程师</span><span class="role-sub">Agent Runtime / Infra</span></td>
+            <td>构建 agent 循环 / 沙箱 / 工具调度 / eval harness</td>
+            <td>本科及以上，资深岗 8+ 年系统经验</td>
+            <td>系统编程 · 容器化 · 沙箱 · K8s · Tool SDK</td>
+            <td>中 · 工程系统</td>
+          </tr>
+          <tr>
+            <td><span class="role-name">AI 算法工程师</span><span class="role-sub">Research / ML Engineer</span></td>
+            <td>把研究想法落地为可大规模训练的能力</td>
+            <td>最宽松，本/硕/博皆可</td>
+            <td>PyTorch · 分布式训练 · Transformer · CUDA</td>
+            <td>近 · 模型层</td>
+          </tr>
+          <tr>
+            <td><span class="role-name">预训练工程师</span><span class="role-sub">Pretraining Engineer</span></td>
+            <td>基座模型从数据到 3D 并行的全链路</td>
+            <td>硕博优先，数学/系统底层最硬</td>
+            <td>Megatron · DeepSpeed · JAX/XLA · scaling laws</td>
+            <td>最近 · 模型底座</td>
+          </tr>
+          <tr>
+            <td><span class="role-name">后训练工程师</span><span class="role-sub">Post-training Engineer</span></td>
+            <td>SFT / RLHF / DPO / GRPO 把模型调成有用、对齐</td>
+            <td>两极：研究岗硕博，工程岗 1–3 年 + 硕</td>
+            <td>TRL · NeMo-RL · PPO / GRPO · reward model</td>
+            <td>近 · 行为塑形</td>
+          </tr>
+          <tr>
+            <td><span class="role-name">AI Infra 工程师</span><span class="role-sub">ML / LLM Infrastructure</span></td>
+            <td>训得动、训得快、推得省、不宕机</td>
+            <td>本科及以上，海外 senior 常 5+ 年</td>
+            <td>CUDA · vLLM/SGLang · NCCL · 分布式训练框架</td>
+            <td>最近 · 系统底层</td>
+          </tr>
+          <tr>
+            <td><span class="role-name">AI 产品经理</span><span class="role-sub">AI / LLM Product Manager</span></td>
+            <td>把模型能力翻译成有商业价值的产品</td>
+            <td>本科及以上，海外资深 4+ 年 ML 产品经验</td>
+            <td>Prompt · RAG · Agent · 评测闭环 · Python/SQL</td>
+            <td>远 · 用户/商业层</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="legend">
+      <span><span class="tag p0">P0</span><b>必备</b></span>
+      <span><span class="tag p1">P1</span><b>强烈推荐</b></span>
+      <span><span class="tag p2">P2</span><b>加分项</b></span>
+      <span style="margin-left:auto">优先级标记将在后续各章节使用</span>
+    </div>
+  </section>
+
+  <!-- SHARED BASE -->
+  <section id="base">
+    <div class="section-head">
+      <span class="section-no">// 02</span>
+      <h2>共享 <span class="accent">能力底座</span> · L0</h2>
+    </div>
+    <p class="section-sub">无论目标是哪条岗位分支，下面 5 项都是 7 个岗位 JD 中反复出现的共同地基。先把 L0 打牢，再分流到主干。</p>
+
+    <div class="base-grid" style="margin-top:18px">
+      <div class="base-card">
+        <div class="idx">L0 · 01</div>
+        <h4>Python</h4>
+        <p>每条 JD 都出现的"绝对硬通货"。能写后端服务、能调 LLM API、能跑数据脚本。</p>
+      </div>
+      <div class="base-card">
+        <div class="idx">L0 · 02</div>
+        <h4>LLM 第一性原理</h4>
+        <p>Token、context、注意力、采样、temperature；理解能力边界（幻觉、时效、推理成本）。</p>
+      </div>
+      <div class="base-card">
+        <div class="idx">L0 · 03</div>
+        <h4>工程素养 + Linux / Git / 容器</h4>
+        <p>能调试生产故障、读源码、用 Docker 跑环境。算法岗也跑不掉。</p>
+      </div>
+      <div class="base-card">
+        <div class="idx">L0 · 04</div>
+        <h4>Evals 思维</h4>
+        <p>能定义指标、做回归、归因 Bad Case。从 Anthropic 到小红书 JD 都点名。</p>
+      </div>
+      <div class="base-card">
+        <div class="idx">L0 · 05</div>
+        <h4>用过头部 AI 产品</h4>
+        <p>Claude Code / Cursor / Codex / Manus 重度使用。NVIDIA、DeepSeek、字节都写进 JD。</p>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:46px">
+      <span class="section-no">// 02.1</span>
+      <h2>底座之上 · <span class="accent">三条主干</span></h2>
+    </div>
+    <p class="section-sub">底座之上分流为三条技术主干，7 个岗位是主干上的分支。先选主干，再选分支。</p>
+
+    <div class="branches">
+      <div class="branch eng">
+        <div class="block-title">// MAIN A · 工程主干</div>
+        <h4>系统 / 分布式 / 容器</h4>
+        <p>核心：系统编程、并发、Linux 内核、容器化、Kubernetes、可观测性。</p>
+        <div class="arrow">→ AI Harness · AI Infra</div>
+      </div>
+      <div class="branch mod">
+        <div class="block-title">// MAIN B · 模型主干</div>
+        <h4>PyTorch / 分布式训练 / RL</h4>
+        <p>核心：PyTorch、Transformer、Megatron/DeepSpeed、CUDA、RLHF/GRPO。</p>
+        <div class="arrow">→ AI 算法 · 预训练 · 后训练</div>
+      </div>
+      <div class="branch app">
+        <div class="block-title">// MAIN C · 应用主干</div>
+        <h4>Prompt / RAG / 工具编排</h4>
+        <p>核心：Prompt、RAG、Function Calling、Agent 框架、MCP、评测。</p>
+        <div class="arrow">→ AI Agent · AI 产品经理</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLES DETAIL -->
+  <section id="roles">
+    <div class="section-head">
+      <span class="section-no">// 03</span>
+      <h2>七岗位 <span class="accent">逐项详解</span></h2>
+    </div>
+    <p class="section-sub">每个岗位统一模板：定位 → 硬门槛 → 加分项 → 高频技能 → 代表性 JD 摘录 → 差异化壁垒。技能标 P0/P1/P2 优先级。</p>
+
+    <!-- ROLE 1 -->
+    <article class="role" id="role-agent">
+      <div class="role-head">
+        <div>
+          <div class="role-id">// ROLE 01 · APPLICATION</div>
+          <h3>AI Agent 开发工程师</h3>
+          <div class="role-alias">AI Agent Engineer · Application Engineer · Agent Researcher (Applied)</div>
+        </div>
+        <div><span class="tag cat">应用主干</span><span class="tag cat">面向产品</span></div>
+      </div>
+      <p class="role-pitch">把大模型从"会聊天的 demo"做成能稳定完成多步骤真实任务的产品 —— 设计 agent 行为、工具策略、上下文构造与评测闭环。</p>
+
+      <div class="role-grid">
+        <div>
+          <div class="block-title">// 硬性要求</div>
+          <ul>
+            <li><b>学历：</b>海外不卡学历，国内本科及以上。</li>
+            <li><b>语言：</b>Python 必备；国内后台岗常加 Go/Java/C++。</li>
+            <li><b>经验：</b>构建/上线过 LLM 驱动产品；海外资深岗 5–8 年工程经验。</li>
+            <li><b>核心技能：</b>Prompt 工程、工具调用、上下文构造、Evals、RAG、结构化输出、多 agent 编排、MCP。</li>
+          </ul>
+          <div class="block-title" style="margin-top:14px">// 加分项</div>
+          <ul>
+            <li>熟悉 LangChain / LangGraph / AutoGen / CrewAI</li>
+            <li>代码生成模型、开发者工具方向研究</li>
+            <li>处理大规模脏数据 / 生产日志</li>
+            <li>重度使用 Claude Code / Cursor / Codex / Manus（写进 DeepSeek、字节 JD）</li>
+            <li>SFT / RLHF 基础认知，能与算法对话</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-title">// 高频技能（按 JD 频率）</div>
+          <div class="freq-list">
+            <span class="tag p0">Python</span>
+            <span class="tag p0">Tool / Function Calling</span>
+            <span class="tag p0">Evals</span>
+            <span class="tag p0">Prompt / Context</span>
+            <span class="tag p1">RAG</span>
+            <span class="tag p1">Agent 框架</span>
+            <span class="tag p1">MCP</span>
+            <span class="tag p1">Multi-agent 编排</span>
+            <span class="tag p1">Planning · Memory</span>
+            <span class="tag p2">SFT / RLHF 概念</span>
+            <span class="tag p2">分布式后端</span>
+            <span class="tag p2">生产故障调试</span>
+          </div>
+          <div class="block-title" style="margin-top:14px">// 代表 JD 摘录</div>
+          <div class="jd-quotes">
+            <div class="jd-quote"><b>OpenAI · Applied AI, Codex Core Agent：</b>"把 Codex agent 从 demo 做成可靠工具，构建并运行 evals，提升 prompt / tool-use / context 策略。"</div>
+            <div class="jd-quote"><b>DeepSeek Harness 团队：</b>"熟悉 Tool Use / Planning / 长期记忆 / Multi-Agent，深度使用过 Claude Code、OpenClaw、Manus。"</div>
+            <div class="jd-quote"><b>阿里云 AI Coding：</b>"设计 Agent 服务框架（推理决策 / 记忆 / RAG），实现基于 MCP 协议的工具注册与调用。"</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ROLE 2 -->
+    <article class="role" id="role-harness">
+      <div class="role-head">
+        <div>
+          <div class="role-id">// ROLE 02 · INFRASTRUCTURE</div>
+          <h3>AI Harness 工程师</h3>
+          <div class="role-alias">Agent Infrastructure · Agent Runtime · Agent Platform Engineer</div>
+        </div>
+        <div><span class="tag cat">工程主干</span><span class="tag cat">系统层</span></div>
+      </div>
+      <p class="role-pitch">构建"让模型能真正干活的那层" —— agent 循环 / 工具调度 / 沙箱执行 / 上下文管理 / eval harness / 大规模 agent 运行时。</p>
+
+      <div class="role-grid">
+        <div>
+          <div class="block-title">// 硬性要求</div>
+          <ul>
+            <li><b>学历：</b>海外不卡，国内 infra 岗本科及以上。</li>
+            <li><b>经验：</b>Anthropic 该岗最低 <b>8+ 年</b>系统/分布式经验。</li>
+            <li><b>核心技能：</b>容器化（Kata / Firecracker / gVisor / Sysbox / K8s）、系统编程、分布式、安全基础设施、Tool-use SDK、Eval/RL 基础设施、FastAPI/gRPC、Terraform。</li>
+          </ul>
+          <div class="block-title" style="margin-top:14px">// 加分项</div>
+          <ul>
+            <li>虚拟化/容器化运行时性能调优</li>
+            <li>LangChain / AutoGen 等 agent 框架源码经验</li>
+            <li>RL environments 与 agent 执行框架集成</li>
+            <li>"0→1 再扩展到 1,000,000x"的工程经验</li>
+            <li>MCP / Tool Use / Function Calling 协议设计</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-title">// 高频技能</div>
+          <div class="freq-list">
+            <span class="tag p0">容器化 / Sandbox</span>
+            <span class="tag p0">Kubernetes</span>
+            <span class="tag p0">系统编程</span>
+            <span class="tag p0">分布式系统</span>
+            <span class="tag p1">Eval Harness</span>
+            <span class="tag p1">Tool-use SDK</span>
+            <span class="tag p1">FastAPI / gRPC</span>
+            <span class="tag p1">Terraform / IaC</span>
+            <span class="tag p1">Agent 循环 / 编排</span>
+            <span class="tag p2">RL Environments</span>
+            <span class="tag p2">运行时性能优化</span>
+            <span class="tag p2">可观测性</span>
+          </div>
+          <div class="block-title" style="margin-top:14px">// 代表 JD 摘录</div>
+          <div class="jd-quotes">
+            <div class="jd-quote"><b>OpenAI · Agent Infrastructure：</b>"参与超越 K8s 能力上限的自研容器编排平台；Nice-to-have 点名 Kata / Firecracker / gVisor / Sysbox。"</div>
+            <div class="jd-quote"><b>Anthropic · Agents Infrastructure：</b>"构建沙箱代码执行环境与 tool-use SDK；最低 8+ 年经验，需 LangChain 等 agent 框架经验。"</div>
+            <div class="jd-quote"><b>Scale AI · Agents：</b>"构建训练和评估自主 agent 的真实 RL environments，并行运行多个训练/评测任务。"</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ROLE 3 -->
+    <article class="role" id="role-algo">
+      <div class="role-head">
+        <div>
+          <div class="role-id">// ROLE 03 · MODEL CORE</div>
+          <h3>AI 算法工程师</h3>
+          <div class="role-alias">Research Engineer · Machine Learning Engineer (LLM)</div>
+        </div>
+        <div><span class="tag cat">模型主干</span><span class="tag cat">研究+工程</span></div>
+      </div>
+      <p class="role-pitch">设计、实现并迭代大规模 ML 系统，把研究想法落地为可大规模训练 / 部署的 AI 能力，横跨研究与工程两端。</p>
+
+      <div class="role-grid">
+        <div>
+          <div class="block-title">// 硬性要求</div>
+          <ul>
+            <li><b>学历：</b>七岗中最宽松，本/硕/博皆可（DeepMind RE 明确）。</li>
+            <li><b>经验：</b>"构建过复杂/大规模分布式系统"是核心硬指标。</li>
+            <li><b>核心技能：</b>Python、PyTorch（或 JAX）、Transformer、分布式训练（FSDP / DeepSpeed / Megatron）、GPU 使用。</li>
+          </ul>
+          <div class="block-title" style="margin-top:14px">// 加分项</div>
+          <ul>
+            <li>GPU 优化、kernel 级实现、CUDA</li>
+            <li>Kubernetes、OS internals、云平台</li>
+            <li>对 AI 社会影响有思考（OpenAI / Anthropic 反复强调）</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-title">// 高频技能</div>
+          <div class="freq-list">
+            <span class="tag p0">Python</span>
+            <span class="tag p0">PyTorch</span>
+            <span class="tag p0">Transformer / LLM</span>
+            <span class="tag p0">分布式训练</span>
+            <span class="tag p1">CUDA / GPU</span>
+            <span class="tag p1">FSDP / DeepSpeed / Megatron</span>
+            <span class="tag p1">软件工程能力</span>
+            <span class="tag p2">JAX / TPU</span>
+            <span class="tag p2">RAG / Prompt（应用侧）</span>
+            <span class="tag p2">K8s / Docker</span>
+          </div>
+          <div class="block-title" style="margin-top:14px">// 代表 JD 摘录</div>
+          <div class="jd-quotes">
+            <div class="jd-quote"><b>OpenAI · Research Engineer：</b>"设计、实现并改进大规模分布式 ML 系统；强编程 + 大规模分布式系统经验。" 薪资 $250K–$445K。</div>
+            <div class="jd-quote"><b>DeepMind · Research Engineer：</b>"具备深厚 ML 理解的软件工程师，结合工程、数学与研究能力。"</div>
+            <div class="jd-quote"><b>字节 Seed：</b>覆盖 LLM / Foundation / 多模态 / Posttrain / AI Search，强调大规模分布式训练与底层系统建设。</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ROLE 4 -->
+    <article class="role" id="role-pretrain">
+      <div class="role-head">
+        <div>
+          <div class="role-id">// ROLE 04 · FOUNDATION</div>
+          <h3>预训练工程师</h3>
+          <div class="role-alias">Pretraining Engineer · Foundation Model Training</div>
+        </div>
+        <div><span class="tag cat">模型主干</span><span class="tag cat">基座层</span></div>
+      </div>
+      <p class="role-pitch">基座大模型从架构、数据、优化器到分布式训练全链路 —— 在数千张 GPU / TPU 上把训练效率、稳定性与模型质量推到极限。</p>
+
+      <div class="role-grid">
+        <div>
+          <div class="block-title">// 硬性要求</div>
+          <ul>
+            <li><b>学历：</b>偏硕博（CS/ML/数学/统计），但接受"同等经验"。</li>
+            <li><b>经验：</b>DeepMind Gemini 预训练要求 <b>5 年</b>推理优化模型设计；普遍要求大规模 LLM 训练实操。</li>
+            <li><b>核心技能：</b>3D 并行（数据/张量/流水线）、Megatron / DeepSpeed / FSDP / JAX+TPU+XLA、Transformer 架构、optimizer、大规模 ETL、训练稳定性。</li>
+          </ul>
+          <div class="block-title" style="margin-top:14px">// 加分项</div>
+          <ul>
+            <li>Scaling laws、inference-optimized 设计</li>
+            <li>XLA 原语与 JAX-on-TPU 实际机制</li>
+            <li>NVIDIA 生态：Megatron-Core / NeMo / TensorRT-LLM</li>
+            <li>了解 RL / RLHF（衔接后训练）</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-title">// 高频技能</div>
+          <div class="freq-list">
+            <span class="tag p0">3D 并行 / Megatron / DeepSpeed</span>
+            <span class="tag p0">PyTorch / JAX</span>
+            <span class="tag p0">CUDA / GPU 集群</span>
+            <span class="tag p0">大规模训练基础设施</span>
+            <span class="tag p1">Transformer 架构设计</span>
+            <span class="tag p1">数据处理 / ETL</span>
+            <span class="tag p1">Optimizer / Scaling laws</span>
+            <span class="tag p2">TPU / XLA</span>
+            <span class="tag p2">推理优化协同</span>
+            <span class="tag p2">K8s / OS internals</span>
+          </div>
+          <div class="block-title" style="margin-top:14px">// 代表 JD 摘录</div>
+          <div class="jd-quotes">
+            <div class="jd-quote"><b>Anthropic · Pre-training RE/RS：</b>"模型架构、算法、数据处理、优化器开发，从底层优化到高层模型设计全栈贡献。" 薪资 $350K–$850K。</div>
+            <div class="jd-quote"><b>DeepMind · Pretraining (Gemini)：</b>"理解 XLA 原语 + JAX 在 TPU 上的运行；覆盖预训练/微调/serving。"</div>
+            <div class="jd-quote"><b>月之暗面 Kimi 校招：</b>明确开设"大模型预训练 / 分布式训练 / CUDA / 高性能存储 / AI Infra"方向。</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ROLE 5 -->
+    <article class="role" id="role-posttrain">
+      <div class="role-head">
+        <div>
+          <div class="role-id">// ROLE 05 · ALIGNMENT</div>
+          <h3>后训练工程师</h3>
+          <div class="role-alias">Post-training Engineer · Alignment · RLHF</div>
+        </div>
+        <div><span class="tag cat">模型主干</span><span class="tag cat">行为塑形</span></div>
+      </div>
+      <p class="role-pitch">在基座之上用 SFT / RLHF / RLAIF / DPO / GRPO 把模型调成"听话、安全、有用、会推理 / 用工具"的产品级模型。2026 年权重显著上升的岗位。</p>
+
+      <div class="role-grid">
+        <div>
+          <div class="block-title">// 硬性要求</div>
+          <ul>
+            <li><b>学历：</b>两极 —— 研究岗常硕博，工程岗 1–3 年生产 LLM 训练 + 硕士。</li>
+            <li><b>经验：</b>明确要求 LLM 训练 / 微调 / 后训练实操；至少掌握 SFT / RLHF / reward modeling 之一；多节点训练。</li>
+            <li><b>核心技能：</b>SFT、RLHF、DPO、reward model、PPO/GRPO、TRL、transformers、flash attention、NeMo-RL、数据策略 / evals。</li>
+          </ul>
+          <div class="block-title" style="margin-top:14px">// 加分项</div>
+          <ul>
+            <li>Agent / 多工具 rollout / 多智能体 RL（2026 强上升）</li>
+            <li>Reasoning 模型训练经验</li>
+            <li>偏好数据构造、合成数据、评测体系</li>
+            <li>系统优化与 GPU 集群架构理解</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-title">// 高频技能</div>
+          <div class="freq-list">
+            <span class="tag p0">SFT</span>
+            <span class="tag p0">RLHF</span>
+            <span class="tag p0">DPO</span>
+            <span class="tag p0">Reward Model</span>
+            <span class="tag p1">PPO / GRPO</span>
+            <span class="tag p1">TRL / NeMo-RL</span>
+            <span class="tag p1">Alignment / 安全</span>
+            <span class="tag p1">PyTorch / transformers</span>
+            <span class="tag p2">RLAIF / RLVR</span>
+            <span class="tag p2">Agent / Tool 训练</span>
+            <span class="tag p2">数据 curation</span>
+          </div>
+          <div class="block-title" style="margin-top:14px">// 代表 JD 摘录</div>
+          <div class="jd-quotes">
+            <div class="jd-quote"><b>Scale AI · Post-Training Research：</b>"SFT、RLHF、reward modeling 专长；优化数据 curation 与评测。" 博/硕士 + AI 相关。</div>
+            <div class="jd-quote"><b>Scale AI · Agent Post-training：</b>"为 multi-agent / multi-tool rollouts 开发下一代训练算法；CUDA / PyTorch / transformers / flash attention。"</div>
+            <div class="jd-quote"><b>Hugging Face TRL v1.0：</b>"过去一年 LLM 重心从预训练转向后训练；SFT + Reward + DPO + GRPO 统一栈。"</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ROLE 6 -->
+    <article class="role" id="role-infra">
+      <div class="role-head">
+        <div>
+          <div class="role-id">// ROLE 06 · ML SYSTEMS</div>
+          <h3>AI Infra 工程师</h3>
+          <div class="role-alias">ML Infrastructure · LLM Infra · Inference / Training Systems</div>
+        </div>
+        <div><span class="tag cat">工程主干</span><span class="tag cat">底层系统</span></div>
+      </div>
+      <p class="role-pitch">让超大规模模型在 GPU 集群上"训得动、训得快、推得省、不宕机"。分布式训练、推理服务化、性能优化、底层算子与通信。</p>
+
+      <div class="role-grid">
+        <div>
+          <div class="block-title">// 硬性要求</div>
+          <ul>
+            <li><b>学历：</b>本科及以上（国内大厂硕博优先）。</li>
+            <li><b>经验：</b>OpenAI Model Inference 明确 5 年+；国内大厂 2 年+，千卡训练经验强加分。</li>
+            <li><b>核心技能：</b>Python + C/C++（或 Rust）；CUDA / Triton / CUTLASS / Flash Attention；vLLM / SGLang / TensorRT-LLM；NCCL / NVLink / IB / MPI；Megatron / DeepSpeed / FSDP；量化 / KV cache / batching / speculative decoding。</li>
+          </ul>
+          <div class="block-title" style="margin-top:14px">// 加分项</div>
+          <ul>
+            <li>千卡 / 万卡级训练实战</li>
+            <li>HPC 背景（InfiniBand / MPI / NVLink）</li>
+            <li>开源贡献、顶会论文、可量化性能突破</li>
+            <li>Nsight 等 profiling、内存带宽瓶颈优化</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-title">// 高频技能</div>
+          <div class="freq-list">
+            <span class="tag p0">CUDA / GPU kernel</span>
+            <span class="tag p0">vLLM / SGLang / TensorRT-LLM</span>
+            <span class="tag p0">PyTorch / JAX</span>
+            <span class="tag p0">分布式训练 / NCCL</span>
+            <span class="tag p1">Megatron / DeepSpeed / FSDP</span>
+            <span class="tag p1">量化 / KV cache / 批处理</span>
+            <span class="tag p1">C/C++ / Rust</span>
+            <span class="tag p1">Kubernetes / CI/CD</span>
+            <span class="tag p2">Triton / CUTLASS / Flash Attention</span>
+            <span class="tag p2">InfiniBand / MPI / HPC</span>
+          </div>
+          <div class="block-title" style="margin-top:14px">// 代表 JD 摘录</div>
+          <div class="jd-quotes">
+            <div class="jd-quote"><b>OpenAI · Model Inference：</b>"优化 latency / throughput / efficiency；PyTorch / CUDA / NCCL / IB / MPI / NVLink。" $295K–$555K。</div>
+            <div class="jd-quote"><b>Anthropic · GPU Performance：</b>"为下一代硬件协同设计 attention / 算子；量化与混合精度 custom kernel；planet-scale 分布式训练。"</div>
+            <div class="jd-quote"><b>xAI · Inference：</b>"目标 100% uptime、0% error rate、优秀尾延迟；vLLM / SGLang / TensorRT-LLM / 量化 / speculative decoding。"</div>
+            <div class="jd-quote"><b>腾讯混元 · 推理加速：</b>"vLLM / SGLang / TRT / 算子融合 / 量化 / 动态批处理 / KV 缓存优化。"</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ROLE 7 -->
+    <article class="role" id="role-pm">
+      <div class="role-head">
+        <div>
+          <div class="role-id">// ROLE 07 · PRODUCT</div>
+          <h3>AI 产品经理</h3>
+          <div class="role-alias">AI Product Manager · LLM Product Manager</div>
+        </div>
+        <div><span class="tag cat">应用主干</span><span class="tag cat">用户/商业</span></div>
+      </div>
+      <p class="role-pitch">把大模型能力与边界翻译成可落地、有商业价值的产品 —— 需求洞察、PRD、技术路径评估、效果评测、数据闭环、跨职能推动上线。</p>
+
+      <div class="role-grid">
+        <div>
+          <div class="block-title">// 硬性要求</div>
+          <ul>
+            <li><b>学历：</b>本科及以上；Scale AI 明确"技术学位（CS/工程）或等同经验"。</li>
+            <li><b>经验：</b>海外资深 4 年+ ML 产品（Scale "4+ years building ML-powered products"）；国内多需 AIGC / 大模型产品实习或项目。</li>
+            <li><b>核心技能：</b>LLM 应用范式（Prompt / RAG / Agent / AIGC / 多模态）、能力边界与局限理解、产品基本功、技术路径与成本评估、评测与数据闭环、跨职能协作、Python / SQL / 数据分析。</li>
+          </ul>
+          <div class="block-title" style="margin-top:14px">// 加分项</div>
+          <ul>
+            <li>有自做的 Agent / RAG / AIGC 项目</li>
+            <li>企业级 B 端 / 增长 / 实验平台经验</li>
+            <li>商业化、定价、ML pipeline 理解</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-title">// 高频技能</div>
+          <div class="freq-list">
+            <span class="tag p0">LLM 能力与边界理解</span>
+            <span class="tag p0">RAG</span>
+            <span class="tag p0">Agent</span>
+            <span class="tag p0">Prompt Engineering</span>
+            <span class="tag p0">需求洞察 / 竞品</span>
+            <span class="tag p1">PRD / 原型 / 体验</span>
+            <span class="tag p1">评测 / Bad Case 归因</span>
+            <span class="tag p1">跨职能协作</span>
+            <span class="tag p2">Python / SQL / 数据分析</span>
+            <span class="tag p2">AIGC / 多模态 / NLP</span>
+          </div>
+          <div class="block-title" style="margin-top:14px">// 代表 JD 摘录</div>
+          <div class="jd-quotes">
+            <div class="jd-quote"><b>Google DeepMind · PM Gemini App：</b>"在基础性不确定中引领产品、快速战略转向；理解并代表用户需求。"</div>
+            <div class="jd-quote"><b>Scale AI · AI PM (GenAI)：</b>"技术学位 + 4 年 ML 产品；理解 GenAI 企业应用；Python 编码能力。"</div>
+            <div class="jd-quote"><b>小红书 · AI 产品经理：</b>"理解能力边界（幻觉/时效/安全），跟踪 LLM / Agent / RAG；Prompt Engineering 加分。"</div>
+            <div class="jd-quote"><b>字节 · 豆包/飞书 AI PM：</b>"熟悉海内外大模型产品；了解 ML / 深度学习原理；AIGC 实战项目经验为门槛。"</div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- DAG -->
+  <section id="dag">
+    <div class="section-head">
+      <span class="section-no">// 04</span>
+      <h2>技能 <span class="accent">依赖图谱</span></h2>
+    </div>
+    <p class="section-sub">"前置 → 后置"线性链路，每条对应一个岗位分支。颜色对应优先级：<span class="tag p0">P0</span> <span class="tag p1">P1</span> <span class="tag p2">P2</span>。</p>
+
+    <div class="dag" style="margin-top:18px">
+
+      <div class="chain"><span class="label">// L0 BASE</span>
+        <span class="node p0">Python</span><span class="sep">→</span>
+        <span class="node p0">Linux/Git/Docker</span><span class="sep">→</span>
+        <span class="node p0">LLM 原理</span><span class="sep">→</span>
+        <span class="node p0">Evals 思维</span><span class="sep">→</span>
+        <span class="node p1">用过 Claude Code/Cursor</span>
+      </div>
+
+      <div class="chain"><span class="label">// AGENT 应用</span>
+        <span class="node p0">Prompt 工程</span><span class="sep">→</span>
+        <span class="node p0">Function Calling</span><span class="sep">→</span>
+        <span class="node p0">Agent 循环 (ReAct)</span><span class="sep">→</span>
+        <span class="node p1">RAG</span><span class="sep">→</span>
+        <span class="node p1">MCP</span><span class="sep">→</span>
+        <span class="node p1">多 agent 编排</span><span class="sep">→</span>
+        <span class="node p1">上下文工程</span><span class="sep">→</span>
+        <span class="node p1">Agent Evals</span>
+      </div>
+
+      <div class="chain"><span class="label">// HARNESS 系统</span>
+        <span class="node p0">系统编程</span><span class="sep">→</span>
+        <span class="node p0">分布式与并发</span><span class="sep">→</span>
+        <span class="node p0">容器与 K8s</span><span class="sep">→</span>
+        <span class="node p1">沙箱 (gVisor/Firecracker)</span><span class="sep">→</span>
+        <span class="node p1">Tool-use SDK</span><span class="sep">→</span>
+        <span class="node p1">Eval Harness</span><span class="sep">→</span>
+        <span class="node p2">RL Environments</span>
+      </div>
+
+      <div class="chain"><span class="label">// 算法 (RE/MLE)</span>
+        <span class="node p0">数学 (线代/概率/优化)</span><span class="sep">→</span>
+        <span class="node p0">深度学习基础</span><span class="sep">→</span>
+        <span class="node p0">PyTorch</span><span class="sep">→</span>
+        <span class="node p0">Transformer 实现</span><span class="sep">→</span>
+        <span class="node p1">分布式训练</span><span class="sep">→</span>
+        <span class="node p1">CUDA / GPU 基础</span><span class="sep">→</span>
+        <span class="node p2">JAX / TPU</span>
+      </div>
+
+      <div class="chain"><span class="label">// 预训练</span>
+        <span class="node p0">PyTorch 深度</span><span class="sep">→</span>
+        <span class="node p0">分布式训练</span><span class="sep">→</span>
+        <span class="node p0">Megatron / DeepSpeed / FSDP</span><span class="sep">→</span>
+        <span class="node p1">3D 并行 + 数据流水线</span><span class="sep">→</span>
+        <span class="node p1">CUDA / NCCL / 通信</span><span class="sep">→</span>
+        <span class="node p1">scaling laws / optimizer</span><span class="sep">→</span>
+        <span class="node p2">JAX + TPU + XLA</span>
+      </div>
+
+      <div class="chain"><span class="label">// 后训练</span>
+        <span class="node p0">PyTorch + transformers</span><span class="sep">→</span>
+        <span class="node p0">SFT (指令微调)</span><span class="sep">→</span>
+        <span class="node p0">Reward Model</span><span class="sep">→</span>
+        <span class="node p0">RLHF / PPO</span><span class="sep">→</span>
+        <span class="node p1">DPO</span><span class="sep">→</span>
+        <span class="node p1">GRPO / RLVR</span><span class="sep">→</span>
+        <span class="node p1">TRL / NeMo-RL</span><span class="sep">→</span>
+        <span class="node p2">Agent / 多工具 rollout</span>
+      </div>
+
+      <div class="chain"><span class="label">// AI INFRA</span>
+        <span class="node p0">C/C++ 或 Rust</span><span class="sep">→</span>
+        <span class="node p0">CUDA / GPU 编程</span><span class="sep">→</span>
+        <span class="node p0">PyTorch internals</span><span class="sep">→</span>
+        <span class="node p0">分布式训练框架</span><span class="sep">→</span>
+        <span class="node p0">vLLM / SGLang / TRT-LLM</span><span class="sep">→</span>
+        <span class="node p1">量化 / KV cache / batching</span><span class="sep">→</span>
+        <span class="node p1">K8s / 集群调度</span><span class="sep">→</span>
+        <span class="node p2">Triton / CUTLASS / Flash Attention</span>
+      </div>
+
+      <div class="chain"><span class="label">// AI 产品经理</span>
+        <span class="node p0">LLM 能力 / 边界</span><span class="sep">→</span>
+        <span class="node p0">Prompt / RAG / Agent 范式</span><span class="sep">→</span>
+        <span class="node p0">需求洞察 / 用户研究</span><span class="sep">→</span>
+        <span class="node p1">PRD / 原型 / 体验</span><span class="sep">→</span>
+        <span class="node p1">评测闭环 / Bad Case</span><span class="sep">→</span>
+        <span class="node p1">Python / SQL / 数据分析</span><span class="sep">→</span>
+        <span class="node p2">商业化 / 定价</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <div class="section-head">
+      <span class="section-no">// 05</span>
+      <h2>学习路线 · <span class="accent">底座 + 分支</span></h2>
+    </div>
+    <p class="section-sub">不绑定具体周数（节奏因人而异）；分四阶段推进，每阶段都有"完成的验证标准"。</p>
+
+    <div class="phases">
+      <div class="phase">
+        <div>
+          <div class="name"><small>// PHASE 0</small>公共底座</div>
+        </div>
+        <div class="body">
+          <b>目标：</b>把 L0 五项打到"能讲清 + 能写代码"。
+          <br><b>必做：</b>跑通 LLM API 调用、手写最小 Agent 循环（while + 1 个工具，禁用框架）、能解释 Transformer / 注意力 / 采样、自己定义一个评测脚本对 Agent 跑回归、重度使用一次 Claude Code 或 Cursor 完成一个真实任务。
+          <br><b>验证：</b>能在 10 分钟内白板讲清"为什么 LLM 需要 Agent"，并展示一个最小 demo。
+        </div>
+      </div>
+      <div class="phase">
+        <div>
+          <div class="name"><small>// PHASE 1</small>选主干 (A / B / C)</div>
+        </div>
+        <div class="body">
+          <b>三主干：</b>A 工程（系统/容器/分布式）· B 模型（PyTorch/Transformer/分布式训练）· C 应用（Prompt/RAG/工具编排）。
+          <br><b>建议：</b>每主干完成 1 个"中等规模项目"再分流到具体岗位 —— 例如 A 写一个带沙箱与工具调度的 mini agent runtime；B 从零实现 GPT-2 训练并跑通多卡；C 做一个有 RAG + 工具 + Evals 闭环的应用。
+          <br><b>验证：</b>项目能讲清"为什么这样设计、踩过哪些坑、怎么衡量好坏"。
+        </div>
+      </div>
+      <div class="phase">
+        <div>
+          <div class="name"><small>// PHASE 2</small>岗位专精</div>
+        </div>
+        <div class="body">
+          <b>从主干选具体分支：</b>看上面的依赖图谱按 P0 → P1 → P2 顺序补齐。
+          <br><b>建议产出：</b>1 个"可在面试讲 30 分钟"的旗舰项目 + 2 个能写进简历的小项目。
+          <br><b>验证：</b>能用真实指标讲收益（吞吐 +X%、Bad Case 收敛 Y%、Eval 通过率从 A → B）。
+        </div>
+      </div>
+      <div class="phase">
+        <div>
+          <div class="name"><small>// PHASE 3</small>面试硬化</div>
+        </div>
+        <div class="body">
+          <b>各岗位高频考点：</b>
+          <br>· Agent / Harness：上下文工程、工具调度、sandbox 设计、eval harness 设计、故障归因。
+          <br>· 算法 / 预训练：Transformer 细节、并行策略、scaling laws、训练稳定性。
+          <br>· 后训练：SFT 数据构造、RLHF / DPO / GRPO 数学推导、reward hacking、对齐评测。
+          <br>· AI Infra：CUDA / kernel 优化、vLLM/SGLang 源码、量化、调度。
+          <br>· 产品经理：能力边界判断、PRD 推演、评测设计、技术成本估算。
+          <br><b>验证：</b>对着模拟面官问"你这个项目为什么这样选 X 而不是 Y"，能答得有依据。
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:46px">
+      <span class="section-no">// 05.1</span>
+      <h2>"我想去 X" · <span class="accent">路径索引</span></h2>
+    </div>
+    <p class="section-sub">直接锁定目标岗位，倒查从底座到该岗位的最短可行路径。</p>
+
+    <div class="track-index" style="margin-top:14px">
+      <table>
+        <thead>
+          <tr><th>目标岗位</th><th>选主干</th><th>P0 必修（前置）</th><th>P1 推荐（后置）</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AI Agent 开发工程师</td><td>C 应用主干</td>
+            <td>Python · Prompt · Tool Calling · 最小 Agent 循环 · Evals</td>
+            <td>RAG · MCP · Multi-agent · 上下文工程</td>
+          </tr>
+          <tr>
+            <td>AI Harness 工程师</td><td>A 工程主干</td>
+            <td>系统编程 · 并发 · 容器/K8s · Linux 内核 · Agent 循环</td>
+            <td>沙箱 · Tool-use SDK · Eval Harness · IaC</td>
+          </tr>
+          <tr>
+            <td>AI 算法工程师</td><td>B 模型主干</td>
+            <td>数学 · PyTorch · Transformer · 分布式训练</td>
+            <td>CUDA · Megatron/DeepSpeed · K8s · 应用 RAG/Prompt</td>
+          </tr>
+          <tr>
+            <td>预训练工程师</td><td>B 模型主干（深入底座）</td>
+            <td>PyTorch 深度 · 分布式训练 · Megatron/DeepSpeed/FSDP · CUDA</td>
+            <td>3D 并行 · scaling laws · JAX/TPU/XLA</td>
+          </tr>
+          <tr>
+            <td>后训练工程师</td><td>B 模型主干（行为侧）</td>
+            <td>PyTorch · transformers · SFT · Reward Model · RLHF / PPO</td>
+            <td>DPO · GRPO · TRL/NeMo-RL · Agent/工具 rollout</td>
+          </tr>
+          <tr>
+            <td>AI Infra 工程师</td><td>A 工程主干（向下）</td>
+            <td>C/C++(Rust) · CUDA · 分布式训练框架 · vLLM/SGLang/TRT-LLM</td>
+            <td>量化/KV cache · K8s · Triton/CUTLASS · Flash Attention</td>
+          </tr>
+          <tr>
+            <td>AI 产品经理</td><td>C 应用主干（产品向）</td>
+            <td>LLM 能力/边界 · Prompt · RAG · Agent · 需求洞察</td>
+            <td>评测闭环 · PRD · Python/SQL · 商业化</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SOURCES -->
+  <section id="sources">
+    <div class="section-head">
+      <span class="section-no">// 06</span>
+      <h2>来源 <span class="accent">索引</span></h2>
+    </div>
+    <p class="section-sub">本文档的 JD 摘录均来自下列公开渠道（招聘官网 / 工程博客 / 招聘聚合 / 媒体报道），按公司归类。</p>
+
+    <div class="sources" style="margin-top:18px">
+      <div class="card">
+        <h4>海外大模型公司</h4>
+        <ul>
+          <li>OpenAI · <a href="https://openai.com/careers/applied-ai-engineer-codex-core-agent-san-francisco/">Applied AI, Codex Core Agent</a></li>
+          <li>OpenAI · <a href="https://openai.com/careers/software-engineer-agent-infrastructure-san-francisco/">SWE, Agent Infrastructure</a></li>
+          <li>OpenAI · <a href="https://openai.com/careers/software-engineer-enterprise-ai-platform-san-francisco/">SWE, Enterprise AI Platform</a></li>
+          <li>OpenAI · <a href="https://openai.com/careers/software-engineer-model-inference-san-francisco/">SWE, Model Inference</a></li>
+          <li>OpenAI · <a href="https://openai.com/careers/research-engineer-san-francisco/">Research Engineer</a></li>
+          <li>Anthropic · <a href="https://jobs.menlovc.com/companies/anthropic/jobs/40887206-software-engineer-agents-infrastructure">SWE, Agents Infrastructure</a></li>
+          <li>Anthropic · <a href="https://job-boards.greenhouse.io/anthropic/jobs/4616971008">Pre-training RE/RS</a></li>
+          <li>Anthropic · <a href="https://www.welcometothejungle.com/en/companies/anthropic/jobs/performance-engineer_new-york_4gustjmb">Performance Engineer (GPU)</a></li>
+          <li>Anthropic · <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Effective harnesses (engineering blog)</a></li>
+          <li>Anthropic · <a href="https://job-boards.greenhouse.io/anthropic/jobs/4985920008">PM, Claude Code</a></li>
+          <li>Google DeepMind · <a href="https://www.google.com/about/careers/applications/jobs/results/98165313010311878-research-engineer-pretraining-deepmind">RE, Pretraining (Gemini)</a></li>
+          <li>Google DeepMind · <a href="https://job-boards.greenhouse.io/deepmind/jobs/7094457">PM, Gemini App</a></li>
+          <li>xAI · <a href="https://job-boards.greenhouse.io/xai/jobs/4533894007">MTS, Inference</a></li>
+          <li>xAI · <a href="https://startup.jobs/member-of-technical-staff-post-training-xai-5492761">MTS, Post-training</a></li>
+          <li>Mistral · <a href="https://mistral.ai/careers/">Careers</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>海外大厂 + 工具公司</h4>
+        <ul>
+          <li>NVIDIA · <a href="https://jobs.nvidia.com/careers/job/893394752123">Senior PE, LLM Inference Frameworks</a></li>
+          <li>NVIDIA · <a href="https://jobs.nvidia.com/careers/job/893393884394">AI Inference Performance Engineer 2026</a></li>
+          <li>NVIDIA-NeMo · <a href="https://github.com/NVIDIA-NeMo/RL">NeMo-RL repo</a></li>
+          <li>NVIDIA-Megatron · <a href="https://deepwiki.com/NVIDIA/Megatron-LM">Megatron-LM</a></li>
+          <li>Microsoft · <a href="https://github.com/microsoft/agent-framework">agent-framework</a></li>
+          <li>Cognition · <a href="https://cognition.com/careers">Careers</a></li>
+          <li>Cognition · <a href="https://jobs.ashbyhq.com/cognition/811c3f5a-b26d-4162-b49b-93890a791794d">AI Enablement Engineer</a></li>
+          <li>Scale AI · <a href="https://scale.com/careers/4570957005">Applied AI Engineer, Agents</a></li>
+          <li>Scale AI · <a href="https://scale.com/careers/4625341005">ML Systems RE, Agent Post-training</a></li>
+          <li>Scale AI · <a href="https://scale.com/careers/4528009005">Post-Training RS (SFT/RLHF)</a></li>
+          <li>Scale AI · <a href="https://scale.com/careers/4481052005">AI PM (Generative AI)</a></li>
+          <li>Scale AI · <a href="https://scale.com/blog/rl-environments">RL Environments blog</a></li>
+          <li>Hugging Face · <a href="https://www.remoterocketship.com/company/hugging-face/jobs/machine-learning-engineer-intern-united-states">MLE Intern (TRL)</a></li>
+          <li>Hugging Face · <a href="https://www.marktechpost.com/2026/04/01/hugging-face-releases-trl-v1-0-a-unified-post-training-stack-for-sft-reward-modeling-dpo-and-grpo-workflows/">TRL v1.0 announcement</a></li>
+          <li>LangChain · <a href="https://www.langchain.com/blog/the-anatomy-of-an-agent-harness">The Anatomy of an Agent Harness</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>国内大模型独角兽</h4>
+        <ul>
+          <li>DeepSeek · <a href="https://www.qbitai.com/2026/03/392024.html">急招 Agent 方向 17 岗（量子位）</a></li>
+          <li>DeepSeek · <a href="https://www.stcn.com/article/detail/3980996.html">大规模招聘（证券时报）</a></li>
+          <li>月之暗面 Kimi · <a href="https://careers.kimi.com/">官网招聘</a></li>
+          <li>月之暗面 Kimi · <a href="https://campus.niuqizp.com/schedule-hwYyYtnCC.html">26 届校招方向</a></li>
+          <li>月之暗面 Kimi · <a href="https://www.shushuqiuzhi.com/article/132610">含 RL 方向岗位</a></li>
+          <li>MiniMax · <a href="https://www.minimaxi.com/careers">官网招聘</a></li>
+          <li>MiniMax · <a href="https://zhuanlan.zhihu.com/p/692312274">AI 推理框架 / ML 岗位</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>国内互联网大厂</h4>
+        <ul>
+          <li>字节 Seed · <a href="https://seed.bytedance.com/zh/career">官网</a></li>
+          <li>字节 Seed · <a href="https://seed.bytedance.com/zh/seedearlycareer">校招</a></li>
+          <li>字节 · <a href="https://jobs.bytedance.com/campus/position/7383965146644187418/detail">豆包/飞书 AI PM</a></li>
+          <li>阿里云 · <a href="https://careers.aliyun.com/off-campus/position-detail?positionId=2000094704">AI Coding Agent 研发</a></li>
+          <li>阿里 · <a href="https://zhuanlan.zhihu.com/p/2016908720899122818">大模型训练/微调/推理实习</a></li>
+          <li>腾讯混元 · <a href="https://jobs.niuqizp.com/job-vky55ZZLZ.html">多模态推理加速</a></li>
+          <li>腾讯混元 · <a href="https://jobs.niuqizp.com/job-vlr5LCMtt.html">推理研发高级工程师</a></li>
+          <li>小红书 · <a href="https://campus.niuqizp.com/job-vUy5LnNN5.html">AI PM (大模型应用)</a></li>
+          <li>百度文心 · <a href="https://blog.csdn.net/c9Yv2cf9I06K2A9E/article/details/135579080">Agent 方向招聘</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <div><span class="marks">▌</span> AI · ROLE · DOSSIER &nbsp;·&nbsp; AS OF 2026-06-28</div>
+    <div>// based on 30+ real JDs · for self-study planning &amp; interview prep</div>
+  </div>
+
+</main>
+</body>
+</html>
