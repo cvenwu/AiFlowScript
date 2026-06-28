@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
+        background: #0d1117;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        color: #e6e8ec;
+      }
+      .monospace { font-family: "JetBrains Mono", monospace; }
+
+      .scene {
+        position: absolute; inset: 0;
+        width: 1920px; height: 1080px; overflow: hidden;
+      }
+      .scene-content {
+        position: relative;
+        display: flex; flex-direction: column; justify-content: center;
+        width: 100%; height: 100%;
+        padding: 120px 160px; gap: 28px; box-sizing: border-box;
+      }
+      .bg-glow {
+        position: absolute; border-radius: 50%;
+        filter: blur(120px); opacity: 0.5; pointer-events: none;
+      }
+      .eyebrow {
+        font-size: 26px; letter-spacing: 6px; text-transform: uppercase;
+        color: #5b9cff; font-weight: 600;
+      }
+      .accent { color: #5b9cff; }
+      .accent2 { color: #7ee787; }
+
+      .s1-flow { display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
+      .s1-chip {
+        font-size: 56px; font-weight: 700; padding: 18px 36px;
+        border: 2px solid #2a2f3a; border-radius: 18px; background: #161b22;
+      }
+      .s1-arrow { font-size: 64px; color: #5b9cff; }
+      .s1-title { font-size: 132px; font-weight: 800; line-height: 1.05; }
+      .s1-sub { font-size: 38px; color: #9aa3b2; }
+
+      .s2-h { font-size: 84px; font-weight: 800; line-height: 1.1; }
+      .s2-grid { display: flex; gap: 28px; }
+      .s2-card {
+        flex: 1; background: #161b22; border: 1px solid #2a2f3a; border-radius: 16px;
+        padding: 28px 32px; font-size: 30px; line-height: 1.5;
+      }
+      .s2-card .k { color: #5b9cff; font-weight: 700; display: block; margin-bottom: 10px; font-size: 30px; }
+      .s2-insight { font-size: 40px; line-height: 1.5; }
+
+      .s3-h { font-size: 76px; font-weight: 800; margin-bottom: 16px; }
+      .s3-stages { display: flex; gap: 24px; }
+      .s3-stage {
+        flex: 1; background: #161b22; border: 1px solid #2a2f3a;
+        border-radius: 18px; padding: 36px 28px;
+      }
+      .s3-no {
+        width: 56px; height: 56px; border-radius: 50%; background: #5b9cff;
+        color: #0d1117; font-size: 30px; font-weight: 800;
+        display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+      }
+      .s3-name { font-size: 36px; font-weight: 700; margin-bottom: 10px; }
+      .s3-desc { font-size: 25px; color: #9aa3b2; line-height: 1.45; }
+
+      .s4-h { font-size: 80px; font-weight: 800; margin-bottom: 12px; }
+      .s4-row { display: flex; gap: 28px; }
+      .s4-box { flex: 1; border-radius: 18px; padding: 38px 34px; border: 1px solid #2a2f3a; }
+      .s4-box.app { background: rgba(91,156,255,0.10); border-color: #5b9cff; }
+      .s4-box.har { background: rgba(126,231,135,0.10); border-color: #7ee787; }
+      .s4-box .lab { font-size: 34px; font-weight: 700; margin-bottom: 14px; }
+      .s4-box .body { font-size: 30px; line-height: 1.5; color: #c8cdd6; }
+      .s4-tags { margin-top: 36px; }
+      .s4-tag { display: inline-block; background: #161b22; border: 1px solid #2a2f3a;
+        border-radius: 20px; padding: 8px 20px; margin: 6px 10px 6px 0; font-size: 28px; color: #c8cdd6; }
+
+      .s5-h { font-size: 76px; font-weight: 800; margin-bottom: 24px; }
+      .s5-row { display: flex; align-items: center; gap: 24px; }
+      .s5-wk { width: 160px; color: #5b9cff; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 34px; }
+      .s5-bar {
+        height: 52px; border-radius: 10px; display: flex; align-items: center;
+        padding: 0 24px; font-size: 27px; color: #0d1117; font-weight: 700; white-space: nowrap;
+      }
+
+      .s6-tag { font-size: 32px; color: #9aa3b2; letter-spacing: 2px; }
+      .s6-proj { font-size: 110px; font-weight: 800; }
+      .s6-quote { font-size: 46px; font-weight: 600; line-height: 1.5; max-width: 1400px; color: #c8cdd6; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="42"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- SCENE 1 -->
+      <div class="scene clip" id="s1" data-start="0" data-duration="7" data-track-index="0" style="z-index:1">
+        <div class="bg-glow" data-layout-ignore id="s1-glow" style="width:700px;height:700px;background:#5b9cff;top:-150px;right:-100px;"></div>
+        <div class="scene-content">
+          <div class="eyebrow" id="s1-eyebrow">转型路线 · 2-3 个月高强度冲刺</div>
+          <div class="s1-flow">
+            <div class="s1-chip" id="s1-chip1">Go 服务端工程师</div>
+            <div class="s1-arrow" id="s1-arrow">&rarr;</div>
+            <div class="s1-chip" id="s1-chip2" style="border-color:#5b9cff">AI Agent / Harness</div>
+          </div>
+          <div class="s1-title" id="s1-title">从后端<span class="accent">穿越</span>到 AI</div>
+          <div class="s1-sub" id="s1-sub">原理 + 项目实践驱动 + 面试转岗</div>
+        </div>
+      </div>
+
+      <!-- SCENE 2 -->
+      <div class="scene clip" id="s2" data-start="7" data-duration="8" data-track-index="0" style="z-index:1">
+        <div class="bg-glow" data-layout-ignore id="s2-glow" style="width:600px;height:600px;background:#7ee787;bottom:-180px;left:-120px;"></div>
+        <div class="scene-content">
+          <div class="eyebrow" id="s2-eyebrow">harness 是什么</div>
+          <div class="s2-h" id="s2-h">模型只是 <span class="accent">text in → text out</span></div>
+          <div class="s2-grid">
+            <div class="s2-card" id="s2-c1"><span class="k">运行时</span>Agent 循环 · 工具调度 · 上下文管理 · 会话压缩</div>
+            <div class="s2-card" id="s2-c2"><span class="k">评测</span>benchmark · 自动打分 · 回归测试</div>
+            <div class="s2-card" id="s2-c3"><span class="k">工程基设</span>沙箱执行 · 可观测 · 成本控制</div>
+          </div>
+          <div class="s2-insight" id="s2-insight">后端的差异化优势在 <span class="accent2">harness</span>，不在模型调参。</div>
+        </div>
+      </div>
+
+      <!-- SCENE 3 -->
+      <div class="scene clip" id="s3" data-start="15" data-duration="10" data-track-index="0" style="z-index:1">
+        <div class="scene-content">
+          <div class="eyebrow" id="s3-eyebrow">能力螺旋 · 主线项目 AiFlowScript</div>
+          <div class="s3-h" id="s3-h">四阶段，层层叠加</div>
+          <div class="s3-stages">
+            <div class="s3-stage" id="s3-st1"><div class="s3-no">0</div><div class="s3-name">原理打底</div><div class="s3-desc">手撸最小 Agent 循环，看穿本质</div></div>
+            <div class="s3-stage" id="s3-st2"><div class="s3-no">1</div><div class="s3-name">应用层</div><div class="s3-desc">RAG + 工具 + LangGraph 编排</div></div>
+            <div class="s3-stage" id="s3-st3"><div class="s3-no" style="background:#7ee787">2</div><div class="s3-name">harness 内核</div><div class="s3-desc">Go 自研运行时（重头戏）</div></div>
+            <div class="s3-stage" id="s3-st4"><div class="s3-no">3</div><div class="s3-name">评测硬化</div><div class="s3-desc">eval + 可观测 + 成本优化</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 4 -->
+      <div class="scene clip" id="s4" data-start="25" data-duration="7" data-track-index="0" style="z-index:1">
+        <div class="bg-glow" data-layout-ignore id="s4-glow" style="width:650px;height:650px;background:#5b9cff;top:-200px;left:40%;"></div>
+        <div class="scene-content">
+          <div class="eyebrow" id="s4-eyebrow">技术栈 · 发挥后端主场</div>
+          <div class="s4-h" id="s4-h">Python 应用 + Go harness</div>
+          <div class="s4-row">
+            <div class="s4-box app" id="s4-app"><div class="lab accent">Python 应用层</div><div class="body">生态最全，快速入门</div></div>
+            <div class="s4-box har" id="s4-har"><div class="lab accent2">Go harness 内核</div><div class="body">并发 · 状态 · 健壮性主场</div></div>
+          </div>
+          <div class="s4-tags" id="s4-tags">
+            <span class="s4-tag">LangGraph</span><span class="s4-tag">LlamaIndex</span><span class="s4-tag">PydanticAI</span><span class="s4-tag">OpenAI 兼容 API 解耦</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 5 -->
+      <div class="scene clip" id="s5" data-start="32" data-duration="6" data-track-index="0" style="z-index:1">
+        <div class="scene-content">
+          <div class="eyebrow" id="s5-eyebrow">时间线</div>
+          <div class="s5-h" id="s5-h">周 1 → 周 10</div>
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div class="s5-row" id="s5-r1"><div class="s5-wk monospace">周 1</div><div class="s5-bar" style="width:280px;background:#5b9cff">原理 + 手撸循环</div></div>
+            <div class="s5-row" id="s5-r2"><div class="s5-wk monospace">周 2-3</div><div class="s5-bar" style="width:400px;background:#5b9cff">应用层 RAG / 编排</div></div>
+            <div class="s5-row" id="s5-r3"><div class="s5-wk monospace">周 4-6</div><div class="s5-bar" style="width:600px;background:#7ee787">Go harness 内核 MVP</div></div>
+            <div class="s5-row" id="s5-r4"><div class="s5-wk monospace">周 7-9</div><div class="s5-bar" style="width:540px;background:#7ee787">eval + 可观测 + 成本</div></div>
+            <div class="s5-row" id="s5-r5"><div class="s5-wk monospace">周 9-10</div><div class="s5-bar" style="width:360px;background:#5b9cff">深挖稿 + 模拟面</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 6 -->
+      <div class="scene clip" id="s6" data-start="38" data-duration="4" data-track-index="0" style="z-index:1">
+        <div class="bg-glow" data-layout-ignore id="s6-glow" style="width:800px;height:800px;background:#5b9cff;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+        <div class="scene-content" style="align-items:center;text-align:center;">
+          <div class="s6-tag" id="s6-tag1">主线项目</div>
+          <div class="s6-proj" id="s6-proj"><span class="accent">AiFlow</span><span class="accent2">Script</span></div>
+          <div class="s6-quote" id="s6-quote">用 Go 自研 Agent harness，对标 LangGraph，eval 分数从 A 到 B —— 后端转 AI 的最强叙事</div>
+        </div>
+      </div>
+
+      <!-- transition overlay -->
+      <div id="wipe" class="clip" data-start="0" data-duration="42" data-track-index="9" style="position:absolute;inset:0;background:#0d1117;z-index:50;opacity:0;pointer-events:none;"></div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        /* SCENE 1 (0–7) */
+        tl.from("#s1-eyebrow", { y: 30, opacity: 0, duration: 0.5, ease: "power2.out" }, 0.2);
+        tl.from("#s1-chip1", { x: -60, opacity: 0, duration: 0.6, ease: "power3.out" }, 0.5);
+        tl.from("#s1-arrow", { scale: 0, opacity: 0, duration: 0.4, ease: "back.out(2)" }, 0.9);
+        tl.from("#s1-chip2", { x: 60, opacity: 0, duration: 0.6, ease: "power3.out" }, 1.0);
+        tl.from("#s1-title", { y: 60, opacity: 0, duration: 0.8, ease: "expo.out" }, 1.4);
+        tl.from("#s1-sub", { y: 30, opacity: 0, duration: 0.6, ease: "power2.out" }, 1.9);
+        tl.from("#s1-glow", { scale: 0.5, opacity: 0, duration: 1.2, ease: "sine.out" }, 0);
+
+        tl.to("#wipe", { opacity: 1, duration: 0.3, ease: "power1.in" }, 6.6);
+        tl.set("#s1", { opacity: 0 }, 6.9);
+        tl.to("#wipe", { opacity: 0, duration: 0.3, ease: "power1.out" }, 6.95);
+
+        /* SCENE 2 (7–15) */
+        tl.from("#s2-eyebrow", { y: 30, opacity: 0, duration: 0.5, ease: "power2.out" }, 7.2);
+        tl.from("#s2-h", { y: 50, opacity: 0, duration: 0.7, ease: "expo.out" }, 7.4);
+        tl.from("#s2-c1", { y: 40, opacity: 0, duration: 0.5, ease: "power3.out" }, 7.9);
+        tl.from("#s2-c2", { y: 40, opacity: 0, duration: 0.5, ease: "power3.out" }, 8.1);
+        tl.from("#s2-c3", { y: 40, opacity: 0, duration: 0.5, ease: "power3.out" }, 8.3);
+        tl.from("#s2-insight", { x: -40, opacity: 0, duration: 0.6, ease: "power2.out" }, 9.0);
+        tl.from("#s2-glow", { scale: 0.5, opacity: 0, duration: 1.4, ease: "sine.out" }, 7);
+
+        tl.to("#wipe", { opacity: 1, duration: 0.3, ease: "power1.in" }, 14.6);
+        tl.set("#s2", { opacity: 0 }, 14.9);
+        tl.to("#wipe", { opacity: 0, duration: 0.3, ease: "power1.out" }, 14.95);
+
+        /* SCENE 3 (15–25) */
+        tl.from("#s3-eyebrow", { y: 30, opacity: 0, duration: 0.5, ease: "power2.out" }, 15.2);
+        tl.from("#s3-h", { y: 50, opacity: 0, duration: 0.7, ease: "expo.out" }, 15.4);
+        tl.from("#s3-st1", { y: 60, opacity: 0, duration: 0.55, ease: "back.out(1.4)" }, 16.0);
+        tl.from("#s3-st2", { y: 60, opacity: 0, duration: 0.55, ease: "back.out(1.4)" }, 16.25);
+        tl.from("#s3-st3", { y: 60, opacity: 0, duration: 0.55, ease: "back.out(1.4)" }, 16.5);
+        tl.from("#s3-st4", { y: 60, opacity: 0, duration: 0.55, ease: "back.out(1.4)" }, 16.75);
+        tl.fromTo("#s3-st3", { boxShadow: "0 0 0px rgba(126,231,135,0)" }, { boxShadow: "0 0 40px rgba(126,231,135,0.5)", duration: 0.8, ease: "sine.out" }, 17.6);
+
+        tl.to("#wipe", { opacity: 1, duration: 0.3, ease: "power1.in" }, 24.6);
+        tl.set("#s3", { opacity: 0 }, 24.9);
+        tl.to("#wipe", { opacity: 0, duration: 0.3, ease: "power1.out" }, 24.95);
+
+        /* SCENE 4 (25–32) */
+        tl.from("#s4-eyebrow", { y: 30, opacity: 0, duration: 0.5, ease: "power2.out" }, 25.2);
+        tl.from("#s4-h", { y: 50, opacity: 0, duration: 0.7, ease: "expo.out" }, 25.4);
+        tl.from("#s4-app", { x: -60, opacity: 0, duration: 0.6, ease: "power3.out" }, 26.0);
+        tl.from("#s4-har", { x: 60, opacity: 0, duration: 0.6, ease: "power3.out" }, 26.2);
+        tl.from("#s4-tags", { y: 30, opacity: 0, duration: 0.5, ease: "power2.out" }, 26.9);
+        tl.from("#s4-glow", { scale: 0.5, opacity: 0, duration: 1.4, ease: "sine.out" }, 25);
+
+        tl.to("#wipe", { opacity: 1, duration: 0.3, ease: "power1.in" }, 31.6);
+        tl.set("#s4", { opacity: 0 }, 31.9);
+        tl.to("#wipe", { opacity: 0, duration: 0.3, ease: "power1.out" }, 31.95);
+
+        /* SCENE 5 (32–38) */
+        tl.from("#s5-eyebrow", { y: 30, opacity: 0, duration: 0.5, ease: "power2.out" }, 32.2);
+        tl.from("#s5-h", { y: 50, opacity: 0, duration: 0.7, ease: "expo.out" }, 32.4);
+        tl.from("#s5-r1", { x: -50, opacity: 0, duration: 0.45, ease: "power3.out" }, 33.0);
+        tl.from("#s5-r2", { x: -50, opacity: 0, duration: 0.45, ease: "power3.out" }, 33.2);
+        tl.from("#s5-r3", { x: -50, opacity: 0, duration: 0.45, ease: "power3.out" }, 33.4);
+        tl.from("#s5-r4", { x: -50, opacity: 0, duration: 0.45, ease: "power3.out" }, 33.6);
+        tl.from("#s5-r5", { x: -50, opacity: 0, duration: 0.45, ease: "power3.out" }, 33.8);
+
+        tl.to("#wipe", { opacity: 1, duration: 0.3, ease: "power1.in" }, 37.6);
+        tl.set("#s5", { opacity: 0 }, 37.9);
+        tl.to("#wipe", { opacity: 0, duration: 0.3, ease: "power1.out" }, 37.95);
+
+        /* SCENE 6 (38–42) outro */
+        tl.from("#s6-tag1", { y: 20, opacity: 0, duration: 0.5, ease: "power2.out" }, 38.3);
+        tl.from("#s6-proj", { scale: 0.8, opacity: 0, duration: 0.7, ease: "back.out(1.6)" }, 38.6);
+        tl.from("#s6-quote", { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, 39.3);
+        tl.from("#s6-glow", { opacity: 0, duration: 1.5, ease: "sine.out" }, 38.3);
+        tl.to("#s6-quote", { opacity: 0, duration: 0.5, ease: "power1.in" }, 41.3);
+        tl.to("#s6-proj", { opacity: 0, duration: 0.5, ease: "power1.in" }, 41.4);
+        tl.to("#s6-tag1", { opacity: 0, duration: 0.5, ease: "power1.in" }, 41.3);
+
+        window.__timelines["main"] = tl;
+      </script>
+    </div>
+  </body>
+</html>
