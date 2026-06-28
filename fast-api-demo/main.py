@@ -1,6 +1,13 @@
-def main():
-    print("Hello from fast-api-demo!")
+from fastapi import FastAPI
+
+app = FastAPI(title="FastAPI Demo", version="0.1.0")
 
 
-if __name__ == "__main__":
-    main()
+@app.get("/")
+def read_root():
+    return {"message": "Hello FastAPI"}
+
+
+@app.get("/healthz")
+def health_check():
+    return {"status": "ok"}
