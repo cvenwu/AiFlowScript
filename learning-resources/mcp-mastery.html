@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MCP 快速入门到精通 · 后端工程师向</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose', flowchart: { curve: 'basis' } });
+</script>
+<style>
+  :root{
+    --bg:#0b0f17; --panel:#11182a; --panel2:#0e1422; --line:#1f2a44;
+    --fg:#e6edf7; --mut:#94a3b8; --acc:#7cc4ff; --acc2:#a78bfa; --ok:#34d399; --warn:#fbbf24; --err:#f87171;
+    --code:#0a0f1c;
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--fg);}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.65;font-size:15.5px;}
+  a{color:var(--acc);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .layout{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:100vh;}
+  aside{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;border-right:1px solid var(--line);padding:24px 18px;background:linear-gradient(180deg,#0b0f17, #0a0e18);}
+  aside h1{font-size:18px;margin:0 0 4px;}
+  aside .sub{color:var(--mut);font-size:12.5px;margin-bottom:18px;}
+  aside nav ol{list-style:none;padding:0;margin:0;counter-reset:s;}
+  aside nav li{counter-increment:s;margin:2px 0;}
+  aside nav a{display:block;padding:6px 10px;border-radius:6px;color:#cbd5e1;font-size:13.5px;}
+  aside nav a::before{content:counter(s, decimal) ". ";color:var(--mut);}
+  aside nav a:hover{background:#101a30;color:#fff;text-decoration:none;}
+  aside nav a.section{margin-top:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;font-size:11.5px;}
+  aside nav a.section::before{content:"";}
+  main{padding:36px clamp(20px,3vw,56px);max-width:1100px;margin:0 auto;}
+  h1.title{font-size:34px;margin:0 0 4px;letter-spacing:-.5px;}
+  .lead{color:var(--mut);font-size:15px;margin-bottom:30px;}
+  h2{font-size:24px;margin:48px 0 10px;border-bottom:1px solid var(--line);padding-bottom:8px;}
+  h3{font-size:18px;margin:28px 0 8px;color:#dbeafe;}
+  h4{font-size:15px;margin:20px 0 6px;color:#cbd5e1;}
+  p{margin:8px 0;}
+  code{background:#0a0f1c;color:#fde68a;padding:2px 6px;border-radius:4px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.55;}
+  pre code{background:transparent;color:#e2e8f0;padding:0;}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0;}
+  .panel2{background:var(--panel2);border:1px dashed var(--line);border-radius:10px;padding:14px 16px;margin:12px 0;}
+  .grid2{display:grid;gap:16px;grid-template-columns:1fr 1fr;}
+  .grid3{display:grid;gap:16px;grid-template-columns:repeat(3,1fr);}
+  @media (max-width:900px){.grid2,.grid3{grid-template-columns:1fr;} .layout{grid-template-columns:1fr;} aside{position:relative;height:auto;}}
+  .tag{display:inline-block;background:#1d2a4a;color:#bcd0ff;border-radius:999px;padding:2px 10px;font-size:12px;margin-right:6px;}
+  .tag.ok{background:#0f3024;color:#86efac;}
+  .tag.warn{background:#3a2c10;color:#fcd34d;}
+  .tag.err{background:#3a1416;color:#fca5a5;}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:#0f1729;color:#bfdbfe;}
+  tr:nth-child(2n) td{background:#0c1326;}
+  .callout{border-left:4px solid var(--acc);background:#0e1830;padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;}
+  .callout.warn{border-left-color:var(--warn);background:#221a06;}
+  .callout.err{border-left-color:var(--err);background:#2a1011;}
+  .mermaid{background:#0a0f1c;border:1px solid var(--line);border-radius:10px;padding:14px;margin:14px 0;}
+  .small{color:var(--mut);font-size:12.5px;}
+  ul,ol{padding-left:22px;}
+  ul li, ol li{margin:4px 0;}
+  details{background:#0f1626;border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:10px 0;}
+  details > summary{cursor:pointer;color:#bfdbfe;}
+  .anchor{scroll-margin-top:20px;}
+  hr{border:none;border-top:1px solid var(--line);margin:32px 0;}
+  .footer{color:var(--mut);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:18px;}
+  kbd{background:#0a0f1c;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 5px;font-size:12px;color:#e2e8f0;}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside>
+  <h1>MCP 精通手册</h1>
+  <div class="sub">面向后端工程师 · 中文 · 单文件版</div>
+  <nav>
+    <a class="section">入门</a>
+    <ol>
+      <li><a href="#what">MCP 是什么 & 为什么</a></li>
+      <li><a href="#mental">心智模型与术语</a></li>
+      <li><a href="#hello">5 分钟 Hello World</a></li>
+    </ol>
+    <a class="section">协议与架构</a>
+    <ol start="4">
+      <li><a href="#arch">两层架构总览</a></li>
+      <li><a href="#jsonrpc">JSON-RPC 2.0 消息层</a></li>
+      <li><a href="#lifecycle">生命周期与能力协商</a></li>
+      <li><a href="#transport">传输层：stdio / Streamable HTTP</a></li>
+      <li><a href="#auth">授权与安全模型</a></li>
+    </ol>
+    <a class="section">原语</a>
+    <ol start="9">
+      <li><a href="#tools">Tools（工具）</a></li>
+      <li><a href="#resources">Resources（资源）</a></li>
+      <li><a href="#prompts">Prompts（提示模板）</a></li>
+      <li><a href="#sampling">Sampling / Elicitation / Roots</a></li>
+    </ol>
+    <a class="section">实现原理</a>
+    <ol start="13">
+      <li><a href="#impl-server">Server 内部实现剖析</a></li>
+      <li><a href="#impl-client">Client / Host 内部实现剖析</a></li>
+      <li><a href="#sequence">完整上下游交互图</a></li>
+    </ol>
+    <a class="section">实战</a>
+    <ol start="16">
+      <li><a href="#prod-server">生产级 Server（Python）</a></li>
+      <li><a href="#prod-client">嵌入 LLM 的 Host</a></li>
+      <li><a href="#ops">调试、可观测与部署</a></li>
+      <li><a href="#pitfalls">常见坑与最佳实践</a></li>
+    </ol>
+    <a class="section">参考</a>
+    <ol start="20">
+      <li><a href="#refs">资料引用清单</a></li>
+    </ol>
+  </nav>
+</aside>
+
+<main>
+<h1 class="title">Model Context Protocol（MCP）从入门到精通</h1>
+<div class="lead">
+  一份给后端工程师看的 MCP 实战与原理手册：协议层、传输层、SDK、内部实现、上下游交互全链路图，以及 Python 代码示例。
+  以 <b>2025-11-25</b> 规范版本为基线，兼顾 <code>2025-06-18</code> 与 <code>2025-03-26</code> 仍在普遍使用的实现。
+</div>
+
+<!-- 1. WHAT -->
+<h2 id="what" class="anchor">1. MCP 是什么 &amp; 为什么</h2>
+<p>
+  <b>Model Context Protocol（MCP）</b> 是 Anthropic 于 2024 年 11 月开源的一套<b>用于 LLM 应用与外部上下文/工具进行连接的开放协议</b>。
+  它在 <code>Host（宿主应用）⇄ Server（上下文/工具提供方）</code> 之间定义统一的 RPC 接口，目标是<b>把"接 N 个模型 × M 个工具"的 N×M 集成爆炸降为 N+M</b>。
+</p>
+<div class="grid2">
+  <div class="panel">
+    <h3>用一句话理解</h3>
+    <p>"<b>给 AI 应用的 USB-C 口</b>"：任何遵循协议的 Server 都能即插即用地被任何遵循协议的 Host（Claude Desktop、Cursor、VS Code、Cline、自研 Agent…）使用。</p>
+  </div>
+  <div class="panel">
+    <h3>后端视角的等价物</h3>
+    <p>MCP ≈ <b>面向 LLM 的 OpenAPI/gRPC</b>：JSON-RPC 2.0 报文 + 标准化的方法名 + 可发现的能力清单 + 会话生命周期 + 多种传输绑定。</p>
+  </div>
+</div>
+
+<h3>什么场景该用 MCP</h3>
+<ul>
+  <li>给 LLM Agent 暴露<b>受控的工具</b>（数据库查询、内部 API 调用、文件读写、SaaS 操作）。</li>
+  <li>给 LLM 暴露<b>只读上下文</b>（业务文档、配置、知识库、运行时状态）。</li>
+  <li>统一公司内部 <b>Agent 平台</b>：一次实现，多 Host 复用（IDE、桌面、Web、CI）。</li>
+  <li>跨进程/跨主机交付能力：本地命令行子进程，或远程 HTTPS Server。</li>
+</ul>
+
+<h3>什么场景不该用 MCP</h3>
+<ul>
+  <li>系统间纯后端通信、无 LLM 参与 → 直接用 gRPC/HTTP 即可，MCP 没必要。</li>
+  <li>高吞吐流式数据管道 → JSON-RPC + SSE 不是为此设计的。</li>
+  <li>非交互式批处理 → 用普通脚本/调度即可。</li>
+</ul>
+
+<!-- 2. MENTAL -->
+<h2 id="mental" class="anchor">2. 心智模型与术语</h2>
+<div class="panel">
+<table>
+<thead><tr><th>术语</th><th>含义</th><th>后端工程师类比</th></tr></thead>
+<tbody>
+<tr><td>Host</td><td>AI 应用本体（Claude Desktop、Cursor、自研 Agent 网关）</td><td>"业务方"/网关</td></tr>
+<tr><td>Client</td><td>Host 内的一条 MCP 连接管理器，每条连接 1:1 对应一个 Server</td><td>RPC Stub / SDK client</td></tr>
+<tr><td>Server</td><td>提供 Tools/Resources/Prompts 的进程</td><td>微服务</td></tr>
+<tr><td>Tools</td><td>可被模型调用的"函数"，有副作用</td><td>POST 接口</td></tr>
+<tr><td>Resources</td><td>可被读取的上下文数据，按 URI 标识</td><td>GET 接口 / 静态资源</td></tr>
+<tr><td>Prompts</td><td>由 Server 维护的可复用 Prompt 模板</td><td>模板文件</td></tr>
+<tr><td>Sampling</td><td>Server 请求 Host 帮自己调一次 LLM</td><td>回调宿主</td></tr>
+<tr><td>Elicitation</td><td>Server 请求 Host 弹窗向用户问问题</td><td>同步用户输入</td></tr>
+<tr><td>Roots</td><td>Host 告诉 Server 允许访问的文件/URI 边界</td><td>沙箱配置</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="mermaid">
+flowchart LR
+  subgraph HostApp["Host: AI 应用 (Claude Desktop / 自研 Agent)"]
+    LLM["LLM 推理"]
+    C1["MCP Client #1"]
+    C2["MCP Client #2"]
+    C3["MCP Client #3"]
+  end
+  S1["Server: Git/FS\n(stdio 子进程)"]
+  S2["Server: 内部 API\n(Streamable HTTP)"]
+  S3["Server: 数据库\n(stdio 子进程)"]
+  LLM <--> C1 <--> S1
+  LLM <--> C2 <--> S2
+  LLM <--> C3 <--> S3
+</div>
+<p class="small">一个 Host 同时驱动多个 Client，每个 Client 独占一条 Server 连接。Client 之间天然隔离，便于权限与故障隔离。</p>
+
+<!-- 3. HELLO -->
+<h2 id="hello" class="anchor">3. 5 分钟 Hello World（Python）</h2>
+<p>用 <code>mcp</code> 官方 Python SDK 的 <code>FastMCP</code> 高层封装。</p>
+
+<h4>安装</h4>
+<pre><code># 推荐 uv（也可 pip）
+uv init mcp-hello && cd mcp-hello
+uv add "mcp[cli]"
+</code></pre>
+
+<h4>server.py</h4>
+<pre><code>from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("hello-server")
+
+@mcp.tool()
+def add(a: int, b: int) -> int:
+    """两数相加。"""
+    return a + b
+
+@mcp.resource("greeting://{name}")
+def greeting(name: str) -> str:
+    """返回一句问候，作为只读上下文。"""
+    return f"Hello, {name}!"
+
+@mcp.prompt()
+def code_review(language: str, code: str) -> str:
+    """生成一个代码审查 Prompt。"""
+    return f"请审查以下 {language} 代码并指出问题：\n\n```{language}\n{code}\n```"
+
+if __name__ == "__main__":
+    mcp.run()  # 默认 stdio
+</code></pre>
+
+<h4>用官方 Inspector 调试</h4>
+<pre><code>uv run mcp dev server.py
+# 浏览器会打开 Inspector，可逐个调用 tools/resources/prompts
+</code></pre>
+
+<h4>接入 Claude Desktop（macOS）</h4>
+<pre><code># ~/Library/Application Support/Claude/claude_desktop_config.json
+{
+  "mcpServers": {
+    "hello": {
+      "command": "uv",
+      "args": ["--directory", "/abs/path/mcp-hello", "run", "python", "server.py"]
+    }
+  }
+}
+</code></pre>
+
+<h4>最小 Client（Python）</h4>
+<pre><code>import asyncio
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+async def main():
+    params = StdioServerParameters(command="python", args=["server.py"])
+    async with stdio_client(params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            tools = await session.list_tools()
+            print([t.name for t in tools.tools])  # ['add']
+            r = await session.call_tool("add", {"a": 1, "b": 2})
+            print(r.content)  # [TextContent(text='3')] / structured
+
+asyncio.run(main())
+</code></pre>
+
+<!-- 4. ARCH -->
+<h2 id="arch" class="anchor">4. 两层架构总览</h2>
+<p>MCP 把协议明确切成 <b>数据层（Data Layer）</b> 与 <b>传输层（Transport Layer）</b>，两层正交。</p>
+
+<div class="mermaid">
+flowchart TB
+  subgraph Host["Host (AI 应用)"]
+    direction TB
+    H1["LLM Adapter / Agent Loop"]
+    H2["MCP Client 实例"]
+    H3["Session 状态机"]
+    H4["Transport 适配器"]
+    H1 --> H2 --> H3 --> H4
+  end
+  subgraph Server["Server (能力提供方)"]
+    direction TB
+    S1["Transport 适配器"]
+    S2["Session 状态机"]
+    S3["Dispatcher: tools/resources/prompts"]
+    S4["业务处理函数 (handlers)"]
+    S1 --> S2 --> S3 --> S4
+  end
+  H4 <-->|"JSON-RPC 2.0 报文\n(stdio / Streamable HTTP)"| S1
+</div>
+
+<table>
+<thead><tr><th>层</th><th>关心什么</th><th>不关心什么</th></tr></thead>
+<tbody>
+<tr><td>数据层</td><td>消息格式（JSON-RPC 2.0）、方法名、能力协商、生命周期、原语语义</td><td>用什么通道发</td></tr>
+<tr><td>传输层</td><td>字节怎么走（stdin/stdout、HTTP、SSE）、鉴权、Session ID、CORS、超时</td><td>报文是啥意思</td></tr>
+</tbody>
+</table>
+
+<!-- 5. JSON-RPC -->
+<h2 id="jsonrpc" class="anchor">5. JSON-RPC 2.0 消息层</h2>
+<p>所有消息都遵循 JSON-RPC 2.0，<code>jsonrpc:"2.0"</code> 固定。三类消息：</p>
+<ul>
+  <li><b>Request</b>：含 <code>id</code> + <code>method</code> + <code>params</code>，对端必须回应。</li>
+  <li><b>Response</b>：含 <code>id</code> + (<code>result</code> 或 <code>error</code>)。</li>
+  <li><b>Notification</b>：含 <code>method</code> + <code>params</code> 但<b>无 <code>id</code></b>，对端不应回应。</li>
+</ul>
+
+<h3>常用方法一览（核心）</h3>
+<table>
+<thead><tr><th>方向</th><th>方法</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td>C→S</td><td><code>initialize</code></td><td>协议版本与能力协商</td></tr>
+<tr><td>C→S</td><td><code>notifications/initialized</code></td><td>客户端已就绪</td></tr>
+<tr><td>C→S</td><td><code>ping</code></td><td>心跳</td></tr>
+<tr><td>C→S</td><td><code>tools/list</code> / <code>tools/call</code></td><td>列出/调用工具</td></tr>
+<tr><td>C→S</td><td><code>resources/list</code> / <code>resources/templates/list</code> / <code>resources/read</code> / <code>resources/subscribe</code></td><td>资源发现、读取与订阅</td></tr>
+<tr><td>C→S</td><td><code>prompts/list</code> / <code>prompts/get</code></td><td>列出/取得 Prompt</td></tr>
+<tr><td>C→S</td><td><code>completion/complete</code></td><td>参数自动补全</td></tr>
+<tr><td>C→S</td><td><code>logging/setLevel</code></td><td>设置 Server 日志级别</td></tr>
+<tr><td>S→C</td><td><code>sampling/createMessage</code></td><td>请 Host 调一次 LLM</td></tr>
+<tr><td>S→C</td><td><code>elicitation/create</code></td><td>请 Host 向用户问问题</td></tr>
+<tr><td>S→C</td><td><code>roots/list</code></td><td>问 Host 当前允许的文件/URI 边界</td></tr>
+<tr><td>S→C</td><td><code>notifications/tools/list_changed</code> 等</td><td>能力变更广播</td></tr>
+<tr><td>S→C</td><td><code>notifications/resources/updated</code></td><td>订阅资源变化推送</td></tr>
+<tr><td>S→C</td><td><code>notifications/progress</code></td><td>长任务进度</td></tr>
+<tr><td>S→C</td><td><code>notifications/message</code></td><td>日志/调试输出</td></tr>
+</tbody>
+</table>
+
+<h3>报文示例</h3>
+<div class="grid2">
+<div>
+<h4>initialize 请求</h4>
+<pre><code>{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {
+      "roots": { "listChanged": true },
+      "sampling": {},
+      "elicitation": {}
+    },
+    "clientInfo": { "name": "my-host", "version": "0.1.0" }
+  }
+}</code></pre>
+</div>
+<div>
+<h4>initialize 响应</h4>
+<pre><code>{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {
+      "tools": { "listChanged": true },
+      "resources": { "subscribe": true, "listChanged": true },
+      "prompts": { "listChanged": true },
+      "logging": {}
+    },
+    "serverInfo": { "name": "hello-server", "version": "0.1.0" },
+    "instructions": "可选：给模型的 system 提示。"
+  }
+}</code></pre>
+</div>
+</div>
+
+<div class="grid2">
+<div>
+<h4>tools/call 请求</h4>
+<pre><code>{
+  "jsonrpc": "2.0",
+  "id": 7,
+  "method": "tools/call",
+  "params": {
+    "name": "add",
+    "arguments": { "a": 1, "b": 2 }
+  }
+}</code></pre>
+</div>
+<div>
+<h4>tools/call 响应</h4>
+<pre><code>{
+  "jsonrpc": "2.0",
+  "id": 7,
+  "result": {
+    "content": [
+      { "type": "text", "text": "3" }
+    ],
+    "structuredContent": { "result": 3 },
+    "isError": false
+  }
+}</code></pre>
+</div>
+</div>
+
+<div class="callout">
+<b>错误处理</b>：Server 端运行抛错应该以 <code>result.isError = true</code> 加 <code>content</code> 返回，<b>而不是</b> JSON-RPC <code>error</code> 字段。<code>error</code> 留给协议级别错误（方法不存在、参数错、未授权等）。这样模型可以"看到"错误并自行重试。
+</div>
+
+<!-- 6. LIFECYCLE -->
+<h2 id="lifecycle" class="anchor">6. 生命周期与能力协商</h2>
+<p>MCP 是<b>有状态</b>的协议。一条连接的生命周期分三段：</p>
+
+<div class="mermaid">
+sequenceDiagram
+  autonumber
+  participant H as Host (Client)
+  participant S as Server
+  Note over H,S: 1) Initialization 阶段
+  H->>S: initialize(protocolVersion, capabilities, clientInfo)
+  S-->>H: result(protocolVersion, capabilities, serverInfo, instructions?)
+  H->>S: notifications/initialized
+  Note over H,S: 2) Operation 阶段（可并发多次往返）
+  H->>S: tools/list
+  S-->>H: tools[]
+  H->>S: tools/call(name, arguments)
+  S-->>H: content[] / structuredContent
+  S-->>H: notifications/progress (可选)
+  S-->>H: notifications/tools/list_changed (能力变更)
+  Note over H,S: 3) Shutdown 阶段
+  H->>S: 关闭传输 (stdio 关 stdin / HTTP DELETE 会话)
+</div>
+
+<h3>能力协商的关键点</h3>
+<ul>
+  <li><b>protocolVersion</b>：按日期版本（如 <code>2025-06-18</code>、<code>2025-11-25</code>）协商；不兼容则关闭连接。</li>
+  <li><b>capabilities</b>：双向声明<b>"我支持什么 + 是否会发 listChanged 通知"</b>。Server 不会调用没声明的 Client 能力，反之亦然。</li>
+  <li><b>instructions</b>：Server 可返回一段建议给模型，作为 system 增强。</li>
+</ul>
+
+<div class="callout warn">
+<b>易踩坑</b>：在 <code>initialize</code> 完成 + 客户端发 <code>notifications/initialized</code> 之前，<b>除 <code>ping</code> 与 logging 之外不应发其他请求</b>。很多 Server 实现会拒绝。
+</div>
+
+<!-- 7. TRANSPORT -->
+<h2 id="transport" class="anchor">7. 传输层：stdio 与 Streamable HTTP</h2>
+<p>MCP 规范定义了两种<b>标准传输</b>。自定义传输也允许，只要保留 JSON-RPC 报文语义。</p>
+
+<h3>7.1 stdio（本地子进程）</h3>
+<ul>
+  <li>Host 把 Server <b>fork 为子进程</b>，stdin / stdout 用 <b>换行分隔的 JSON-RPC</b>（NDJSON）通信。</li>
+  <li>Server 写到 <code>stdout</code> 的内容<b>必须只能是合法 MCP 报文</b>，不允许 <code>print</code> 调试输出污染。</li>
+  <li>调试/日志统一走 <code>stderr</code>，由 Host 决定丢弃还是转发。</li>
+  <li>关闭：Host 关 stdin → Server 优雅退出。</li>
+</ul>
+
+<div class="mermaid">
+sequenceDiagram
+  participant H as Host
+  participant OS as 操作系统
+  participant SP as Server 子进程
+  H->>OS: spawn("python server.py")
+  OS-->>H: stdin/stdout/stderr 管道
+  H->>SP: 写入 JSON-RPC + "\n" (stdin)
+  SP-->>H: JSON-RPC + "\n" (stdout)
+  SP-->>H: 日志文本 (stderr, 可选)
+  H->>SP: 关闭 stdin
+  SP-->>OS: 退出
+</div>
+
+<h3>7.2 Streamable HTTP（远程 / 网关）</h3>
+<p>2025-03-26 引入，<b>替代</b>旧的 "HTTP + SSE" 双端点方案。核心：<b>一个端点</b>同时承载 POST 与 GET，按需升级为 SSE。</p>
+
+<table>
+<thead><tr><th>项</th><th>规范要求</th></tr></thead>
+<tbody>
+<tr><td>端点</td><td>单 URL，如 <code>https://example.com/mcp</code>，支持 POST 与 GET</td></tr>
+<tr><td>Client→Server</td><td>每条 JSON-RPC 是一个新的 HTTP POST；<code>Accept: application/json, text/event-stream</code></td></tr>
+<tr><td>Server 回</td><td>若包含 request：返回 <code>application/json</code>（一次性）<b>或</b> <code>text/event-stream</code>（流式，可推中间通知 / 进度）；若只包含通知/响应：返回 <code>202 Accepted</code></td></tr>
+<tr><td>Server 主动推</td><td>Client 可发 GET 打开常驻 SSE，由 Server 推 <code>sampling</code>/<code>elicitation</code>/通知；不支持就回 <code>405</code></td></tr>
+<tr><td>Session</td><td><code>initialize</code> 响应头里下发 <code>Mcp-Session-Id</code>；后续每个请求都要回带；<code>DELETE</code> 主动关闭</td></tr>
+<tr><td>版本协商</td><td>请求头 <code>MCP-Protocol-Version</code>（2025-06-18+ 引入）</td></tr>
+<tr><td>断线续传</td><td>SSE 事件可带 <code>id:</code>，断线重连用 <code>Last-Event-ID</code> 续推</td></tr>
+<tr><td>安全</td><td>必须校验 <code>Origin</code> 防 DNS rebinding；本地启动时<b>绑 127.0.0.1</b>；建议 OAuth</td></tr>
+</tbody>
+</table>
+
+<div class="mermaid">
+sequenceDiagram
+  autonumber
+  participant C as Client
+  participant N as 反向代理/网关
+  participant S as MCP Server
+  C->>N: POST /mcp  initialize  (Accept: application/json, text/event-stream)
+  N->>S: 转发
+  S-->>N: 200 application/json + Mcp-Session-Id: abc
+  N-->>C: 200 + Header
+  C->>N: POST /mcp  tools/call (Mcp-Session-Id: abc)
+  N->>S: 转发
+  S-->>N: 200 text/event-stream
+  S-->>C: event: progress (id=1)
+  S-->>C: event: progress (id=2)
+  S-->>C: event: response  (id=3) [tools/call result]
+  C->>N: GET /mcp  (Mcp-Session-Id: abc, Accept: text/event-stream)
+  N->>S: 升级 SSE
+  S-->>C: event: sampling/createMessage  (server-initiated request)
+  C-->>S: POST /mcp  (response, Mcp-Session-Id: abc)
+  C->>N: DELETE /mcp (关闭会话)
+</div>
+
+<div class="callout">
+<b>为什么从 HTTP+SSE 改成 Streamable HTTP？</b>
+<ul>
+  <li>旧方案要起两个端点（POST 写、SSE 读），<b>无法穿过普通负载均衡器</b>，且鉴权语义混乱。</li>
+  <li>新方案<b>单端点 + 普通 HTTP 语义</b>，CORS、Bearer、API Gateway、CDN 都能正常用。</li>
+  <li>SSE 仅在<b>需要推送时</b>升级，是"可选流式"而不是"强制流式"。</li>
+</ul>
+</div>
+
+<h3>7.3 选哪种传输？</h3>
+<table>
+<thead><tr><th>场景</th><th>传输</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td>本地工具（FS、Git、SQLite）</td><td>stdio</td><td>零网络、零鉴权、生命周期跟随宿主</td></tr>
+<tr><td>团队共享/SaaS</td><td>Streamable HTTP</td><td>远程、可水平扩、能放在 OAuth 后面</td></tr>
+<tr><td>桌面应用打包</td><td>stdio</td><td>跟随安装包，无端口冲突</td></tr>
+<tr><td>云端 Agent 平台</td><td>Streamable HTTP</td><td>多租户隔离 + Session 管理</td></tr>
+</tbody>
+</table>
+
+<!-- 8. AUTH -->
+<h2 id="auth" class="anchor">8. 授权与安全模型</h2>
+<ul>
+  <li><b>stdio</b>：信任边界 = 操作系统进程；Host 决定是否启动该 Server。授权依靠环境变量/本地配置。</li>
+  <li><b>Streamable HTTP</b>：规范要求/推荐 <b>OAuth 2.1</b>（含 PKCE）；Bearer Token 走标准 <code>Authorization</code> 头。可走 API Key/Header 等自定义方式，但<b>不应</b>把 token 放在 query string。</li>
+  <li><b>同源/防 rebinding</b>：本地起 HTTP Server 必须校验 <code>Origin</code> 并绑 127.0.0.1。</li>
+  <li><b>会话 ID</b>：服务端可加密绑定用户身份；DELETE 用于注销。</li>
+  <li><b>工具最小权限原则</b>：每个 Tool 应该<b>显式声明副作用</b>（<code>annotations.destructiveHint</code> / <code>readOnlyHint</code> / <code>openWorldHint</code> / <code>idempotentHint</code>），Host 据此决定是否需要用户确认。</li>
+</ul>
+
+<div class="callout err">
+<b>真实世界安全风险</b>：
+<ul>
+  <li><b>Prompt Injection via Tool Output</b>：Tool 把外部内容回吐到模型，可被注入指令。要在 Host 侧做内容隔离 / re-prompt。</li>
+  <li><b>Confused Deputy</b>：Server 拿着用户 token 替模型做不该做的事。Tool 应在 Server 内部强校验，不依赖模型自律。</li>
+  <li><b>Rug Pull</b>：远程 Server 的 Tool schema 与 description 中途被替换为恶意版本。Host 应做<b>能力指纹/审计</b>。</li>
+</ul>
+</div>
+
+<!-- 9. TOOLS -->
+<h2 id="tools" class="anchor">9. Tools（工具）</h2>
+<p>Tool 是<b>给模型调用</b>的函数：输入 schema、输出 content，可带副作用。</p>
+
+<h3>Tool 定义关键字段</h3>
+<table>
+<thead><tr><th>字段</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td>唯一标识，建议 snake_case，模型会看到</td></tr>
+<tr><td><code>title</code></td><td>展示名，UI 用</td></tr>
+<tr><td><code>description</code></td><td>给<b>模型</b>看的说明，决定模型何时调用</td></tr>
+<tr><td><code>inputSchema</code></td><td>JSON Schema，<b>越严格越好</b>（含 enum、min/max、required）</td></tr>
+<tr><td><code>outputSchema</code></td><td>结构化输出 schema，配合 <code>structuredContent</code></td></tr>
+<tr><td><code>annotations</code></td><td>readOnlyHint / destructiveHint / idempotentHint / openWorldHint</td></tr>
+</tbody>
+</table>
+
+<h4>Python 示例（含错误返回）</h4>
+<pre><code>from typing import Annotated
+from pydantic import Field
+from mcp.server.fastmcp import FastMCP
+from mcp.types import TextContent
+
+mcp = FastMCP("billing")
+
+@mcp.tool(
+    annotations={
+        "title": "退款",
+        "readOnlyHint": False,
+        "destructiveHint": True,
+        "idempotentHint": True,
+    }
+)
+def refund(
+    order_id: Annotated[str, Field(pattern=r"^ord_[a-z0-9]{16}$")],
+    amount_cents: Annotated[int, Field(gt=0, le=1_000_000)],
+    reason: str,
+) -> str:
+    """对指定订单发起退款。amount_cents 不能超过订单原金额。"""
+    try:
+        do_refund(order_id, amount_cents, reason)
+        return f"refunded {amount_cents} cents on {order_id}"
+    except DomainError as e:
+        # 让模型自己看到错误并可能重试
+        raise ToolError(str(e))
+</code></pre>
+
+<!-- 10. RESOURCES -->
+<h2 id="resources" class="anchor">10. Resources（资源）</h2>
+<p>Resource 是<b>只读的上下文</b>，按 URI 寻址；可静态可模板化，可订阅变更。</p>
+<ul>
+  <li><code>resources/list</code> 返回静态资源列表；<code>resources/templates/list</code> 返回 URI 模板（含 <code>{var}</code>）。</li>
+  <li><code>resources/read</code> 按 URI 拿内容；返回 <code>contents[]</code>，每项含 <code>uri</code> + <code>mimeType</code> + <code>text</code>/<code>blob</code>。</li>
+  <li><code>resources/subscribe</code> + <code>notifications/resources/updated</code> 实现增量推送。</li>
+</ul>
+
+<pre><code>@mcp.resource("config://app/{env}")
+def app_config(env: str) -> str:
+    """按环境读取应用配置（只读）。"""
+    return json.dumps(load_config(env))
+
+@mcp.resource("file:///logs/today.log")
+def today_log() -> str:
+    return open("/var/log/today.log").read()
+</code></pre>
+
+<div class="callout">
+<b>Tool vs Resource 怎么选？</b>
+<ul>
+  <li>有副作用 / 需要参数推理 → <b>Tool</b>。</li>
+  <li>纯读、URI 可枚举、模型很可能"自动注入" → <b>Resource</b>。</li>
+  <li>实操中很多人全部塞 Tool 没问题，但放 Resource 的好处是 Host 可以做"@提及"/自动注入。</li>
+</ul>
+</div>
+
+<!-- 11. PROMPTS -->
+<h2 id="prompts" class="anchor">11. Prompts（提示模板）</h2>
+<p>Prompt 是<b>由 Server 维护、由用户主动选用</b>的模板（典型形态：IDE 里的 slash command）。</p>
+<pre><code>@mcp.prompt(title="生成 SQL")
+def gen_sql(table: str, intent: str) -> list[dict]:
+    return [
+        {"role": "system", "content": "你是资深 DBA。"},
+        {"role": "user", "content": f"基于表 {table}，{intent}，给出 PostgreSQL SQL。"},
+    ]
+</code></pre>
+<p class="small">Prompt 在 Host 里通常以"/命令"形式展示，跟 Tool（模型自己决定调）形成互补。</p>
+
+<!-- 12. SAMPLING / ELICITATION / ROOTS -->
+<h2 id="sampling" class="anchor">12. Sampling / Elicitation / Roots（反向能力）</h2>
+<div class="grid3">
+  <div class="panel">
+    <h4>Sampling</h4>
+    <p>Server 调 <code>sampling/createMessage</code> 让 Host 帮自己跑一次 LLM。用途：Server 内部需要 LLM 但又不想自己接 API/付钱。Host 会向用户征求同意。</p>
+  </div>
+  <div class="panel">
+    <h4>Elicitation</h4>
+    <p>Server 调 <code>elicitation/create</code> 弹窗向用户问问题（带 schema）。用途：缺参补全、二次确认、敏感操作授权。</p>
+  </div>
+  <div class="panel">
+    <h4>Roots</h4>
+    <p>Host 通过 <code>roots/list</code> 告诉 Server <b>允许访问的工作目录/URI 边界</b>。Server 端 FS/Git 类工具应严格遵守。</p>
+  </div>
+</div>
+
+<div class="mermaid">
+sequenceDiagram
+  participant U as 用户
+  participant H as Host
+  participant S as Server
+  S->>H: sampling/createMessage(messages, modelHints)
+  H->>U: 弹窗：是否允许 Server 使用 LLM？
+  U-->>H: 允许
+  H->>H: 调 LLM
+  H-->>S: result(content[])
+</div>
+
+<!-- 13. IMPL SERVER -->
+<h2 id="impl-server" class="anchor">13. Server 内部实现剖析</h2>
+<p>以 <code>mcp</code> Python SDK 的 <code>FastMCP</code> 为蓝本，拆解 Server 端"接收一条 JSON-RPC 到返回结果"的全过程。</p>
+
+<div class="mermaid">
+flowchart TB
+  IN["传输层 in\n(stdin 行 / HTTP POST)"] --> P["JSON 反序列化\n+ JSON-RPC 校验"]
+  P --> R["路由 dispatcher\n按 method 分发"]
+  R -->|"initialize"| L["LifecycleHandler\n→ 协商版本/能力"]
+  R -->|"tools/list"| TL["枚举注册表"]
+  R -->|"tools/call"| TC["参数 schema 校验\n(JSON Schema → pydantic)"]
+  TC --> EX["执行用户 handler\n(同步函数 / async)"]
+  EX --> CV["返回值规整\n→ content[] / structuredContent"]
+  CV --> ENC["JSON 序列化\n+ id 回填"]
+  ENC --> OUT["传输层 out\n(stdout 行 / HTTP body / SSE event)"]
+  EX -.通知/进度.-> OUT
+  L --> OUT
+  TL --> ENC
+</div>
+
+<h3>核心数据结构</h3>
+<ul>
+  <li><b>Server 实例</b>：持有 <code>ToolRegistry</code>、<code>ResourceRegistry</code>、<code>PromptRegistry</code>，每个 registry 是 <code>name → metadata + callable</code> 的字典。</li>
+  <li><b>Session 状态机</b>：<code>uninitialized → initializing → ready → closing</code>。在 ready 之前，除 <code>initialize</code>/<code>ping</code> 外的请求都会被拒绝。</li>
+  <li><b>Schema 推导</b>：FastMCP 用类型注解 + <code>pydantic</code> 自动把函数签名→ <code>inputSchema</code>。返回值若为 BaseModel，则自动填 <code>outputSchema</code>。</li>
+  <li><b>Context 对象</b>：handler 可注入 <code>Context</code>，里面有 <code>session.send_log_message()</code>, <code>session.create_message()</code>（反向 sampling），<code>request_context</code>，用于在 Tool 内部反向调 Client。</li>
+</ul>
+
+<h3>同步/异步两条路径</h3>
+<p>Python SDK 内部用 <code>anyio</code> 任务组并发：一个任务从传输层读，一个任务调度 handler 执行，handler 完成后把结果丢回 outbox。这样长任务可以并行发 <code>notifications/progress</code>。</p>
+
+<h3>能力变更通知</h3>
+<p>Server 在运行时新增/删除工具时，<b>必须</b>已经在 <code>initialize</code> 响应中声明 <code>tools.listChanged:true</code>，然后用 <code>notifications/tools/list_changed</code> 通知。Client 收到后会重新拉 <code>tools/list</code>。</p>
+
+<details>
+<summary>伪代码：极简 Server（自己手写，不依赖 SDK）</summary>
+<pre><code>import sys, json
+
+TOOLS = {
+  "add": {
+    "name": "add",
+    "description": "Add two numbers",
+    "inputSchema": {"type":"object","properties":{"a":{"type":"number"},"b":{"type":"number"}},"required":["a","b"]},
+  }
+}
+
+def call_tool(name, args):
+    if name == "add": return args["a"] + args["b"]
+    raise ValueError("unknown tool")
+
+state = "uninit"
+for line in sys.stdin:
+    req = json.loads(line)
+    rid = req.get("id")
+    m = req["method"]
+    if m == "initialize":
+        state = "initializing"
+        resp = {"jsonrpc":"2.0","id":rid,"result":{
+            "protocolVersion":"2025-06-18",
+            "capabilities":{"tools":{"listChanged":False}},
+            "serverInfo":{"name":"tiny","version":"0.0.1"}
+        }}
+    elif m == "notifications/initialized":
+        state = "ready"; continue  # 无 id 不回
+    elif m == "tools/list":
+        resp = {"jsonrpc":"2.0","id":rid,"result":{"tools":list(TOOLS.values())}}
+    elif m == "tools/call":
+        out = call_tool(req["params"]["name"], req["params"]["arguments"])
+        resp = {"jsonrpc":"2.0","id":rid,"result":{
+            "content":[{"type":"text","text":str(out)}],
+            "structuredContent":{"result":out},
+            "isError":False}}
+    else:
+        resp = {"jsonrpc":"2.0","id":rid,"error":{"code":-32601,"message":"Method not found"}}
+    sys.stdout.write(json.dumps(resp)+"\n"); sys.stdout.flush()
+</code></pre>
+</details>
+
+<!-- 14. IMPL CLIENT -->
+<h2 id="impl-client" class="anchor">14. Client / Host 内部实现剖析</h2>
+
+<div class="mermaid">
+flowchart TB
+  subgraph Host["Host 进程"]
+    AL["Agent Loop / Orchestrator"]
+    LM["LLM Adapter (Anthropic / OpenAI / 自研)"]
+    CM["ClientManager (多 Server 多连接)"]
+    subgraph PerConn["每个 Server 一个 Client"]
+      RD["Reader 任务: 解析帧"]
+      WT["Writer 任务: 发帧"]
+      ST["Session State + Pending Map"]
+      TR["Transport: stdio/http"]
+    end
+    AL --> LM
+    AL <--> CM
+    CM <--> PerConn
+    RD <--> ST
+    WT <--> ST
+    ST <--> TR
+  end
+</div>
+
+<h3>关键机制</h3>
+<ul>
+  <li><b>Request/Response 关联</b>：每发一条 request 生成单调递增 <code>id</code>，Pending Map: <code>id → Future</code>。收到响应按 <code>id</code> 唤醒。</li>
+  <li><b>反向请求</b>：Server 也可以发请求（sampling/elicitation/roots/list），Client 用同一套 dispatcher，按 method 路由到 Host 注入的回调。</li>
+  <li><b>能力门控</b>：Client 在调任何方法前先检查 <code>serverInfo.capabilities</code>，没声明就不调，避免 <code>-32601</code>。</li>
+  <li><b>转发到 LLM</b>：Host 把 <code>tools/list</code> 结果转换为 LLM provider 的 tool schema（Anthropic Messages、OpenAI function calling、Gemini function declaration）；LLM 决定调用时，再 <code>tools/call</code> 回 Server，把结果作为 tool message 喂回模型。</li>
+  <li><b>多 Server 命名空间</b>：建议给 Tool 加 <code>serverName.toolName</code> 前缀，避免不同 Server 重名。</li>
+</ul>
+
+<details>
+<summary>Host 端 Agent Loop 伪代码（接 Anthropic Claude）</summary>
+<pre><code>tools_for_llm = []
+for srv in clients:
+    for t in (await srv.list_tools()).tools:
+        tools_for_llm.append({
+            "name": f"{srv.name}__{t.name}",
+            "description": t.description,
+            "input_schema": t.inputSchema,
+        })
+
+messages = [{"role":"user","content": user_input}]
+while True:
+    resp = anthropic.messages.create(model="claude-...", tools=tools_for_llm, messages=messages)
+    messages.append({"role":"assistant","content": resp.content})
+    tool_uses = [b for b in resp.content if b.type == "tool_use"]
+    if not tool_uses:
+        break
+    tool_results = []
+    for tu in tool_uses:
+        srv_name, tool_name = tu.name.split("__", 1)
+        srv = clients[srv_name]
+        r = await srv.call_tool(tool_name, tu.input)
+        tool_results.append({"type":"tool_result","tool_use_id":tu.id,
+                             "content": r.content, "is_error": r.isError})
+    messages.append({"role":"user","content": tool_results})
+</code></pre>
+</details>
+
+<!-- 15. SEQUENCE -->
+<h2 id="sequence" class="anchor">15. 完整上下游交互图（含 LLM）</h2>
+
+<div class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as 用户
+  participant H as Host (Agent)
+  participant L as LLM Provider
+  participant C as MCP Client
+  participant S as MCP Server
+  participant E as 外部系统 (DB/API/FS)
+
+  U->>H: 自然语言请求
+  Note over H,C: 启动时已建立 MCP 连接
+  H->>C: list_tools / list_resources
+  C->>S: tools/list
+  S-->>C: tools[]
+  C-->>H: tools[]
+  H->>L: messages + tools schema
+  L-->>H: assistant: tool_use(name, args)
+  H->>C: call_tool(name, args)
+  C->>S: tools/call
+  S->>E: 调用外部系统
+  E-->>S: 业务结果
+  S-->>C: notifications/progress (可选)
+  S-->>C: result(content[], structuredContent)
+  C-->>H: result
+  H->>L: 把 tool_result 追加进 messages
+  L-->>H: assistant: 最终回答 (text)
+  H-->>U: 渲染回答 + 操作摘要
+
+  Note over S,H: 反向方向
+  S->>C: sampling/createMessage
+  C->>H: 路由到 Host
+  H->>U: 弹窗征求同意
+  U-->>H: 允许
+  H->>L: 跑 LLM
+  L-->>H: completion
+  H-->>C: response
+  C-->>S: response
+</div>
+
+<!-- 16. PROD SERVER -->
+<h2 id="prod-server" class="anchor">16. 生产级 Server（Python · Streamable HTTP）</h2>
+
+<h4>暴露 Streamable HTTP</h4>
+<pre><code>from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("orders", instructions="订单与退款相关工具")
+
+@mcp.tool()
+def get_order(order_id: str) -> dict:
+    return db.get_order(order_id)
+
+@mcp.tool(annotations={"destructiveHint": True})
+def refund(order_id: str, amount_cents: int, reason: str) -> str:
+    return svc.refund(order_id, amount_cents, reason)
+
+if __name__ == "__main__":
+    # streamable-http 监听 0.0.0.0:8000/mcp
+    mcp.run(transport="streamable-http", host="0.0.0.0", port=8000)
+</code></pre>
+
+<h4>放在网关后面（推荐拓扑）</h4>
+<div class="mermaid">
+flowchart LR
+  Cli["Host / MCP Client"]
+  CDN["CDN / WAF"]
+  GW["API Gateway\n(鉴权/限流/日志)"]
+  Auth["IdP / OAuth 2.1"]
+  K8s["MCP Server 集群\n(无状态 + Session 粘性)"]
+  Redis[("Redis\nSession & Pub/Sub")]
+  DB[("业务 DB")]
+  API[("内部 API")]
+  Cli --> CDN --> GW
+  GW --> Auth
+  GW --> K8s
+  K8s <--> Redis
+  K8s --> DB
+  K8s --> API
+</div>
+
+<ul>
+  <li><b>水平扩展</b>：Streamable HTTP 是<b>每条 HTTP 请求一条 JSON-RPC</b>，无 Session 时天然无状态；有 Session 时用 <code>Mcp-Session-Id</code> 做粘性路由或在 Redis 共享会话。</li>
+  <li><b>SSE 长连接</b>：建议在网关层放开 <code>proxy_buffering off</code> / <code>response_buffering: false</code>，否则进度通知会被攒着发。</li>
+  <li><b>鉴权</b>：网关验 OAuth Bearer，再下发短期内部 token；Server 内部不直接验外部 IdP。</li>
+</ul>
+
+<!-- 17. PROD CLIENT -->
+<h2 id="prod-client" class="anchor">17. 嵌入 LLM 的 Host（自研 Agent）</h2>
+<pre><code>import asyncio
+from contextlib import AsyncExitStack
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from mcp.client.streamable_http import streamablehttp_client
+
+class MCPHub:
+    def __init__(self):
+        self.sessions: dict[str, ClientSession] = {}
+        self.stack = AsyncExitStack()
+
+    async def add_stdio(self, name, command, args):
+        params = StdioServerParameters(command=command, args=args)
+        read, write = await self.stack.enter_async_context(stdio_client(params))
+        sess = await self.stack.enter_async_context(ClientSession(read, write))
+        await sess.initialize()
+        self.sessions[name] = sess
+
+    async def add_http(self, name, url, headers=None):
+        read, write, _ = await self.stack.enter_async_context(
+            streamablehttp_client(url, headers=headers or {})
+        )
+        sess = await self.stack.enter_async_context(ClientSession(read, write))
+        await sess.initialize()
+        self.sessions[name] = sess
+
+    async def all_tools(self):
+        tools = []
+        for name, s in self.sessions.items():
+            for t in (await s.list_tools()).tools:
+                tools.append((name, t))
+        return tools
+
+    async def call(self, server, tool, args):
+        return await self.sessions[server].call_tool(tool, args)
+
+    async def aclose(self):
+        await self.stack.aclose()
+</code></pre>
+
+<!-- 18. OPS -->
+<h2 id="ops" class="anchor">18. 调试、可观测与部署</h2>
+<h3>调试工具</h3>
+<ul>
+  <li><b>MCP Inspector</b>（官方 GUI/CLI）：<code>npx @modelcontextprotocol/inspector</code> 或 <code>uv run mcp dev server.py</code>，可视化所有报文，单步调 Tool。</li>
+  <li><b>mitmproxy/HTTP 抓包</b>：Streamable HTTP 用普通 HTTPS 工具就能调。</li>
+  <li><b>stderr 日志</b>：stdio Server 把日志写 stderr，由 Host 转发到 <code>notifications/message</code> 或本地文件。</li>
+</ul>
+
+<h3>可观测三件套</h3>
+<ul>
+  <li><b>Trace</b>：每条 JSON-RPC 加 W3C <code>traceparent</code>（自定义 meta 字段），Server 端继续传播到下游。</li>
+  <li><b>Metric</b>：<code>mcp_tool_call_total{tool=...,status=...}</code>、<code>mcp_tool_call_duration_seconds</code>、<code>mcp_session_active</code>。</li>
+  <li><b>Audit Log</b>：记录 <code>session_id, user_id, tool, arguments(hashed), result_summary</code>，用于事后审计与合规。</li>
+</ul>
+
+<h3>容器化 & 灰度</h3>
+<ul>
+  <li>Server 容器化时<b>不要</b>把 stdio Server 直接对外，应该用 Streamable HTTP；stdio 留给桌面/IDE。</li>
+  <li>Schema/能力变更属于<b>面向模型的 API 变更</b>，按版本灰度，并在 <code>instructions</code> 里写清楚迁移指引。</li>
+</ul>
+
+<!-- 19. PITFALLS -->
+<h2 id="pitfalls" class="anchor">19. 常见坑与最佳实践</h2>
+<table>
+<thead><tr><th>坑</th><th>表现</th><th>对策</th></tr></thead>
+<tbody>
+<tr><td><code>stdout</code> 被 <code>print</code> 污染</td><td>Inspector 一连就报 JSON parse error</td><td>所有日志走 <code>stderr</code> 或 <code>Context.log()</code></td></tr>
+<tr><td>未声明 listChanged 却发了通知</td><td>Host 忽略变更</td><td><code>initialize</code> 时声明 <code>listChanged:true</code></td></tr>
+<tr><td>Tool 抛异常用 JSON-RPC error</td><td>模型看不到错误，无法修复</td><td>用 <code>isError:true + content</code></td></tr>
+<tr><td>HTTP Server 缓冲 SSE</td><td>进度通知一次性到达</td><td>关代理缓冲 / 设置 <code>X-Accel-Buffering: no</code></td></tr>
+<tr><td>Tool 描述过短/含糊</td><td>模型不调或乱调</td><td>description 写"何时使用 / 何时不使用 / 输入边界"</td></tr>
+<tr><td>多 Server 工具重名</td><td>调用走错</td><td>Host 端 <code>server__tool</code> 命名空间</td></tr>
+<tr><td>session 超时不清理</td><td>Redis/内存涨</td><td>设置 idle TTL，DELETE 主动回收</td></tr>
+<tr><td>把内部 token 当成 MCP token</td><td>权限放大</td><td>网关换发短期 token，Server 内只信网关</td></tr>
+<tr><td>把 sampling 当成"免费 LLM"</td><td>Host 拒绝/不给用</td><td>Server 不应依赖 sampling 作为关键路径，做降级</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+<b>给 Tool 写 description 的小模板</b>
+<pre><code>{动词性短语，一句话说清做什么}。
+何时使用：{典型触发场景}。
+何时不使用：{容易误用的反例}。
+输入：{关键约束，特别是 enum/范围}。
+副作用：{读 / 写 / 不可逆，是否需要用户确认}。
+返回：{结构 + 错误形态}。</code></pre>
+</div>
+
+<!-- 20. REFS -->
+<h2 id="refs" class="anchor">20. 参考资料引用清单</h2>
+<p>本文中涉及到的所有外部资料（已逐项核对）：</p>
+<ol>
+  <li>官方主站：<a href="https://modelcontextprotocol.io">https://modelcontextprotocol.io</a></li>
+  <li>架构总览（Architecture overview）：<a href="https://modelcontextprotocol.io/docs/learn/architecture">https://modelcontextprotocol.io/docs/learn/architecture</a></li>
+  <li>当前最新规范（2025-11-25）：<a href="https://modelcontextprotocol.io/specification/2025-11-25">https://modelcontextprotocol.io/specification/2025-11-25</a></li>
+  <li>规范 · 传输层（2025-03-26，Streamable HTTP 首次落地）：<a href="https://modelcontextprotocol.io/specification/2025-03-26/basic/transports">https://modelcontextprotocol.io/specification/2025-03-26/basic/transports</a></li>
+  <li>规范 · 传输层（draft，最新草案）：<a href="https://modelcontextprotocol.io/specification/draft/basic/transports">https://modelcontextprotocol.io/specification/draft/basic/transports</a></li>
+  <li>规范 · 基础概览（draft）：<a href="https://modelcontextprotocol.io/specification/draft/basic">https://modelcontextprotocol.io/specification/draft/basic</a></li>
+  <li>2026-07-28 Release Candidate 公告（说明协议层 stateless 演进）：<a href="https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/">https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/</a></li>
+  <li>Python 官方 SDK：<a href="https://github.com/modelcontextprotocol/python-sdk">https://github.com/modelcontextprotocol/python-sdk</a></li>
+  <li>JSON-RPC 协议在 MCP 中的用法解读（mcpcat）：<a href="https://mcpcat.io/guides/understanding-json-rpc-protocol-mcp/">https://mcpcat.io/guides/understanding-json-rpc-protocol-mcp/</a></li>
+  <li>MCP 协议完整方法参考手册（mcp-find）：<a href="https://mcp-find.org/blog/mcp-protocol-handbook">https://mcp-find.org/blog/mcp-protocol-handbook</a></li>
+  <li>MCP Message Types JSON-RPC 参考（portkey）：<a href="https://portkey.ai/blog/mcp-message-types-complete-json-rpc-reference-guide/">https://portkey.ai/blog/mcp-message-types-complete-json-rpc-reference-guide/</a></li>
+  <li>MCP 实战介绍（INNOQ）：<a href="https://www.innoq.com/en/blog/2025/03/model-context-protocol/">https://www.innoq.com/en/blog/2025/03/model-context-protocol/</a></li>
+  <li>MCP 技术解读（Codilime）：<a href="https://codilime.com/blog/model-context-protocol-explained/">https://codilime.com/blog/model-context-protocol-explained/</a></li>
+  <li>stdio vs Streamable HTTP 选型解读（Kirk Ryan）：<a href="https://kirkryan.co.uk/stdio-vs-streamable-http-choosing-the-right-mcp-transport/">https://kirkryan.co.uk/stdio-vs-streamable-http-choosing-the-right-mcp-transport/</a></li>
+  <li>为什么 MCP 抛弃 SSE 双端点（Auth0）：<a href="https://auth0.com/blog/mcp-streamable-http/">https://auth0.com/blog/mcp-streamable-http/</a></li>
+  <li>MCP 速查表（webfuse）：<a href="https://www.webfuse.com/mcp-cheat-sheet">https://www.webfuse.com/mcp-cheat-sheet</a></li>
+  <li>Cloudflare Agents 传输文档：<a href="https://developers.cloudflare.com/agents/model-context-protocol/transport/">https://developers.cloudflare.com/agents/model-context-protocol/transport/</a></li>
+  <li>社区 MCP Server 开发指南（cyanheads）：<a href="https://github.com/cyanheads/model-context-protocol-resources/blob/main/guides/mcp-server-development-guide.md">https://github.com/cyanheads/model-context-protocol-resources/blob/main/guides/mcp-server-development-guide.md</a></li>
+</ol>
+
+<div class="footer">
+  生成时间：2026-06-30 · 协议基线：MCP 2025-11-25（兼顾 2025-06-18 / 2025-03-26）· 单文件离线可用，可上传到任意静态托管。
+</div>
+
+</main>
+</div>
+</body>
+</html>

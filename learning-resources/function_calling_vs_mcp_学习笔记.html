@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Function Calling 与 MCP 的关系 — 学习笔记</title>
+<style>
+  :root{
+    --bg:#0f1419;
+    --panel:#161b22;
+    --panel-2:#1e242d;
+    --text:#e6edf3;
+    --muted:#8b949e;
+    --accent:#58a6ff;
+    --accent-2:#7ee787;
+    --warn:#f0883e;
+    --danger:#f85149;
+    --border:#30363d;
+    --code-bg:#0d1117;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.75;font-size:16px}
+  .container{max-width:1100px;margin:0 auto;padding:32px 24px 80px}
+  header{border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:28px}
+  h1{font-size:28px;margin:0 0 8px;color:#fff}
+  h2{font-size:22px;margin:42px 0 14px;color:#fff;border-left:4px solid var(--accent);padding-left:12px}
+  h3{font-size:18px;margin:28px 0 10px;color:var(--accent-2)}
+  h4{font-size:16px;margin:18px 0 8px;color:var(--accent)}
+  .meta{color:var(--muted);font-size:14px}
+  .meta a{color:var(--accent);text-decoration:none}
+  .badge{display:inline-block;background:var(--panel-2);color:var(--accent-2);border:1px solid var(--border);border-radius:999px;padding:2px 10px;font-size:12px;margin-right:6px}
+  .toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px 24px}
+  .toc ol{margin:0;padding-left:22px}
+  .toc a{color:var(--accent);text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  .callout{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:6px;padding:14px 18px;margin:16px 0}
+  .callout.warn{border-left-color:var(--warn)}
+  .callout.danger{border-left-color:var(--danger)}
+  .callout.ok{border-left-color:var(--accent-2)}
+  .callout .label{font-weight:bold;color:var(--accent);margin-bottom:4px}
+  .callout.warn .label{color:var(--warn)}
+  .callout.danger .label{color:var(--danger)}
+  .callout.ok .label{color:var(--accent-2)}
+  code{background:var(--code-bg);padding:2px 6px;border-radius:4px;font-family:"SF Mono",Monaco,Consolas,monospace;font-size:14px;color:#ffa657}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:6px;padding:14px 16px;overflow-x:auto;line-height:1.5}
+  pre code{background:none;padding:0;color:#c9d1d9;font-size:13px}
+  .diagram{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;margin:18px 0;text-align:center;overflow-x:auto}
+  .diagram svg{max-width:100%;height:auto}
+  .diagram .caption{color:var(--muted);font-size:13px;margin-top:10px}
+  table{border-collapse:collapse;width:100%;margin:16px 0}
+  th,td{border:1px solid var(--border);padding:10px 12px;text-align:left;font-size:14px}
+  th{background:var(--panel-2);color:var(--accent)}
+  tr:nth-child(even) td{background:var(--panel)}
+  .timeline{display:grid;gap:8px;margin:14px 0}
+  .timeline .item{display:grid;grid-template-columns:80px 1fr;gap:14px;align-items:start;padding:6px 0;border-bottom:1px dashed var(--border)}
+  .timeline .ts{color:var(--accent);font-family:"SF Mono",monospace;font-size:13px}
+  .step{display:flex;gap:12px;align-items:flex-start;margin:10px 0}
+  .step .num{background:var(--accent);color:#000;width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:13px}
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>Function Calling 与 MCP 到底什么关系？</h1>
+  <div class="meta">
+    <span class="badge">UP 主：马克的技术工作坊</span>
+    <span class="badge">视频：BV15YJTzkENC</span>
+    <span class="badge">时长：约 27 分钟</span>
+    <br/>
+    源视频：<a href="https://www.bilibili.com/video/BV15YJTzkENC/" target="_blank">bilibili.com/video/BV15YJTzkENC</a>　
+    示例代码：<a href="https://github.com/MarkTechStation/VideoCode" target="_blank">github.com/MarkTechStation/VideoCode</a>
+  </div>
+</header>
+
+<div class="callout ok">
+  <div class="label">核心结论（One-Liner）</div>
+  Function Calling 与 MCP <strong>不是互相替代</strong>的关系，而是<strong>互补</strong>的关系。它们作用在大模型调用链路的不同环节：Function Calling 作用在<strong>「模型/模型 API ↔ 中间人」</strong>之间，MCP 作用在<strong>「中间人 ↔ 外部函数」</strong>之间。两者可以在同一个链路中同时存在。
+</div>
+
+<div class="toc">
+  <strong>目录</strong>
+  <ol>
+    <li><a href="#s1">为什么做这期视频：常见误区</a></li>
+    <li><a href="#s2">什么是 Function Calling</a></li>
+    <li><a href="#s3">完整链路分析：ChatGPT 查天气的故事</a></li>
+    <li><a href="#s4">Function Calling 到底作用在哪一段？</a></li>
+    <li><a href="#s5">Function Calling 协议细节（请求/返回字段）</a></li>
+    <li><a href="#s6">案例代码：MarkChat 五步法</a></li>
+    <li><a href="#s7">MCP 与 Function Calling 在链路中的位置</a></li>
+    <li><a href="#s8">同链路同时使用 Function Calling + MCP</a></li>
+    <li><a href="#s9">总结与判定标准</a></li>
+  </ol>
+</div>
+
+<h2 id="s1">1. 为什么做这期视频：常见误区</h2>
+<p>
+自 Anthropic 推出 MCP 之后，网络上最流行的一种说法是：
+</p>
+<div class="callout danger">
+  <div class="label">流传最广的错误说法</div>
+  「MCP 统一了 Function Calling 的协议，有了 MCP 之后，Function Calling 就没有存在的必要了。」
+</div>
+<p>
+看上去很合理 —— 「两者都是调用工具，MCP 更标准，所以替代 Function Calling」。但 UP 主认为：这种类比是错的。两者作用的链路环节根本不同，未来很长时间都将<strong>同时存在、各自发挥价值</strong>。</p>
+
+<h2 id="s2">2. 什么是 Function Calling</h2>
+
+<h3>2.1 起点：模型的知识有边界</h3>
+<p>模型训练完成后，知识库就「定格」了。超出训练截止时间或私有领域的问题，模型要么回答「不知道」，要么「胡言乱语」（幻觉）。比如问：「<em>纽约明天的天气怎么样？</em>」—— 模型自己无法回答。</p>
+
+<h3>2.2 定义</h3>
+<div class="callout">
+  <div class="label">Function Calling 的定义</div>
+  Function Calling 是<strong>模型与外部工具交互的一种能力</strong>。具体说：模型能<u>从候选工具列表中挑选要调的工具</u>、<u>给出调用参数</u>、并能<u>解析工具的执行结果</u>来给出最终答案。
+</div>
+<p>注：「工具」这种说法比较抽象，本质上就是<strong>编程语言里的函数</strong>。比如查天气可能对应 <code>get_forecast(lat, lng)</code> 函数。所以 "Function Calling = 函数调用 = 使用工具"。</p>
+
+<h3>2.3 模型自己不能真的调函数</h3>
+<p>注意一个常被忽略的点：</p>
+<div class="callout warn">
+  <div class="label">关键认知</div>
+  模型本身<strong>没有执行能力</strong>。它只能<u>「输出一段表示想调用某工具」的文本结构</u>，真正去调用函数的是<strong>中间人</strong>（比如 OpenAI 服务器、或你自己写的应用后端）。
+</div>
+
+<h2 id="s3">3. 完整链路分析：ChatGPT 查天气的故事</h2>
+
+<p>以「<strong>纽约明天的天气怎么样</strong>」这个问题为例，假设 ChatGPT 内部用 Function Calling 实现搜索（实际未必，仅为讲解链路），整个链路涉及<strong>四个角色</strong>：</p>
+
+<div class="diagram">
+<svg viewBox="0 0 980 540" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7ee787"/>
+    </marker>
+  </defs>
+  <style>
+    .box{fill:#1e242d;stroke:#30363d;stroke-width:1.5}
+    .lbl{fill:#e6edf3;font:14px -apple-system,sans-serif;text-anchor:middle}
+    .sub{fill:#8b949e;font:11px -apple-system,sans-serif;text-anchor:middle}
+    .step{fill:#ffa657;font:12px -apple-system,sans-serif;text-anchor:middle}
+    .line{stroke:#58a6ff;stroke-width:2;fill:none}
+    .ret{stroke:#7ee787;stroke-width:2;fill:none;stroke-dasharray:6 4}
+  </style>
+
+  <rect class="box" x="20"  y="220" width="140" height="80" rx="8"/>
+  <text class="lbl" x="90" y="255">用户</text>
+  <text class="sub" x="90" y="275">User</text>
+
+  <rect class="box" x="220" y="220" width="160" height="80" rx="8"/>
+  <text class="lbl" x="300" y="248">ChatGPT 应用</text>
+  <text class="sub" x="300" y="268">含 OpenAI 服务器</text>
+  <text class="sub" x="300" y="284">＋ 网络搜索函数</text>
+
+  <rect class="box" x="440" y="60"  width="180" height="80" rx="8" stroke="#f0883e"/>
+  <text class="lbl" x="530" y="90">OpenAI 服务器</text>
+  <text class="sub" x="530" y="110">中间人 / 编排者</text>
+
+  <rect class="box" x="700" y="60"  width="220" height="80" rx="8"/>
+  <text class="lbl" x="810" y="88">GPT-4o 模型 API</text>
+  <text class="sub" x="810" y="108">→ 内部转换 → 真实模型</text>
+
+  <rect class="box" x="700" y="380" width="220" height="80" rx="8"/>
+  <text class="lbl" x="810" y="408">网络搜索函数</text>
+  <text class="sub" x="810" y="428">search(query) → 结果</text>
+
+  <path class="line"  d="M160,260 L220,260" marker-end="url(#arr)"/>
+  <text class="step" x="190" y="252">①问题</text>
+
+  <path class="line"  d="M300,220 C300,180 440,140 530,140" marker-end="url(#arr)"/>
+  <text class="step" x="380" y="170">②转发问题+tools</text>
+
+  <path class="line"  d="M620,90 L700,90" marker-end="url(#arr)"/>
+  <text class="step" x="660" y="78">③</text>
+
+  <path class="ret"  d="M700,110 L620,110" marker-end="url(#arrG)"/>
+  <text class="step" x="660" y="128">④tool_calls</text>
+
+  <path class="line"  d="M530,140 C530,260 700,380 760,380" marker-end="url(#arr)"/>
+  <text class="step" x="600" y="280">⑤调用搜索函数</text>
+
+  <path class="ret"  d="M760,420 C600,420 530,260 530,180" marker-end="url(#arrG)"/>
+  <text class="step" x="600" y="430">⑥搜索结果</text>
+
+  <path class="line"  d="M620,80 L700,80" stroke="#7ee787" stroke-dasharray="6 4" marker-end="url(#arrG)" transform="translate(0,-20)"/>
+  <text class="step" x="660" y="40">⑦把结果再喂给模型</text>
+
+  <path class="ret"  d="M700,70 L620,70" marker-end="url(#arrG)" transform="translate(0,-25)"/>
+  <text class="step" x="660" y="18">⑧最终答案</text>
+
+  <path class="ret"  d="M530,140 C530,200 300,200 300,220" marker-end="url(#arrG)"/>
+  <text class="step" x="400" y="195">⑨返回应用</text>
+
+  <path class="ret"  d="M220,280 L160,280" marker-end="url(#arrG)"/>
+  <text class="step" x="190" y="298">⑩答案</text>
+
+  <rect x="20" y="430" width="380" height="90" rx="6" fill="#0d1117" stroke="#30363d"/>
+  <text x="30" y="455" fill="#e6edf3" font-size="13" font-weight="bold">图例</text>
+  <line x1="30" y1="470" x2="80" y2="470" stroke="#58a6ff" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="90" y="475" fill="#8b949e" font-size="12">请求方向</text>
+  <line x1="180" y1="470" x2="230" y2="470" stroke="#7ee787" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrG)"/>
+  <text x="240" y="475" fill="#8b949e" font-size="12">返回方向</text>
+  <text x="30" y="500" fill="#8b949e" font-size="12">「ChatGPT 应用」内部进一步拆为：</text>
+  <text x="30" y="515" fill="#8b949e" font-size="12">OpenAI 服务器 + GPT-4o 模型 API + 网络搜索函数</text>
+</svg>
+<div class="caption">图 1：以 ChatGPT 查天气为例的端到端上下游交互链路</div>
+</div>
+
+<h3>3.1 整链路十步</h3>
+<div class="timeline">
+  <div class="item"><span class="ts">①</span><div>用户向 ChatGPT 应用发问：「纽约明天的天气怎么样」。</div></div>
+  <div class="item"><span class="ts">②</span><div>ChatGPT 应用把<strong>用户问题 + 可用工具列表</strong>（如 search）一起发送给 OpenAI 服务器 → GPT-4o 模型 API。</div></div>
+  <div class="item"><span class="ts">③④</span><div>模型评估：「自己不知道，需要 search 工具」，返回一个 <code>tool_calls</code>（包含工具名 + 参数），<strong>而不是真的去执行</strong>。</div></div>
+  <div class="item"><span class="ts">⑤⑥</span><div>OpenAI 服务器（中间人）拿到 <code>tool_calls</code>，<strong>真正去调用</strong>网络搜索函数，拿到结果。</div></div>
+  <div class="item"><span class="ts">⑦⑧</span><div>中间人把<u>工具结果</u>再次喂给模型，模型基于结果做自然语言总结，返回最终答案。</div></div>
+  <div class="item"><span class="ts">⑨⑩</span><div>OpenAI 服务器把最终答案返回给 ChatGPT 应用 → 展示给用户。</div></div>
+</div>
+
+<h2 id="s4">4. Function Calling 到底作用在哪一段？</h2>
+
+<p>很多人的第一直觉是：「Function Calling 翻译过来就是函数调用，那它一定发生在第 ⑤ 步『真的去调函数』那里」—— <strong>这是最常见的错误</strong>。</p>
+
+<div class="callout warn">
+  <div class="label">名字的误导性</div>
+  Function Calling 名字虽然带「Calling」，但它<strong>并没有规定函数到底如何被调用</strong>。它规定的是：模型如何接收<em>工具列表描述</em>、如何返回<em>想调用哪个工具及参数</em>、如何接收<em>工具的执行结果</em>。
+</div>
+
+<h3>4.1 进一步拆分模型层</h3>
+<p>「GPT-4o 模型」这个表述并不准确。OpenAI 服务器调用的<strong>不是模型本身</strong>，而是<strong>模型 API（HTTP 接口）</strong>。API 内部还做一次「参数格式 → 模型可接受的输入」的转换。所以严格来说：</p>
+<ul>
+  <li><strong>狭义</strong>：Function Calling 作用在「<u>模型 API ↔ 真实模型</u>」之间。</li>
+  <li><strong>广义（常用）</strong>：作用在「<u>中间人（应用后端）↔ 模型 API</u>」之间 —— 这是开发者真正打交道的层级。</li>
+</ul>
+
+<div class="diagram">
+<svg viewBox="0 0 980 320" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+    </marker>
+  </defs>
+  <style>
+    .box2{fill:#1e242d;stroke:#30363d;stroke-width:1.5}
+    .lbl2{fill:#e6edf3;font:14px -apple-system,sans-serif;text-anchor:middle}
+    .sub2{fill:#8b949e;font:11px -apple-system,sans-serif;text-anchor:middle}
+    .arrow{stroke:#58a6ff;stroke-width:2;fill:none}
+    .scope-blue{stroke:#58a6ff;stroke-width:3;stroke-dasharray:6 4;fill:none}
+    .scope-orange{stroke:#f0883e;stroke-width:3;stroke-dasharray:6 4;fill:none}
+  </style>
+
+  <rect class="box2" x="30"  y="120" width="150" height="70" rx="8"/>
+  <text class="lbl2" x="105" y="150">应用 / 中间人</text>
+  <text class="sub2" x="105" y="170">OpenAI Server / Backend</text>
+
+  <rect class="box2" x="240" y="120" width="150" height="70" rx="8"/>
+  <text class="lbl2" x="315" y="150">模型 API</text>
+  <text class="sub2" x="315" y="170">HTTP 接口</text>
+
+  <rect class="box2" x="450" y="120" width="150" height="70" rx="8"/>
+  <text class="lbl2" x="525" y="150">真实模型</text>
+  <text class="sub2" x="525" y="170">GPT-4o 权重</text>
+
+  <rect class="box2" x="660" y="120" width="140" height="70" rx="8"/>
+  <text class="lbl2" x="730" y="150">函数 / 工具</text>
+  <text class="sub2" x="730" y="170">search(...)</text>
+
+  <line class="arrow" x1="180" y1="155" x2="240" y2="155" marker-end="url(#arr2)"/>
+  <line class="arrow" x1="390" y1="155" x2="450" y2="155" marker-end="url(#arr2)"/>
+  <line class="arrow" x1="600" y1="155" x2="660" y2="155" marker-end="url(#arr2)"/>
+
+  <rect class="scope-blue" x="20" y="100" width="380" height="110" rx="10"/>
+  <text x="210" y="240" fill="#58a6ff" font-size="14" font-weight="bold" text-anchor="middle">Function Calling 作用范围（广义）</text>
+
+  <rect class="scope-orange" x="230" y="90" width="380" height="130" rx="10"/>
+  <text x="420" y="80" fill="#f0883e" font-size="14" font-weight="bold" text-anchor="middle">Function Calling 作用范围（狭义：API ↔ 真实模型）</text>
+
+  <text x="730" y="240" fill="#8b949e" font-size="12" text-anchor="middle">⇠ 这里 FC 不规定怎么调</text>
+</svg>
+<div class="caption">图 2：Function Calling 的真正作用环节（不在「中间人 ↔ 函数」这一段）</div>
+</div>
+
+<h3>4.2 一句话判定：模型是否具备 Function Calling 能力</h3>
+<div class="callout ok">
+  <div class="label">判定标准</div>
+  如果一个模型 / 模型 API 能做到下面三件事，就具备 Function Calling 能力：
+  <ol>
+    <li>能解析请求参数中的<strong>工具列表（tools）字段</strong>；</li>
+    <li>能从中<strong>挑选出</strong>要调用的工具名称及参数；</li>
+    <li>能<strong>解析工具的执行结果</strong>并生成最终答案。</li>
+  </ol>
+</div>
+
+<h2 id="s5">5. Function Calling 协议细节</h2>
+<p>UP 主写了一个最小演示应用 <code>MarkChat</code>，把模型 API 的请求/返回都打到日志里，便于观察协议字段。</p>
+
+<h3>5.1 第一次请求模型 API（带工具列表）</h3>
+<pre><code>{
+  "model": "gpt-4o",
+  "stream": false,
+  "messages": [
+    { "role": "user", "content": "纽约明天的天气怎么样" }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search",
+        "description": "在网络上搜索内容",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": { "type": "string", "description": "需要搜索的内容" }
+          },
+          "required": ["query"]
+        }
+      }
+    }
+  ]
+}</code></pre>
+<ul>
+  <li><code>model</code>：使用的模型名。</li>
+  <li><code>messages</code>：历史消息列表（首次请求里只有用户问题）。</li>
+  <li><code>tools</code>：候选工具列表，<strong>每个工具的入参用 JSON Schema 描述</strong>。</li>
+  <li><code>stream</code>：是否流式返回，演示场景设为 false 便于观察。</li>
+</ul>
+
+<div class="callout">
+  <div class="label">关于 JSON Schema</div>
+  JSON Schema 是「对另一段 JSON 结构的描述」。上面的 schema 表示：参数必须是对象，必须包含一个字符串字段 <code>query</code>。下列两段 JSON 都满足该 schema：
+  <pre style="margin-top:8px"><code>{ "query": "weather in NY tomorrow" }
+{ "query": "纽约明天天气" }</code></pre>
+</div>
+
+<h3>5.2 模型 API 第一次返回（tool_calls）</h3>
+<pre><code>{
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_abc123",
+            "type": "function",
+            "function": {
+              "name": "search",
+              "arguments": "{\"query\":\"纽约明天的天气\"}"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}</code></pre>
+<p>关键是 <code>tool_calls</code>：模型表达「我想调 <code>search</code> 工具，参数是这个」。<strong>模型本身不执行</strong>，由 MarkChat（中间人）去执行。</p>
+
+<h3>5.3 第二次请求模型 API（带工具执行结果）</h3>
+<pre><code>{
+  "model": "gpt-4o",
+  "messages": [
+    { "role": "user", "content": "纽约明天的天气怎么样" },
+    {
+      "role": "assistant",
+      "tool_calls": [ { "id": "call_abc123", "type": "function",
+                        "function": { "name": "search",
+                                      "arguments": "{\"query\":\"纽约明天的天气\"}" } } ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_abc123",
+      "content": "纽约明天晴，气温 18~26℃，微风。"
+    }
+  ],
+  "tools": [ /* 同上 */ ]
+}</code></pre>
+
+<h3>5.4 模型 API 第二次返回（最终答案）</h3>
+<pre><code>{
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "纽约明天天气晴朗，气温大约在 18~26℃，会有微风，整体很舒适。"
+      }
+    }
+  ]
+}</code></pre>
+
+<h2 id="s6">6. 案例代码：MarkChat 的五步法</h2>
+<p>核心函数是 <code>process_user_query()</code>，逻辑可以浓缩为 <strong>5 步</strong>：</p>
+
+<div class="step"><div class="num">1</div><div><strong>调用模型 API（首次）</strong> —— 把 <code>self.history</code> + <code>tools</code> 一起发给模型。</div></div>
+<div class="step"><div class="num">2</div><div><strong>提取工具名称和参数</strong> —— 从 <code>tool_calls</code> 中解析。</div></div>
+<div class="step"><div class="num">3</div><div><strong>真正调用工具</strong> —— 由本地的 <code>self.execute_tool()</code> 完成（HTTP / SDK / 子进程都行）。</div></div>
+<div class="step"><div class="num">4</div><div><strong>再次调用模型 API</strong> —— 把工具结果塞进 <code>messages</code>，让模型基于结果生成回答。</div></div>
+<div class="step"><div class="num">5</div><div><strong>返回最终答案</strong> —— 抽取 <code>content</code> 字段，附加进历史，输出给用户。</div></div>
+
+<pre><code class="language-python"># 简化版伪代码（MarkChat/backend.py 的核心思路）
+def process_user_query(self, query: str):
+    self.history.append({"role": "user", "content": query})
+
+    # ① 首次调用模型 API
+    first_resp = self.call_model(self.history, tools=self.tools)
+    message = first_resp["choices"][0]["message"]
+    self.history.append(message)
+
+    if "tool_calls" in message and message["tool_calls"]:
+        # ② 提取工具调用
+        call = message["tool_calls"][0]
+        tool_name  = call["function"]["name"]
+        tool_args  = json.loads(call["function"]["arguments"])
+
+        # ③ 真正执行工具
+        tool_result = self.execute_tool(tool_name, tool_args)
+        self.history.append({
+            "role": "tool",
+            "tool_call_id": call["id"],
+            "content": tool_result
+        })
+
+        # ④ 第二次调用模型 API（带工具结果）
+        second_resp = self.call_model_after_tool_execution(self.history, tools=self.tools)
+        final_message = second_resp["choices"][0]["message"]
+        self.history.append(final_message)
+
+        # ⑤ 返回最终答案
+        return final_message["content"]
+    else:
+        return message["content"]</code></pre>
+
+<div class="callout">
+  <div class="label">为什么要维护 self.history？</div>
+  模型<strong>本身没有记忆</strong>。要让它「知道之前发生了什么」（比如知道刚刚选了什么工具、工具返回了什么），必须把这些信息<u>显式塞回 messages</u> 一起发回去。
+</div>
+
+<h2 id="s7">7. MCP 与 Function Calling 在链路中的位置</h2>
+
+<p>回到链路图。MCP 是「函数的发现与调用协议」，它规定的是：</p>
+<ul>
+  <li>中间人（client）如何<strong>发现</strong>外部有哪些函数；</li>
+  <li>中间人如何<strong>调用</strong>这些函数；</li>
+  <li>函数提供方（server）如何<strong>声明</strong>自己提供的能力。</li>
+</ul>
+
+<p>所以 MCP 完全作用在<strong>「中间人 ↔ 外部函数」</strong>这一段，<u>跟模型没有直接关系</u>。</p>
+
+<div class="diagram">
+<svg viewBox="0 0 980 280" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+    </marker>
+  </defs>
+  <style>
+    .b{fill:#1e242d;stroke:#30363d;stroke-width:1.5}
+    .l{fill:#e6edf3;font:14px -apple-system,sans-serif;text-anchor:middle}
+    .s{fill:#8b949e;font:11px -apple-system,sans-serif;text-anchor:middle}
+    .a{stroke:#58a6ff;stroke-width:2;fill:none}
+    .fc{stroke:#58a6ff;stroke-width:3;stroke-dasharray:6 4;fill:none}
+    .mcp{stroke:#7ee787;stroke-width:3;stroke-dasharray:6 4;fill:none}
+  </style>
+
+  <rect class="b" x="40"  y="110" width="160" height="70" rx="8"/>
+  <text class="l" x="120" y="140">模型 / 模型 API</text>
+  <text class="s" x="120" y="160">挑选工具、解析结果</text>
+
+  <rect class="b" x="270" y="110" width="180" height="70" rx="8"/>
+  <text class="l" x="360" y="140">中间人（应用后端）</text>
+  <text class="s" x="360" y="160">MCP Client / Server 编排</text>
+
+  <rect class="b" x="520" y="110" width="160" height="70" rx="8"/>
+  <text class="l" x="600" y="140">MCP Server</text>
+  <text class="s" x="600" y="160">声明并提供工具</text>
+
+  <rect class="b" x="750" y="110" width="180" height="70" rx="8"/>
+  <text class="l" x="840" y="140">真正的外部能力</text>
+  <text class="s" x="840" y="160">API / DB / 文件 / Shell</text>
+
+  <line class="a" x1="200" y1="145" x2="270" y2="145" marker-end="url(#arr3)"/>
+  <line class="a" x1="450" y1="145" x2="520" y2="145" marker-end="url(#arr3)"/>
+  <line class="a" x1="680" y1="145" x2="750" y2="145" marker-end="url(#arr3)"/>
+
+  <rect class="fc"  x="30"  y="95"  width="430" height="100" rx="10"/>
+  <text x="245" y="220" fill="#58a6ff" font-weight="bold" font-size="14" text-anchor="middle">Function Calling 范围（模型 ↔ 中间人）</text>
+
+  <rect class="mcp" x="260" y="90"  width="430" height="110" rx="10"/>
+  <text x="475" y="240" fill="#7ee787" font-weight="bold" font-size="14" text-anchor="middle">MCP 范围（中间人 ↔ 外部函数）</text>
+
+  <text x="475" y="265" fill="#8b949e" font-size="12" text-anchor="middle">两段重叠的「中间人」就是把 FC 协议与 MCP 协议「翻译/桥接」起来的地方</text>
+</svg>
+<div class="caption">图 3：Function Calling 与 MCP 在同一条链路中分工示意</div>
+</div>
+
+<h3>对比一览表</h3>
+<table>
+  <thead>
+    <tr><th>维度</th><th>Function Calling</th><th>MCP</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>所处环节</td><td>模型/模型 API ↔ 中间人</td><td>中间人 ↔ 外部函数（工具提供方）</td></tr>
+    <tr><td>解决的核心问题</td><td>让模型「会选工具、能解析结果」</td><td>让工具「能被标准化地发现与调用」</td></tr>
+    <tr><td>谁负责实现</td><td>大模型厂商（OpenAI、Anthropic 等）</td><td>工具的提供方（MCP Server）+ 调用方（MCP Client）</td></tr>
+    <tr><td>是否规定工具实现细节</td><td>否（不管你怎么实现 search）</td><td>是（规定 server / client / 协议）</td></tr>
+    <tr><td>是否互相替代</td><td colspan="2" style="text-align:center;color:var(--accent-2)">❌ 否 —— 互补，可同链路共存</td></tr>
+  </tbody>
+</table>
+
+<h2 id="s8">8. 同链路同时使用 Function Calling + MCP</h2>
+
+<p>UP 主在 MarkChat 中演示了同时使用两种技术的改造方式：<strong>只需要替换 <code>execute_tool</code> 函数</strong>。原来的 <code>execute_tool</code> 返回的是写死的假数据，改用 <code>execute_tool_with_mcp</code> 后，内部会：</p>
+<ol>
+  <li>启动一个 MCP Client；</li>
+  <li>连接项目中事先准备好的 MCP Server；</li>
+  <li>通过 MCP 协议调用 Server 暴露的工具；</li>
+  <li>把结果返回给上层。</li>
+</ol>
+
+<pre><code class="language-python"># 改造点：只换工具执行这一步，前后流程完全不动
+- tool_result = self.execute_tool(tool_name, tool_args)
++ tool_result = self.execute_tool_with_mcp(tool_name, tool_args)</code></pre>
+
+<div class="diagram">
+<svg viewBox="0 0 980 360" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+    </marker>
+    <marker id="arrM2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7ee787"/>
+    </marker>
+  </defs>
+  <style>
+    .B{fill:#1e242d;stroke:#30363d;stroke-width:1.5}
+    .L{fill:#e6edf3;font:13px -apple-system,sans-serif;text-anchor:middle}
+    .S{fill:#8b949e;font:11px -apple-system,sans-serif;text-anchor:middle}
+    .A{stroke:#58a6ff;stroke-width:2;fill:none}
+    .R{stroke:#7ee787;stroke-width:2;fill:none;stroke-dasharray:6 4}
+    .T{fill:#ffa657;font:11px;text-anchor:middle}
+  </style>
+
+  <rect class="B" x="40"  y="160" width="120" height="60" rx="8"/>
+  <text class="L" x="100" y="185">用户</text>
+  <text class="S" x="100" y="205">User</text>
+
+  <rect class="B" x="200" y="40"  width="200" height="320" rx="8" stroke="#58a6ff"/>
+  <text class="L" x="300" y="60" font-weight="bold">MarkChat（中间人）</text>
+
+  <rect class="B" x="220" y="80"  width="160" height="50" rx="6"/>
+  <text class="L" x="300" y="110">process_user_query</text>
+
+  <rect class="B" x="220" y="150" width="160" height="50" rx="6"/>
+  <text class="L" x="300" y="180">call_model（FC）</text>
+
+  <rect class="B" x="220" y="220" width="160" height="50" rx="6"/>
+  <text class="L" x="300" y="247">execute_tool_with_mcp</text>
+
+  <rect class="B" x="220" y="290" width="160" height="50" rx="6"/>
+  <text class="L" x="300" y="317">call_model_after_tool</text>
+
+  <rect class="B" x="450" y="80"  width="180" height="60" rx="8"/>
+  <text class="L" x="540" y="105">模型 API</text>
+  <text class="S" x="540" y="125">OpenRouter / OpenAI</text>
+
+  <rect class="B" x="450" y="220" width="180" height="60" rx="8"/>
+  <text class="L" x="540" y="245">MCP Client</text>
+  <text class="S" x="540" y="265">在 MarkChat 进程内</text>
+
+  <rect class="B" x="690" y="220" width="160" height="60" rx="8" stroke="#7ee787"/>
+  <text class="L" x="770" y="245">MCP Server</text>
+  <text class="S" x="770" y="265">本地脚本</text>
+
+  <rect class="B" x="690" y="320" width="160" height="40" rx="6"/>
+  <text class="L" x="770" y="345" font-size="12">真实数据源 / 接口</text>
+
+  <line class="A" x1="160" y1="190" x2="200" y2="190" marker-end="url(#arrM)"/>
+  <line class="A" x1="380" y1="175" x2="450" y2="110" marker-end="url(#arrM)"/>
+  <line class="R" x1="450" y1="120" x2="380" y2="180" marker-end="url(#arrM2)"/>
+  <text class="T" x="420" y="155">FC：tools / tool_calls</text>
+
+  <line class="A" x1="380" y1="245" x2="450" y2="245" marker-end="url(#arrM)"/>
+  <text class="T" x="415" y="237">调 MCP</text>
+
+  <line class="A" x1="630" y1="245" x2="690" y2="245" marker-end="url(#arrM2)"/>
+  <text class="T" x="660" y="237">MCP 协议</text>
+
+  <line class="A" x1="770" y1="280" x2="770" y2="320" marker-end="url(#arrM)"/>
+
+  <line class="A" x1="380" y1="315" x2="450" y2="140" marker-end="url(#arrM)"/>
+  <text class="T" x="430" y="305">把工具结果回传模型</text>
+
+  <line class="R" x1="200" y1="200" x2="160" y2="200" marker-end="url(#arrM2)"/>
+</svg>
+<div class="caption">图 4：MarkChat 中 Function Calling + MCP 共存的上下游交互</div>
+</div>
+
+<div class="callout ok">
+  <div class="label">结论性观察</div>
+  改造后：
+  <ul>
+    <li>模型那一段仍然走 <strong>Function Calling 协议</strong>（接收 tools、返回 tool_calls）。</li>
+    <li>工具执行那一段切换为 <strong>MCP 协议</strong>（client 连 server）。</li>
+    <li>两套协议彼此独立、各管一段、互不干扰。</li>
+  </ul>
+</div>
+
+<h2 id="s9">9. 总结与判定标准</h2>
+
+<h3>9.1 一图记忆</h3>
+<table>
+  <thead><tr><th></th><th>Function Calling</th><th>MCP</th></tr></thead>
+  <tbody>
+    <tr><td>定位</td><td>模型「会用工具」的<em>能力</em></td><td>工具「被标准化调用」的<em>协议</em></td></tr>
+    <tr><td>规定什么</td><td>tools 字段格式、tool_calls 返回格式、工具结果回传格式</td><td>工具发现、工具调用、传输方式（stdio / SSE / HTTP）</td></tr>
+    <tr><td>不规定什么</td><td>工具内部如何实现</td><td>模型如何挑选工具</td></tr>
+    <tr><td>实现者</td><td>大模型厂商</td><td>任意工具提供方</td></tr>
+  </tbody>
+</table>
+
+<h3>9.2 Function Calling 的最终判定</h3>
+<div class="callout">
+  当一个<strong>模型 / 模型 API</strong>能够：
+  <ol>
+    <li>解析请求中的 <code>tools</code> 字段；</li>
+    <li>从中挑选出要调用的工具名 + 参数；</li>
+    <li>解析工具的执行结果并据此回答；</li>
+  </ol>
+  <strong>就称它具备 Function Calling 能力。</strong>
+</div>
+
+<h3>9.3 实战 Checklist</h3>
+<ul>
+  <li>✅ 设计链路时先想清楚：<em>哪一段是「让模型选工具」，哪一段是「真的去执行工具」</em>。</li>
+  <li>✅ 「让模型选工具」 → 用 Function Calling 协议（tools + tool_calls）。</li>
+  <li>✅ 「真的去执行工具」 → 内部直接写函数 / 调 HTTP / 调 SDK / <strong>或用 MCP 协议</strong>。</li>
+  <li>✅ 维护好 <code>messages / history</code>，模型没有记忆，必须靠你回喂。</li>
+  <li>✅ 把模型 API 的输入输出落盘成日志，是搞懂协议的最有效手段。</li>
+</ul>
+
+<footer>
+  学习笔记基于 <a href="https://www.bilibili.com/video/BV15YJTzkENC/" target="_blank" style="color:var(--accent)">B 站「马克的技术工作坊」原视频</a> 整理。
+  代码示例参考：<a href="https://github.com/MarkTechStation/VideoCode" target="_blank" style="color:var(--accent)">MarkTechStation/VideoCode</a>。
+</footer>
+
+</div>
+</body>
+</html>
