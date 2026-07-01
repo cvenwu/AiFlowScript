@@ -15,7 +15,7 @@ def test_help_runs():
 
 
 import json
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 sys.path.insert(0, str(SCRIPT.parent))
 import bili_summarize as bs  # noqa: E402
