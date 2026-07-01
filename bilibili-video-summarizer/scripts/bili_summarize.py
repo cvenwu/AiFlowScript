@@ -6,12 +6,57 @@
     fetch --url --outdir   拉取视频信息、字幕/转录、关键帧并输出 JSON
 """
 
+from __future__ import annotations
+
 import argparse
+import json
+import os
 import sys
+
+import requests
+
+
+NAV_URL = "https://api.bilibili.com/x/web-interface/nav"
+
+
+def validate_cookie(cookie, session=None):
+    if not cookie:
+        return {"valid": False, "reason": "not_set"}
+    if "SESSDATA=" not in cookie:
+        return {"valid": False, "reason": "invalid"}
+
+    sess = session or requests.Session()
+    headers = {
+        "Cookie": cookie,
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        ),
+        "Referer": "https://www.bilibili.com",
+    }
+    try:
+        resp = sess.get(NAV_URL, headers=headers, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception:
+        return {"valid": False, "reason": "invalid"}
+
+    payload = data.get("data") or {}
+    if data.get("code") == 0 and payload.get("isLogin"):
+        return {
+            "valid": True,
+            "uname": payload.get("uname", ""),
+            "mid": payload.get("mid", 0),
+        }
+    return {"valid": False, "reason": "invalid"}
 
 
 def cmd_check(_args: argparse.Namespace) -> int:
-    raise NotImplementedError
+    cookie = os.environ.get("BILIBILI_COOKIE")
+    result = validate_cookie(cookie)
+    print(json.dumps(result, ensure_ascii=False))
+    return 0 if result.get("valid") else 1
 
 
 def cmd_fetch(_args: argparse.Namespace) -> int:
