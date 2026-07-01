@@ -243,7 +243,7 @@ def cmd_fetch(args):
     frames_dir = workdir / "frames"
 
     segments = fetch_subtitle(bvid, info["cid"], cookie)
-    subtitle_source = "bilibili_cc" if segments else "whisper"
+    subtitle_source = "whisper" if segments is None else "bilibili_cc"
 
     video_path = download_video(args.url, workdir, cookie)
 
