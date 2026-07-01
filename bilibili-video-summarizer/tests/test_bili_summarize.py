@@ -87,3 +87,33 @@ def test_fetch_video_info():
         "duration_sec": 615,
         "cid": 987654321,
     }
+
+
+def test_fetch_subtitle_present():
+    session = MagicMock()
+
+    player_resp = MagicMock()
+    player_resp.json.return_value = _fixture("player_with_subtitle.json")
+    player_resp.raise_for_status = MagicMock()
+
+    sub_resp = MagicMock()
+    sub_resp.json.return_value = _fixture("subtitle_sample.json")
+    sub_resp.raise_for_status = MagicMock()
+
+    session.get.side_effect = [player_resp, sub_resp]
+
+    segments = bs.fetch_subtitle("BV1", 1, "SESSDATA=x", session=session)
+    assert segments == [
+        {"start": 0.5, "text": "大家好"},
+        {"start": 3.2, "text": "今天我们讲解一个新话题"},
+    ]
+
+
+def test_fetch_subtitle_none():
+    session = MagicMock()
+    resp = MagicMock()
+    resp.json.return_value = _fixture("player_no_subtitle.json")
+    resp.raise_for_status = MagicMock()
+    session.get.return_value = resp
+
+    assert bs.fetch_subtitle("BV1", 1, "SESSDATA=x", session=session) is None
