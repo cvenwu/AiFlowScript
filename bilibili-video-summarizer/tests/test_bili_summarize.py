@@ -188,3 +188,74 @@ def test_transcribe_with_whisper(tmp_path):
         {"start": 3.4, "text": "世界"},
     ]
     fake_loader.assert_called_once_with("base")
+
+
+def test_sanitize_dirname():
+    assert bs.sanitize_dirname("A/B:C?<D>|E") == "A_B_C__D__E"
+    assert bs.sanitize_dirname("  标题  ") == "标题"
+
+
+def test_cmd_fetch_end_to_end(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("BILIBILI_COOKIE", "SESSDATA=abc; bili_jct=x")
+
+    monkeypatch.setattr(bs, "validate_cookie", lambda c, session=None: {"valid": True, "uname": "u", "mid": 1})
+    monkeypatch.setattr(bs, "parse_bvid", lambda url: "BV1xx411c7mD")
+    monkeypatch.setattr(bs, "fetch_video_info", lambda bvid, cookie, session=None: {
+        "title": "示例标题", "author": "UP", "duration_sec": 300, "cid": 1,
+    })
+    monkeypatch.setattr(bs, "fetch_subtitle", lambda bvid, cid, cookie, session=None: [
+        {"start": 0.0, "text": "开场"}, {"start": 10.0, "text": "内容"},
+    ])
+    def fake_download(url, workdir, cookie, **kw):
+        (Path(workdir) / "source.mp4").write_bytes(b"x")
+        return Path(workdir) / "source.mp4"
+    monkeypatch.setattr(bs, "download_video", fake_download)
+    def fake_frames(video, frames_dir, duration_sec, **kw):
+        Path(frames_dir).mkdir(parents=True, exist_ok=True)
+        return [{"time": 5.0, "path": "frames/frame_0005.jpg"}]
+    monkeypatch.setattr(bs, "extract_key_frames", fake_frames)
+
+    ns = argparse.Namespace(
+        url="https://www.bilibili.com/video/BV1xx411c7mD",
+        outdir=str(tmp_path), keep_video=False,
+    )
+    code = bs.cmd_fetch(ns)
+    assert code == 0
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["title"] == "示例标题"
+    assert payload["subtitle_source"] == "bilibili_cc"
+    assert payload["segments"][0] == {"start": 0.0, "text": "开场"}
+    assert payload["frames"] == [{"time": 5.0, "path": "frames/frame_0005.jpg"}]
+    assert Path(payload["workdir"]).name == "示例标题"
+    assert not (Path(payload["workdir"]) / "source.mp4").exists()
+
+
+def test_cmd_fetch_falls_back_to_whisper(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("BILIBILI_COOKIE", "SESSDATA=abc")
+    monkeypatch.setattr(bs, "validate_cookie", lambda c, session=None: {"valid": True, "uname": "u", "mid": 1})
+    monkeypatch.setattr(bs, "parse_bvid", lambda url: "BV1")
+    monkeypatch.setattr(bs, "fetch_video_info", lambda *a, **kw: {"title": "T", "author": "U", "duration_sec": 60, "cid": 1})
+    monkeypatch.setattr(bs, "fetch_subtitle", lambda *a, **kw: None)  # 无字幕
+    monkeypatch.setattr(bs, "download_video", lambda url, workdir, cookie, **kw: Path(workdir) / "source.mp4")
+    monkeypatch.setattr(bs, "extract_audio", lambda video, out, **kw: out)
+    monkeypatch.setattr(bs, "transcribe_with_whisper", lambda audio, model_name="base", whisper_loader=None: [{"start": 0.0, "text": "hi"}])
+    monkeypatch.setattr(bs, "extract_key_frames", lambda *a, **kw: [])
+
+    ns = argparse.Namespace(url="x", outdir=str(tmp_path), keep_video=True)
+    code = bs.cmd_fetch(ns)
+    assert code == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["subtitle_source"] == "whisper"
+    assert payload["segments"] == [{"start": 0.0, "text": "hi"}]
+
+
+def test_cmd_fetch_rejects_invalid_cookie(monkeypatch, tmp_path, capsys):
+    monkeypatch.delenv("BILIBILI_COOKIE", raising=False)
+    ns = argparse.Namespace(url="x", outdir=str(tmp_path), keep_video=False)
+    code = bs.cmd_fetch(ns)
+    assert code == 2
+    assert "cookie" in capsys.readouterr().out.lower()
+
+
+import argparse

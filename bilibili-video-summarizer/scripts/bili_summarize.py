@@ -29,6 +29,15 @@ SCENE_THRESHOLD = 0.4
 MAX_FRAMES = 15
 FALLBACK_MIN_FRAMES = 3
 
+INVALID_CHARS = '/\\:*?"<>|'
+
+
+def sanitize_dirname(title):
+    out = []
+    for ch in title:
+        out.append("_" if ch in INVALID_CHARS else ch)
+    return "".join(out).strip()
+
 
 def extract_audio(video, out_path, runner=subprocess.run):
     if not shutil.which("ffmpeg"):
@@ -215,8 +224,57 @@ def cmd_check(_args: argparse.Namespace) -> int:
     return 0 if result.get("valid") else 1
 
 
-def cmd_fetch(_args: argparse.Namespace) -> int:
-    raise NotImplementedError
+def cmd_fetch(args):
+    cookie = os.environ.get("BILIBILI_COOKIE")
+    cookie_check = validate_cookie(cookie)
+    if not cookie_check.get("valid"):
+        print(json.dumps({"error": "cookie invalid", "detail": cookie_check}, ensure_ascii=False))
+        return 2
+
+    try:
+        bvid = parse_bvid(args.url)
+    except ValueError as exc:
+        print(json.dumps({"error": str(exc)}, ensure_ascii=False))
+        return 3
+
+    info = fetch_video_info(bvid, cookie)
+    workdir = Path(args.outdir) / sanitize_dirname(info["title"])
+    workdir.mkdir(parents=True, exist_ok=True)
+    frames_dir = workdir / "frames"
+
+    segments = fetch_subtitle(bvid, info["cid"], cookie)
+    subtitle_source = "bilibili_cc" if segments else "whisper"
+
+    video_path = download_video(args.url, workdir, cookie)
+
+    if segments is None:
+        audio = extract_audio(video_path, workdir / "audio.wav")
+        segments = transcribe_with_whisper(audio)
+        try:
+            Path(audio).unlink()
+        except OSError:
+            pass
+
+    frames = extract_key_frames(video_path, frames_dir, info["duration_sec"])
+
+    if not args.keep_video:
+        try:
+            Path(video_path).unlink()
+        except OSError:
+            pass
+
+    payload = {
+        "title": info["title"],
+        "author": info["author"],
+        "bvid": bvid,
+        "duration_sec": info["duration_sec"],
+        "workdir": str(workdir),
+        "subtitle_source": subtitle_source,
+        "segments": segments,
+        "frames": frames,
+    }
+    print(json.dumps(payload, ensure_ascii=False))
+    return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
