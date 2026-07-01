@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Skill 目录：`SkillCollections/bilibili-video-summarizer/`
+- Skill 目录：`bilibili-video-summarizer/`
 - Cookie 环境变量名：`BILIBILI_COOKIE`
 - B 站登录态校验接口：`https://api.bilibili.com/x/web-interface/nav`
 - 抽帧参数：场景阈值 `scene > 0.4`、最多 15 张、少于 3 张时降级为均匀抽帧（8~12 张）
@@ -18,32 +18,31 @@
 - Markdown 文件名：`学习笔记.md`，位于 `workdir/` 下
 - 输出根目录默认为当前工作目录
 - 视频源文件默认在抽帧后删除，`--keep-video` 开关可保留
-- 完成后必须同步更新 `/Users/bytedance/Documents/workspace/personal_workspace/SkillCollections/README.md` 索引（总数 116→117）
+- 技能代码写入 AiFlowScript 仓库顶层目录 `bilibili-video-summarizer/`
 
 ---
 
 ## File Structure
 
-- `SkillCollections/bilibili-video-summarizer/SKILL.md` —— skill 主入口，含 frontmatter + 编排流程 + Markdown 撰写指引
-- `SkillCollections/bilibili-video-summarizer/scripts/bili_summarize.py` —— 主脚本，提供 `check` 与 `fetch` 两个子命令
-- `SkillCollections/bilibili-video-summarizer/scripts/requirements.txt` —— Python 依赖清单
-- `SkillCollections/bilibili-video-summarizer/references/troubleshooting.md` —— 常见故障排查
-- `SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py` —— 单元测试
-- `SkillCollections/bilibili-video-summarizer/tests/fixtures/nav_valid.json` —— B 站 nav 接口合法响应示例
-- `SkillCollections/bilibili-video-summarizer/tests/fixtures/nav_invalid.json` —— B 站 nav 接口未登录响应示例
-- `SkillCollections/bilibili-video-summarizer/tests/fixtures/subtitle_sample.json` —— B 站字幕 JSON 样本
-- `SkillCollections/README.md` —— 更新索引，追加 skill 目录行
+- `bilibili-video-summarizer/SKILL.md` —— skill 主入口，含 frontmatter + 编排流程 + Markdown 撰写指引
+- `bilibili-video-summarizer/scripts/bili_summarize.py` —— 主脚本，提供 `check` 与 `fetch` 两个子命令
+- `bilibili-video-summarizer/scripts/requirements.txt` —— Python 依赖清单
+- `bilibili-video-summarizer/references/troubleshooting.md` —— 常见故障排查
+- `bilibili-video-summarizer/tests/test_bili_summarize.py` —— 单元测试
+- `bilibili-video-summarizer/tests/fixtures/nav_valid.json` —— B 站 nav 接口合法响应示例
+- `bilibili-video-summarizer/tests/fixtures/nav_invalid.json` —— B 站 nav 接口未登录响应示例
+- `bilibili-video-summarizer/tests/fixtures/subtitle_sample.json` —— B 站字幕 JSON 样本
 
 ---
 
 ## Task 1：脚手架与依赖清单
 
 **Files:**
-- Create: `SkillCollections/bilibili-video-summarizer/SKILL.md`
-- Create: `SkillCollections/bilibili-video-summarizer/scripts/requirements.txt`
-- Create: `SkillCollections/bilibili-video-summarizer/scripts/bili_summarize.py`（先创建带 `if __name__ == "__main__"` 骨架）
-- Create: `SkillCollections/bilibili-video-summarizer/tests/__init__.py`
-- Create: `SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py`（占位一个 smoke test）
+- Create: `bilibili-video-summarizer/SKILL.md`
+- Create: `bilibili-video-summarizer/scripts/requirements.txt`
+- Create: `bilibili-video-summarizer/scripts/bili_summarize.py`（先创建带 `if __name__ == "__main__"` 骨架）
+- Create: `bilibili-video-summarizer/tests/__init__.py`
+- Create: `bilibili-video-summarizer/tests/test_bili_summarize.py`（占位一个 smoke test）
 
 **Interfaces:**
 - Consumes: 无
@@ -52,14 +51,14 @@
 - [ ] **Step 1：创建目录结构**
 
 ```bash
-mkdir -p SkillCollections/bilibili-video-summarizer/scripts
-mkdir -p SkillCollections/bilibili-video-summarizer/references
-mkdir -p SkillCollections/bilibili-video-summarizer/tests/fixtures
+mkdir -p bilibili-video-summarizer/scripts
+mkdir -p bilibili-video-summarizer/references
+mkdir -p bilibili-video-summarizer/tests/fixtures
 ```
 
 - [ ] **Step 2：写 requirements.txt**
 
-`SkillCollections/bilibili-video-summarizer/scripts/requirements.txt`:
+`bilibili-video-summarizer/scripts/requirements.txt`:
 
 ```
 requests>=2.31
@@ -69,7 +68,7 @@ openai-whisper>=20231117
 
 - [ ] **Step 3：写占位 SKILL.md（frontmatter + 空章节）**
 
-`SkillCollections/bilibili-video-summarizer/SKILL.md`：
+`bilibili-video-summarizer/SKILL.md`：
 
 ```markdown
 ---
@@ -85,7 +84,7 @@ version: 0.1.0
 
 - [ ] **Step 4：写主脚本骨架**
 
-`SkillCollections/bilibili-video-summarizer/scripts/bili_summarize.py`：
+`bilibili-video-summarizer/scripts/bili_summarize.py`：
 
 ```python
 #!/usr/bin/env python3
@@ -135,7 +134,7 @@ if __name__ == "__main__":
 
 - [ ] **Step 5：写占位 smoke test**
 
-`SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py`：
+`bilibili-video-summarizer/tests/test_bili_summarize.py`：
 
 ```python
 import subprocess
@@ -156,7 +155,7 @@ def test_help_runs():
 
 - [ ] **Step 6：运行测试确认通过**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py -v`
+Run: `pytest bilibili-video-summarizer/tests/test_bili_summarize.py -v`
 Expected: 1 passed。
 
 - [ ] **Step 7：提交**
@@ -171,10 +170,10 @@ git commit -m "feat(bilibili-video-summarizer): scaffold skill directory and CLI
 ## Task 2：`check` 子命令实现（cookie 校验）
 
 **Files:**
-- Modify: `SkillCollections/bilibili-video-summarizer/scripts/bili_summarize.py`（实现 `cmd_check` 与辅助函数 `validate_cookie`）
-- Create: `SkillCollections/bilibili-video-summarizer/tests/fixtures/nav_valid.json`
-- Create: `SkillCollections/bilibili-video-summarizer/tests/fixtures/nav_invalid.json`
-- Modify: `SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py`（新增用例）
+- Modify: `bilibili-video-summarizer/scripts/bili_summarize.py`（实现 `cmd_check` 与辅助函数 `validate_cookie`）
+- Create: `bilibili-video-summarizer/tests/fixtures/nav_valid.json`
+- Create: `bilibili-video-summarizer/tests/fixtures/nav_invalid.json`
+- Modify: `bilibili-video-summarizer/tests/test_bili_summarize.py`（新增用例）
 
 **Interfaces:**
 - Consumes: 环境变量 `BILIBILI_COOKIE`
@@ -246,7 +245,7 @@ def test_validate_cookie_missing_sessdata():
 
 - [ ] **Step 3：运行测试确认失败**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v`
+Run: `pytest bilibili-video-summarizer/tests -v`
 Expected: 4 个新测试 FAIL（`validate_cookie` 不存在）。
 
 - [ ] **Step 4：实现 `validate_cookie` 与 `cmd_check`**
@@ -303,7 +302,7 @@ def cmd_check(_args):
 
 - [ ] **Step 5：运行测试确认通过**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v`
+Run: `pytest bilibili-video-summarizer/tests -v`
 Expected: 全部 passed。
 
 - [ ] **Step 6：提交**
@@ -318,9 +317,9 @@ git commit -m "feat(bilibili-video-summarizer): implement cookie check subcomman
 ## Task 3：视频元信息与 BV 号解析
 
 **Files:**
-- Modify: `SkillCollections/bilibili-video-summarizer/scripts/bili_summarize.py`（新增 `parse_bvid`、`fetch_video_info`）
-- Modify: `SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py`（新增用例）
-- Create: `SkillCollections/bilibili-video-summarizer/tests/fixtures/view_valid.json`
+- Modify: `bilibili-video-summarizer/scripts/bili_summarize.py`（新增 `parse_bvid`、`fetch_video_info`）
+- Modify: `bilibili-video-summarizer/tests/test_bili_summarize.py`（新增用例）
+- Create: `bilibili-video-summarizer/tests/fixtures/view_valid.json`
 
 **Interfaces:**
 - Consumes: 无
@@ -384,7 +383,7 @@ def test_fetch_video_info():
 
 - [ ] **Step 3：运行测试确认失败**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v`
+Run: `pytest bilibili-video-summarizer/tests -v`
 Expected: 新增 4 个 FAIL。
 
 - [ ] **Step 4：实现**
@@ -432,7 +431,7 @@ def fetch_video_info(bvid, cookie, session=None):
 
 - [ ] **Step 5：运行测试确认通过**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v`
+Run: `pytest bilibili-video-summarizer/tests -v`
 Expected: 全部 passed。
 
 - [ ] **Step 6：提交**
@@ -447,11 +446,11 @@ git commit -m "feat(bilibili-video-summarizer): add BV parse and video info fetc
 ## Task 4：字幕拉取
 
 **Files:**
-- Modify: `SkillCollections/bilibili-video-summarizer/scripts/bili_summarize.py`（新增 `fetch_subtitle`）
-- Modify: `SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py`（新增用例）
-- Create: `SkillCollections/bilibili-video-summarizer/tests/fixtures/player_with_subtitle.json`
-- Create: `SkillCollections/bilibili-video-summarizer/tests/fixtures/player_no_subtitle.json`
-- Create: `SkillCollections/bilibili-video-summarizer/tests/fixtures/subtitle_sample.json`
+- Modify: `bilibili-video-summarizer/scripts/bili_summarize.py`（新增 `fetch_subtitle`）
+- Modify: `bilibili-video-summarizer/tests/test_bili_summarize.py`（新增用例）
+- Create: `bilibili-video-summarizer/tests/fixtures/player_with_subtitle.json`
+- Create: `bilibili-video-summarizer/tests/fixtures/player_no_subtitle.json`
+- Create: `bilibili-video-summarizer/tests/fixtures/subtitle_sample.json`
 
 **Interfaces:**
 - Consumes: `fetch_video_info` 提供的 `cid`
@@ -518,7 +517,7 @@ def test_fetch_subtitle_none():
 
 - [ ] **Step 3：运行测试确认失败**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v`
+Run: `pytest bilibili-video-summarizer/tests -v`
 Expected: 2 个新 FAIL。
 
 - [ ] **Step 4：实现**
@@ -563,7 +562,7 @@ def fetch_subtitle(bvid, cid, cookie, session=None):
 
 - [ ] **Step 5：运行测试确认通过**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v`
+Run: `pytest bilibili-video-summarizer/tests -v`
 Expected: 全部 passed。
 
 - [ ] **Step 6：提交**
@@ -578,8 +577,8 @@ git commit -m "feat(bilibili-video-summarizer): fetch bilibili CC subtitles"
 ## Task 5：视频下载与关键帧抽取
 
 **Files:**
-- Modify: `SkillCollections/bilibili-video-summarizer/scripts/bili_summarize.py`（新增 `download_video`、`extract_key_frames`）
-- Modify: `SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py`（新增用例，使用 monkeypatch mock 掉外部命令）
+- Modify: `bilibili-video-summarizer/scripts/bili_summarize.py`（新增 `download_video`、`extract_key_frames`）
+- Modify: `bilibili-video-summarizer/tests/test_bili_summarize.py`（新增用例，使用 monkeypatch mock 掉外部命令）
 
 **Interfaces:**
 - Consumes: BV 号、cookie、workdir 路径
@@ -634,7 +633,7 @@ def test_extract_key_frames_fallback(tmp_path):
 
 - [ ] **Step 2：运行测试确认失败**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v -k extract_key_frames`
+Run: `pytest bilibili-video-summarizer/tests -v -k extract_key_frames`
 Expected: 2 FAIL。
 
 - [ ] **Step 3：实现**
@@ -723,7 +722,7 @@ def extract_key_frames(video, frames_dir, duration_sec, runner=subprocess.run):
 
 - [ ] **Step 4：运行测试确认通过**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v`
+Run: `pytest bilibili-video-summarizer/tests -v`
 Expected: 全部 passed。
 
 - [ ] **Step 5：提交**
@@ -738,8 +737,8 @@ git commit -m "feat(bilibili-video-summarizer): download video and extract key f
 ## Task 6：Whisper 降级转录
 
 **Files:**
-- Modify: `SkillCollections/bilibili-video-summarizer/scripts/bili_summarize.py`（新增 `transcribe_with_whisper`、`extract_audio`）
-- Modify: `SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py`
+- Modify: `bilibili-video-summarizer/scripts/bili_summarize.py`（新增 `transcribe_with_whisper`、`extract_audio`）
+- Modify: `bilibili-video-summarizer/tests/test_bili_summarize.py`
 
 **Interfaces:**
 - Consumes: 视频文件路径
@@ -785,7 +784,7 @@ def test_transcribe_with_whisper(tmp_path):
 
 - [ ] **Step 2：运行测试确认失败**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v -k "audio or whisper"`
+Run: `pytest bilibili-video-summarizer/tests -v -k "audio or whisper"`
 Expected: FAIL。
 
 - [ ] **Step 3：实现**
@@ -826,7 +825,7 @@ def transcribe_with_whisper(audio, model_name="base", whisper_loader=None):
 
 - [ ] **Step 4：运行测试确认通过**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v`
+Run: `pytest bilibili-video-summarizer/tests -v`
 Expected: 全部 passed。
 
 - [ ] **Step 5：提交**
@@ -841,8 +840,8 @@ git commit -m "feat(bilibili-video-summarizer): whisper fallback transcription"
 ## Task 7：`fetch` 子命令编排
 
 **Files:**
-- Modify: `SkillCollections/bilibili-video-summarizer/scripts/bili_summarize.py`（实现 `cmd_fetch`、`sanitize_dirname`）
-- Modify: `SkillCollections/bilibili-video-summarizer/tests/test_bili_summarize.py`（新增一体化测试，全部依赖用 monkeypatch）
+- Modify: `bilibili-video-summarizer/scripts/bili_summarize.py`（实现 `cmd_fetch`、`sanitize_dirname`）
+- Modify: `bilibili-video-summarizer/tests/test_bili_summarize.py`（新增一体化测试，全部依赖用 monkeypatch）
 
 **Interfaces:**
 - Consumes: 前 6 个 Task 的函数
@@ -928,7 +927,7 @@ import argparse  # 若文件顶部尚未导入
 
 - [ ] **Step 2：运行测试确认失败**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v -k fetch`
+Run: `pytest bilibili-video-summarizer/tests -v -k fetch`
 Expected: FAIL（`sanitize_dirname` 不存在 / `cmd_fetch` 未实现）。
 
 - [ ] **Step 3：实现**
@@ -1001,7 +1000,7 @@ def cmd_fetch(args):
 
 - [ ] **Step 4：运行测试确认通过**
 
-Run: `pytest SkillCollections/bilibili-video-summarizer/tests -v`
+Run: `pytest bilibili-video-summarizer/tests -v`
 Expected: 全部 passed。
 
 - [ ] **Step 5：提交**
@@ -1016,8 +1015,8 @@ git commit -m "feat(bilibili-video-summarizer): implement fetch subcommand pipel
 ## Task 8：SKILL.md 编排指引与 references 排障文档
 
 **Files:**
-- Modify: `SkillCollections/bilibili-video-summarizer/SKILL.md`（写完整流程）
-- Create: `SkillCollections/bilibili-video-summarizer/references/troubleshooting.md`
+- Modify: `bilibili-video-summarizer/SKILL.md`（写完整流程）
+- Create: `bilibili-video-summarizer/references/troubleshooting.md`
 
 **Interfaces:**
 - Consumes: `bili_summarize.py` 的 `check` 与 `fetch` 子命令契约
@@ -1102,7 +1101,7 @@ python3 scripts/bili_summarize.py fetch --url "<视频链接>" --outdir "$(pwd)"
 
 - [ ] **Step 2：写 troubleshooting.md**
 
-`SkillCollections/bilibili-video-summarizer/references/troubleshooting.md`：
+`bilibili-video-summarizer/references/troubleshooting.md`：
 
 ```markdown
 # 排障
@@ -1143,44 +1142,10 @@ git commit -m "docs(bilibili-video-summarizer): SKILL.md workflow and troublesho
 
 ---
 
-## Task 9：同步 SkillCollections 索引
+## Task 9：（已跳过）同步 SkillCollections 索引
 
-**Files:**
-- Modify: `/Users/bytedance/Documents/workspace/personal_workspace/SkillCollections/README.md`
-
-**Interfaces:**
-- Consumes: 已存在的 skill 目录 `bilibili-video-summarizer/`
-- Produces: 索引表新增一行，总数 116→117。
-
-- [ ] **Step 1：查看现有索引结构**
-
-Read: `/Users/bytedance/Documents/workspace/personal_workspace/SkillCollections/README.md`
-了解表格格式与字母顺序（应位于 `bam` 与 `bits-case-generator` 之间的位置——按字母序 `bilibili` 排 `bam` 之后）。
-
-- [ ] **Step 2：修改概览与索引表**
-
-- 把「技能总数 | 116」改为「技能总数 | 117」。
-- 在索引表中，`bam`（序号 12）与 `bits-case-generator`（序号 13）之间插入：
-
-```
-| 13 | `bilibili-video-summarizer` | [打开目录](./bilibili-video-summarizer/) |
-```
-
-- 后续所有条目序号 +1。
-
-- [ ] **Step 3：确认修改后计数一致**
-
-数一下表格行数，应为 117。
-
-- [ ] **Step 4：提交**
-
-```bash
-cd /Users/bytedance/Documents/workspace/personal_workspace/SkillCollections
-git add README.md
-git commit -m "docs: index bilibili-video-summarizer skill"
-```
-
-（若 `SkillCollections` 是独立 git 仓库或未初始化，跳过 commit，仅保留文件修改。）
+> **已跳过**：技能改为写入 AiFlowScript 仓库顶层 `bilibili-video-summarizer/`，
+> 不进入独立的 SkillCollections 仓库，因此无需更新其索引。保留本节仅作记录。
 
 ---
 
