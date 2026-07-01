@@ -30,6 +30,37 @@ MAX_FRAMES = 15
 FALLBACK_MIN_FRAMES = 3
 
 
+def extract_audio(video, out_path, runner=subprocess.run):
+    if not shutil.which("ffmpeg"):
+        raise RuntimeError("未检测到 ffmpeg")
+    cmd = [
+        "ffmpeg", "-y", "-i", str(video),
+        "-vn", "-ac", "1", "-ar", "16000", "-f", "wav", str(out_path),
+    ]
+    result = runner(cmd, check=False)
+    if result.returncode != 0:
+        raise RuntimeError("音频抽取失败")
+    return Path(out_path)
+
+
+def transcribe_with_whisper(audio, model_name="base", whisper_loader=None):
+    if whisper_loader is None:
+        try:
+            import whisper  # type: ignore
+        except ImportError as exc:
+            raise RuntimeError(
+                "未安装 openai-whisper，且视频无字幕。请 pip install openai-whisper 或改用有字幕的视频。"
+            ) from exc
+        whisper_loader = whisper.load_model
+
+    model = whisper_loader(model_name)
+    data = model.transcribe(str(audio))
+    return [
+        {"start": float(seg["start"]), "text": seg["text"].strip()}
+        for seg in data.get("segments", [])
+    ]
+
+
 def download_video(url, workdir, cookie, runner=subprocess.run):
     if not shutil.which("yt-dlp"):
         raise RuntimeError("未检测到 yt-dlp，请先安装：pip install yt-dlp")

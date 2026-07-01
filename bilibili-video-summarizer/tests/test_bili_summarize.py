@@ -157,3 +157,34 @@ def test_extract_key_frames_fallback(tmp_path):
     result = bs.extract_key_frames(tmp_path / "v.mp4", frames_dir, 480, runner=fake_run)
     assert len(result) == 8
     assert calls["n"] == 2
+
+
+def test_extract_audio(tmp_path):
+    calls = []
+
+    def fake_run(cmd, *a, **kw):
+        calls.append(cmd)
+        rv = MagicMock(); rv.returncode = 0; return rv
+
+    audio = tmp_path / "a.wav"
+    result = bs.extract_audio(tmp_path / "v.mp4", audio, runner=fake_run)
+    assert result == audio
+    assert "-ar" in calls[0] and "16000" in calls[0]
+
+
+def test_transcribe_with_whisper(tmp_path):
+    fake_model = MagicMock()
+    fake_model.transcribe.return_value = {
+        "segments": [
+            {"start": 1.2, "text": " 你好"},
+            {"start": 3.4, "text": " 世界"},
+        ]
+    }
+    fake_loader = MagicMock(return_value=fake_model)
+
+    result = bs.transcribe_with_whisper(tmp_path / "a.wav", "base", whisper_loader=fake_loader)
+    assert result == [
+        {"start": 1.2, "text": "你好"},
+        {"start": 3.4, "text": "世界"},
+    ]
+    fake_loader.assert_called_once_with("base")
