@@ -259,3 +259,23 @@ def test_cmd_fetch_rejects_invalid_cookie(monkeypatch, tmp_path, capsys):
 
 
 import argparse
+
+
+def test_cmd_fetch_empty_subtitle_list_is_bilibili_cc(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("BILIBILI_COOKIE", "SESSDATA=abc")
+    monkeypatch.setattr(bs, "validate_cookie", lambda c, session=None: {"valid": True, "uname": "u", "mid": 1})
+    monkeypatch.setattr(bs, "parse_bvid", lambda url: "BV1")
+    monkeypatch.setattr(bs, "fetch_video_info", lambda *a, **kw: {"title": "T", "author": "U", "duration_sec": 60, "cid": 1})
+    monkeypatch.setattr(bs, "fetch_subtitle", lambda *a, **kw: [])  # 空列表：有轨但无内容
+    monkeypatch.setattr(bs, "download_video", lambda url, workdir, cookie, **kw: Path(workdir) / "source.mp4")
+    def _boom(*a, **kw):
+        raise AssertionError("空列表不应触发 whisper 转录")
+    monkeypatch.setattr(bs, "transcribe_with_whisper", _boom)
+    monkeypatch.setattr(bs, "extract_key_frames", lambda *a, **kw: [])
+
+    ns = argparse.Namespace(url="x", outdir=str(tmp_path), keep_video=True)
+    code = bs.cmd_fetch(ns)
+    assert code == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["subtitle_source"] == "bilibili_cc"
+    assert payload["segments"] == []
