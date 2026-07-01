@@ -12,7 +12,10 @@ import argparse
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
+from pathlib import Path
 
 import requests
 
@@ -21,6 +24,78 @@ NAV_URL = "https://api.bilibili.com/x/web-interface/nav"
 VIEW_URL = "https://api.bilibili.com/x/web-interface/view"
 PLAYER_URL = "https://api.bilibili.com/x/player/v2"
 BVID_RE = re.compile(r"(BV[0-9A-Za-z]{10})")
+
+SCENE_THRESHOLD = 0.4
+MAX_FRAMES = 15
+FALLBACK_MIN_FRAMES = 3
+
+
+def download_video(url, workdir, cookie, runner=subprocess.run):
+    if not shutil.which("yt-dlp"):
+        raise RuntimeError("未检测到 yt-dlp，请先安装：pip install yt-dlp")
+    workdir = Path(workdir)
+    workdir.mkdir(parents=True, exist_ok=True)
+    output = workdir / "source.mp4"
+    cmd = [
+        "yt-dlp",
+        "--add-header", f"Cookie:{cookie}",
+        "-f", "bv*+ba/b",
+        "--merge-output-format", "mp4",
+        "-o", str(output),
+        url,
+    ]
+    result = runner(cmd, check=False)
+    if result.returncode != 0:
+        raise RuntimeError("yt-dlp 下载失败")
+    return output
+
+
+def _list_frames(frames_dir):
+    items = []
+    for p in sorted(frames_dir.glob("frame_*.jpg")):
+        try:
+            sec = int(p.stem.split("_")[1])
+        except (IndexError, ValueError):
+            continue
+        rel = f"{frames_dir.name}/{p.name}"
+        items.append({"time": float(sec), "path": rel})
+    return items
+
+
+def extract_key_frames(video, frames_dir, duration_sec, runner=subprocess.run):
+    if not shutil.which("ffmpeg"):
+        raise RuntimeError("未检测到 ffmpeg，请先安装")
+    frames_dir = Path(frames_dir)
+    frames_dir.mkdir(parents=True, exist_ok=True)
+
+    # 场景检测
+    scene_cmd = [
+        "ffmpeg", "-y", "-i", str(video),
+        "-vf", f"select='gt(scene,{SCENE_THRESHOLD})',showinfo",
+        "-vsync", "vfr",
+        "-frame_pts", "1",
+        "-frames:v", str(MAX_FRAMES),
+        str(frames_dir / "frame_%04d.jpg"),
+    ]
+    runner(scene_cmd, check=False)
+    frames = _list_frames(frames_dir)
+
+    if len(frames) >= FALLBACK_MIN_FRAMES:
+        return frames[:MAX_FRAMES]
+
+    # 降级：清空后均匀抽帧（单次 ffmpeg 调用，用 fps 滤镜）
+    for p in frames_dir.glob("frame_*.jpg"):
+        p.unlink()
+    target = min(12, max(8, duration_sec // 60 + 1))
+    fps_value = target / duration_sec if duration_sec else 0.1
+    fallback_cmd = [
+        "ffmpeg", "-y", "-i", str(video),
+        "-vf", f"fps={fps_value}",
+        "-frames:v", str(target),
+        str(frames_dir / "frame_%04d.jpg"),
+    ]
+    runner(fallback_cmd, check=False)
+    return _list_frames(frames_dir)
 
 
 def _bili_headers(cookie):
