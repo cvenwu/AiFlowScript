@@ -55,3 +55,35 @@ def test_validate_cookie_invalid():
 def test_validate_cookie_missing_sessdata():
     result = bs.validate_cookie("some=thing")
     assert result == {"valid": False, "reason": "invalid"}
+
+
+import pytest
+
+
+def test_parse_bvid_standard_url():
+    assert bs.parse_bvid("https://www.bilibili.com/video/BV1xx411c7mD/") == "BV1xx411c7mD"
+
+
+def test_parse_bvid_with_query():
+    assert bs.parse_bvid("https://www.bilibili.com/video/BV1xx411c7mD?p=1&spm_id=abc") == "BV1xx411c7mD"
+
+
+def test_parse_bvid_short_url_rejected():
+    with pytest.raises(ValueError):
+        bs.parse_bvid("https://b23.tv/abcd")
+
+
+def test_fetch_video_info():
+    session = MagicMock()
+    resp = MagicMock()
+    resp.json.return_value = _fixture("view_valid.json")
+    resp.raise_for_status = MagicMock()
+    session.get.return_value = resp
+
+    info = bs.fetch_video_info("BV1xx411c7mD", "SESSDATA=x", session=session)
+    assert info == {
+        "title": "示例视频标题",
+        "author": "示例UP主",
+        "duration_sec": 615,
+        "cid": 987654321,
+    }

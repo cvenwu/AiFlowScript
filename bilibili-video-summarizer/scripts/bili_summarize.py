@@ -11,12 +11,47 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 
 import requests
 
 
 NAV_URL = "https://api.bilibili.com/x/web-interface/nav"
+VIEW_URL = "https://api.bilibili.com/x/web-interface/view"
+BVID_RE = re.compile(r"(BV[0-9A-Za-z]{10})")
+
+
+def parse_bvid(url):
+    match = BVID_RE.search(url or "")
+    if not match:
+        raise ValueError(f"无法从 URL 中解析 BV 号: {url}")
+    return match.group(1)
+
+
+def fetch_video_info(bvid, cookie, session=None):
+    sess = session or requests.Session()
+    headers = {
+        "Cookie": cookie,
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        ),
+        "Referer": "https://www.bilibili.com",
+    }
+    resp = sess.get(VIEW_URL, params={"bvid": bvid}, headers=headers, timeout=10)
+    resp.raise_for_status()
+    data = resp.json()
+    if data.get("code") != 0:
+        raise RuntimeError(f"获取视频信息失败: {data.get('message')}")
+    d = data["data"]
+    return {
+        "title": d["title"],
+        "author": d["owner"]["name"],
+        "duration_sec": d["duration"],
+        "cid": d["cid"],
+    }
 
 
 def validate_cookie(cookie, session=None):
