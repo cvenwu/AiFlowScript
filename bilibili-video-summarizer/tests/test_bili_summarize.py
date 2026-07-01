@@ -117,3 +117,43 @@ def test_fetch_subtitle_none():
     session.get.return_value = resp
 
     assert bs.fetch_subtitle("BV1", 1, "SESSDATA=x", session=session) is None
+
+
+def test_extract_key_frames_scene_detection(tmp_path, monkeypatch):
+    frames_dir = tmp_path / "frames"
+    frames_dir.mkdir()
+
+    # 模拟场景检测抽出 5 张帧
+    def fake_run(cmd, *a, **kw):
+        for t in [10, 40, 90, 150, 300]:
+            (frames_dir / f"frame_{t:04d}.jpg").write_bytes(b"fake")
+        rv = MagicMock()
+        rv.returncode = 0
+        return rv
+
+    result = bs.extract_key_frames(tmp_path / "v.mp4", frames_dir, 600, runner=fake_run)
+    assert len(result) == 5
+    assert result[0] == {"time": 10.0, "path": "frames/frame_0010.jpg"}
+
+
+def test_extract_key_frames_fallback(tmp_path):
+    frames_dir = tmp_path / "frames"
+    frames_dir.mkdir()
+
+    calls = {"n": 0}
+
+    def fake_run(cmd, *a, **kw):
+        calls["n"] += 1
+        # 第 1 次：场景检测只出 1 张 → 触发降级
+        # 第 2 次：均匀抽帧写 8 张
+        if calls["n"] == 1:
+            (frames_dir / "frame_0005.jpg").write_bytes(b"x")
+        else:
+            for i in range(8):
+                (frames_dir / f"frame_{i*60:04d}.jpg").write_bytes(b"x")
+        rv = MagicMock(); rv.returncode = 0
+        return rv
+
+    result = bs.extract_key_frames(tmp_path / "v.mp4", frames_dir, 480, runner=fake_run)
+    assert len(result) == 8
+    assert calls["n"] == 2
