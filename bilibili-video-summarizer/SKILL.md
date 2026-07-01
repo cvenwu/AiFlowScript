@@ -45,6 +45,8 @@ python3 scripts/bili_summarize.py fetch --url "<视频链接>" --outdir "$(pwd)"
 - 解析 stdout 的 JSON 到内存备用。
 - JSON 字段：`title` / `author` / `bvid` / `duration_sec` / `workdir` / `subtitle_source`（`bilibili_cc` 或 `whisper`）/ `segments`（`[{"start", "text"}]`）/ `frames`（`[{"time", "path"}]`）。
 - **关于 `frames[].time`**：当字幕/画面走场景检测抽帧时，`time` 接近真实秒数；当降级为均匀抽帧时，`time` 仅表示帧的先后顺序、并非精确时间戳。因此把截图对齐到章节时，用它做「大致排序」即可，不要当作精确时间引用。
+- 可选参数 `--keep-video`：默认抽帧后删除源视频；加此开关则保留 `source.mp4`。
+- 退出码：`0` 成功；`2` cookie 非法/失效；`3` 视频链接无法解析出 BV 号。
 
 ### 第 4 步：撰写学习笔记
 
