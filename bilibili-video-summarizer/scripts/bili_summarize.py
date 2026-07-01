@@ -19,7 +19,20 @@ import requests
 
 NAV_URL = "https://api.bilibili.com/x/web-interface/nav"
 VIEW_URL = "https://api.bilibili.com/x/web-interface/view"
+PLAYER_URL = "https://api.bilibili.com/x/player/v2"
 BVID_RE = re.compile(r"(BV[0-9A-Za-z]{10})")
+
+
+def _bili_headers(cookie):
+    return {
+        "Cookie": cookie,
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        ),
+        "Referer": "https://www.bilibili.com",
+    }
 
 
 def parse_bvid(url):
@@ -31,15 +44,7 @@ def parse_bvid(url):
 
 def fetch_video_info(bvid, cookie, session=None):
     sess = session or requests.Session()
-    headers = {
-        "Cookie": cookie,
-        "User-Agent": (
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/122.0.0.0 Safari/537.36"
-        ),
-        "Referer": "https://www.bilibili.com",
-    }
+    headers = _bili_headers(cookie)
     resp = sess.get(VIEW_URL, params={"bvid": bvid}, headers=headers, timeout=10)
     resp.raise_for_status()
     data = resp.json()
@@ -54,6 +59,24 @@ def fetch_video_info(bvid, cookie, session=None):
     }
 
 
+def fetch_subtitle(bvid, cid, cookie, session=None):
+    sess = session or requests.Session()
+    headers = _bili_headers(cookie)
+    resp = sess.get(PLAYER_URL, params={"bvid": bvid, "cid": cid}, headers=headers, timeout=10)
+    resp.raise_for_status()
+    data = resp.json()
+    subs = (((data.get("data") or {}).get("subtitle") or {}).get("subtitles") or [])
+    if not subs:
+        return None
+    url = subs[0]["subtitle_url"]
+    if url.startswith("//"):
+        url = "https:" + url
+    sub_resp = sess.get(url, headers=headers, timeout=10)
+    sub_resp.raise_for_status()
+    body = sub_resp.json().get("body", [])
+    return [{"start": float(item["from"]), "text": item["content"]} for item in body]
+
+
 def validate_cookie(cookie, session=None):
     if not cookie:
         return {"valid": False, "reason": "not_set"}
@@ -61,15 +84,7 @@ def validate_cookie(cookie, session=None):
         return {"valid": False, "reason": "invalid"}
 
     sess = session or requests.Session()
-    headers = {
-        "Cookie": cookie,
-        "User-Agent": (
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/122.0.0.0 Safari/537.36"
-        ),
-        "Referer": "https://www.bilibili.com",
-    }
+    headers = _bili_headers(cookie)
     try:
         resp = sess.get(NAV_URL, headers=headers, timeout=10)
         resp.raise_for_status()
