@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LeetCode 84 日盲练清单</title>
+  <style>
+    :root {
+      --ink: #161b1f;
+      --muted: #667078;
+      --paper: #fbfbf7;
+      --panel: #ffffff;
+      --line: #d9ded8;
+      --wash: #eff2ec;
+      --green: #166f63;
+      --blue: #335fd7;
+      --red: #be4a3d;
+      --gold: #ba7a24;
+      --shadow: 0 18px 48px rgba(22, 27, 31, 0.08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.55;
+      background:
+        radial-gradient(circle at 20% 8%, rgba(22, 111, 99, 0.11), transparent 26%),
+        radial-gradient(circle at 82% 0%, rgba(190, 74, 61, 0.10), transparent 24%),
+        linear-gradient(90deg, rgba(22, 27, 31, 0.045) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(22, 27, 31, 0.04) 1px, transparent 1px),
+        #f5f6ef;
+      background-size: auto, auto, 30px 30px, 30px 30px, auto;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 30px 0 72px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero-main,
+    .stat,
+    .toolbar,
+    .week,
+    .empty {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: clamp(28px, 4vw, 52px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-main::before {
+      content: "";
+      position: absolute;
+      inset: auto 24px 24px auto;
+      width: min(360px, 55%);
+      aspect-ratio: 1;
+      border: 1px solid rgba(22, 27, 31, 0.12);
+      border-radius: 50%;
+      background:
+        repeating-conic-gradient(from 10deg, rgba(22, 111, 99, 0.16) 0deg 10deg, transparent 10deg 20deg),
+        #fffefa;
+      opacity: 0.8;
+    }
+
+    .hero-main > * {
+      position: relative;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--green);
+      font: 800 12px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 2px;
+      background: currentColor;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 22px 0 18px;
+      font-size: clamp(40px, 7vw, 84px);
+      line-height: 0.96;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      margin: 0;
+      color: #34413e;
+      font-size: clamp(16px, 2vw, 20px);
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 20px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: clamp(34px, 5vw, 52px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin: 20px 0 26px;
+      padding: 12px;
+      backdrop-filter: blur(16px);
+    }
+
+    .ranges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .range-btn {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 13px;
+      background: var(--panel);
+      color: var(--ink);
+      cursor: pointer;
+      font: 800 13px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+    }
+
+    .range-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--ink);
+    }
+
+    .range-btn.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    .search {
+      width: min(300px, 100%);
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 14px;
+      background: var(--panel);
+      color: var(--ink);
+      outline: none;
+      font-size: 14px;
+    }
+
+    .search:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(51, 95, 215, 0.16);
+    }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 22px;
+      padding-left: 26px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(var(--green), var(--blue), var(--red));
+    }
+
+    .week {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .week::before {
+      content: "";
+      position: absolute;
+      left: -25px;
+      top: 28px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--marker);
+      border: 3px solid #f5f6ef;
+      box-shadow: 0 0 0 1px var(--marker);
+    }
+
+    .week-head {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, color-mix(in srgb, var(--marker) 11%, transparent), transparent 52%), var(--paper);
+    }
+
+    .week-code {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: var(--radius);
+      color: #fff;
+      background: var(--marker);
+      font: 900 20px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .week-title {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 32px);
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .week-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .week-range {
+      color: var(--marker);
+      font: 900 13px/1.4 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .day {
+      min-height: 184px;
+      padding: 15px 13px 17px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff, rgba(255, 254, 250, 0.74));
+    }
+
+    .day:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .day-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .day-no {
+      color: var(--marker);
+      font: 900 13px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .count {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 0 8px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--wash);
+      font: 800 11px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .problem-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .problem-link {
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      min-height: 30px;
+      border: 1px solid color-mix(in srgb, var(--marker) 32%, var(--line));
+      border-radius: 999px;
+      padding: 0 10px;
+      color: var(--ink);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 760;
+      line-height: 1.2;
+      text-decoration: none;
+      transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+    }
+
+    .problem-link:hover {
+      transform: translateY(-1px);
+      border-color: var(--marker);
+      background: color-mix(in srgb, var(--marker) 7%, #fff);
+    }
+
+    .problem-link:focus-visible,
+    .range-btn:focus-visible {
+      outline: 3px solid rgba(51, 95, 215, 0.28);
+      outline-offset: 2px;
+    }
+
+    .rest-note {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .empty {
+      display: none;
+      margin-top: 18px;
+      padding: 26px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .footer {
+      margin-top: 36px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-side {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+        position: static;
+      }
+
+      .search {
+        width: 100%;
+      }
+
+      .days {
+        grid-template-columns: 1fr;
+      }
+
+      .day,
+      .day:nth-child(7n) {
+        border-right: 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 20px, 1180px);
+        padding-top: 16px;
+      }
+
+      .hero-main {
+        padding: 26px 20px;
+      }
+
+      .hero-side {
+        grid-template-columns: 1fr;
+      }
+
+      .week-head {
+        grid-template-columns: 1fr;
+      }
+
+      .week-range {
+        text-align: left;
+      }
+
+      .timeline {
+        padding-left: 18px;
+      }
+
+      .timeline::before {
+        left: 4px;
+      }
+
+      .week::before {
+        left: -20px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-main">
+        <div class="eyebrow">Blind Practice</div>
+        <h1 id="page-title">LeetCode 84 日盲练清单</h1>
+        <p class="hero-copy">按原始顺序保留全部练习位置。页面只显示日期和 LeetCode 编号，点击编号进入对应题目。</p>
+      </div>
+      <aside class="hero-side" aria-label="题单统计">
+        <div class="stat"><strong>84</strong><span>天顺序安排</span></div>
+        <div class="stat"><strong>138</strong><span>道唯一题目</span></div>
+        <div class="stat"><strong>171</strong><span>个练习位置</span></div>
+      </aside>
+    </section>
+
+    <section class="toolbar" aria-label="筛选与搜索">
+      <div class="ranges">
+        <button class="range-btn active" type="button" data-range="all">全部</button>
+        <button class="range-btn" type="button" data-range="1-28">Day 1-28</button>
+        <button class="range-btn" type="button" data-range="29-56">Day 29-56</button>
+        <button class="range-btn" type="button" data-range="57-84">Day 57-84</button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="搜索题号" aria-label="搜索题号">
+    </section>
+
+    <section class="timeline" id="timeline" aria-label="盲练时间轴"></section>
+    <div class="empty" id="empty">没有匹配的题目。可以清空搜索或切换日期范围。</div>
+
+    <footer class="footer">
+      单文件 HTML，CSS 和 JavaScript 已内嵌；编号链接指向 LeetCode 中文站。
+    </footer>
+  </main>
+
+  <script>
+    const PROBLEMS = {
+      1: "two-sum",
+      3: "longest-substring-without-repeating-characters",
+      5: "longest-palindromic-substring",
+      10: "regular-expression-matching",
+      11: "container-with-most-water",
+      14: "longest-common-prefix",
+      15: "3sum",
+      17: "letter-combinations-of-a-phone-number",
+      19: "remove-nth-node-from-end-of-list",
+      20: "valid-parentheses",
+      21: "merge-two-sorted-lists",
+      22: "generate-parentheses",
+      23: "merge-k-sorted-lists",
+      28: "find-the-index-of-the-first-occurrence-in-a-string",
+      33: "search-in-rotated-sorted-array",
+      34: "find-first-and-last-position-of-element-in-sorted-array",
+      35: "search-insert-position",
+      39: "combination-sum",
+      40: "combination-sum-ii",
+      42: "trapping-rain-water",
+      45: "jump-game-ii",
+      46: "permutations",
+      49: "group-anagrams",
+      51: "n-queens",
+      55: "jump-game",
+      56: "merge-intervals",
+      57: "insert-interval",
+      62: "unique-paths",
+      64: "minimum-path-sum",
+      70: "climbing-stairs",
+      72: "edit-distance",
+      74: "search-a-2d-matrix",
+      76: "minimum-window-substring",
+      77: "combinations",
+      78: "subsets",
+      79: "word-search",
+      84: "largest-rectangle-in-histogram",
+      98: "validate-binary-search-tree",
+      100: "same-tree",
+      101: "symmetric-tree",
+      102: "binary-tree-level-order-traversal",
+      104: "maximum-depth-of-binary-tree",
+      105: "construct-binary-tree-from-preorder-and-inorder-traversal",
+      110: "balanced-binary-tree",
+      112: "path-sum",
+      121: "best-time-to-buy-and-sell-stock",
+      122: "best-time-to-buy-and-sell-stock-ii",
+      125: "valid-palindrome",
+      127: "word-ladder",
+      128: "longest-consecutive-sequence",
+      133: "clone-graph",
+      134: "gas-station",
+      139: "word-break",
+      141: "linked-list-cycle",
+      142: "linked-list-cycle-ii",
+      146: "lru-cache",
+      150: "evaluate-reverse-polish-notation",
+      151: "reverse-words-in-a-string",
+      152: "maximum-product-subarray",
+      153: "find-minimum-in-rotated-sorted-array",
+      155: "min-stack",
+      162: "find-peak-element",
+      167: "two-sum-ii-input-array-is-sorted",
+      198: "house-robber",
+      199: "binary-tree-right-side-view",
+      200: "number-of-islands",
+      206: "reverse-linked-list",
+      207: "course-schedule",
+      208: "implement-trie-prefix-tree",
+      209: "minimum-size-subarray-sum",
+      210: "course-schedule-ii",
+      211: "design-add-and-search-words-data-structure",
+      212: "word-search-ii",
+      213: "house-robber-ii",
+      215: "kth-largest-element-in-an-array",
+      217: "contains-duplicate",
+      221: "maximal-square",
+      224: "basic-calculator",
+      225: "implement-stack-using-queues",
+      226: "invert-binary-tree",
+      227: "basic-calculator-ii",
+      230: "kth-smallest-element-in-a-bst",
+      232: "implement-queue-using-stacks",
+      236: "lowest-common-ancestor-of-a-binary-tree",
+      238: "product-of-array-except-self",
+      239: "sliding-window-maximum",
+      242: "valid-anagram",
+      279: "perfect-squares",
+      283: "move-zeroes",
+      295: "find-median-from-data-stream",
+      297: "serialize-and-deserialize-binary-tree",
+      300: "longest-increasing-subsequence",
+      303: "range-sum-query-immutable",
+      309: "best-time-to-buy-and-sell-stock-with-cooldown",
+      316: "remove-duplicate-letters",
+      322: "coin-change",
+      337: "house-robber-iii",
+      347: "top-k-frequent-elements",
+      355: "design-twitter",
+      380: "insert-delete-getrandom-o1",
+      387: "first-unique-character-in-a-string",
+      399: "evaluate-division",
+      402: "remove-k-digits",
+      416: "partition-equal-subset-sum",
+      435: "non-overlapping-intervals",
+      438: "find-all-anagrams-in-a-string",
+      452: "minimum-number-of-arrows-to-burst-balloons",
+      460: "lfu-cache",
+      494: "target-sum",
+      496: "next-greater-element-i",
+      503: "next-greater-element-ii",
+      518: "coin-change-ii",
+      543: "diameter-of-binary-tree",
+      547: "number-of-provinces",
+      560: "subarray-sum-equals-k",
+      567: "permutation-in-string",
+      622: "design-circular-queue",
+      647: "palindromic-substrings",
+      684: "redundant-connection",
+      692: "top-k-frequent-words",
+      695: "max-area-of-island",
+      703: "kth-largest-element-in-a-stream",
+      704: "binary-search",
+      705: "design-hashset",
+      721: "accounts-merge",
+      735: "asteroid-collision",
+      739: "daily-temperatures",
+      743: "network-delay-time",
+      746: "min-cost-climbing-stairs",
+      763: "partition-labels",
+      785: "is-graph-bipartite",
+      797: "all-paths-from-source-to-target",
+      841: "keys-and-rooms",
+      876: "middle-of-the-linked-list",
+      904: "fruit-into-baskets",
+      973: "k-closest-points-to-origin",
+      994: "rotting-oranges",
+      1143: "longest-common-subsequence"
+    };
+
+    const SCHEDULE = [
+      [1, 217],
+      [242, 49],
+      [128, 283],
+      [238],
+      [1, 49],
+      [560, 387, 705],
+      [128],
+      [125, 167],
+      [15, 11],
+      [3, 209],
+      [438, 567],
+      [3, 15],
+      [42, 76, 904],
+      [76],
+      [20, 155],
+      [232, 225],
+      [150, 303],
+      [560],
+      [155, 560],
+      [622, 239, 735],
+      [239],
+      [206, 21],
+      [141, 142],
+      [876, 19],
+      [704, 35, 34],
+      [33, 153, 206],
+      [146, 74, 162],
+      [33],
+      [104, 100],
+      [226, 101],
+      [543, 110, 112],
+      [102, 199],
+      [98, 230, 104],
+      [236, 105, 297],
+      [236],
+      [200, 695],
+      [994, 79],
+      [46, 78],
+      [77, 39],
+      [40, 22, 200],
+      [127, 17, 51],
+      [79],
+      [207, 210],
+      [133, 841],
+      [547, 684],
+      [721, 785],
+      [207, 721],
+      [399, 797, 743],
+      [207],
+      [215, 347],
+      [692, 703],
+      [973, 56],
+      [57, 435],
+      [452, 347],
+      [295, 208, 23],
+      [215],
+      [121, 122],
+      [55, 45],
+      [134, 763],
+      [739, 496],
+      [503, 121],
+      [84, 316, 402],
+      [739],
+      [70, 746],
+      [198, 213],
+      [322, 518],
+      [139, 300],
+      [62, 64, 322],
+      [337, 152, 279],
+      [300],
+      [1143, 72],
+      [5, 647],
+      [416, 494],
+      [221, 14],
+      [151, 1143],
+      [309, 28, 10],
+      [72],
+      [146, 380],
+      [208, 211],
+      [295, 297],
+      [224, 227],
+      [146, 208],
+      [460, 212, 355],
+      []
+    ];
+
+    const timeline = document.querySelector("#timeline");
+    const empty = document.querySelector("#empty");
+    const searchInput = document.querySelector("#search");
+    const rangeButtons = [...document.querySelectorAll(".range-btn")];
+    let activeRange = "all";
+
+    function markerForWeek(weekNumber) {
+      if (weekNumber <= 4) return "var(--green)";
+      if (weekNumber <= 8) return "var(--blue)";
+      return "var(--red)";
+    }
+
+    function problemLink(id) {
+      const slug = PROBLEMS[id];
+      if (!slug) {
+        return `<span class="problem-link">${id}. 未映射题目</span>`;
+      }
+      const href = `https://leetcode.cn/problems/${slug}/`;
+      return `<a class="problem-link" href="${href}" target="_blank" rel="noopener noreferrer">LC ${id}</a>`;
+    }
+
+    function dayText(dayNumber, ids) {
+      return [dayNumber, ...ids].join(" ").toLowerCase();
+    }
+
+    function inActiveRange(dayNumber) {
+      if (activeRange === "all") return true;
+      const [start, end] = activeRange.split("-").map(Number);
+      return dayNumber >= start && dayNumber <= end;
+    }
+
+    function render() {
+      const query = searchInput.value.trim().toLowerCase();
+      const weeks = [];
+
+      for (let weekIndex = 0; weekIndex < 12; weekIndex += 1) {
+        const days = [];
+        for (let offset = 0; offset < 7; offset += 1) {
+          const dayNumber = weekIndex * 7 + offset + 1;
+          const ids = SCHEDULE[dayNumber - 1] || [];
+          const rangeMatch = inActiveRange(dayNumber);
+          const searchMatch = !query || dayText(dayNumber, ids).includes(query);
+          if (rangeMatch && searchMatch) {
+            days.push({ dayNumber, ids });
+          }
+        }
+        if (days.length) {
+          weeks.push({ weekNumber: weekIndex + 1, days });
+        }
+      }
+
+      timeline.innerHTML = weeks.map(week => {
+        const first = (week.weekNumber - 1) * 7 + 1;
+        const last = week.weekNumber * 7;
+        const marker = markerForWeek(week.weekNumber);
+        return `
+          <article class="week" style="--marker: ${marker}">
+            <header class="week-head">
+              <div class="week-code">W${week.weekNumber}</div>
+              <div>
+                <h2 class="week-title">第 ${week.weekNumber} 组</h2>
+                <p class="week-subtitle">按顺序完成。</p>
+              </div>
+              <div class="week-range">Day ${first}<br>Day ${last}</div>
+            </header>
+            <div class="days">
+              ${week.days.map(day => `
+                <section class="day">
+                  <div class="day-head">
+                    <span class="day-no">Day ${day.dayNumber}</span>
+                    <span class="count">${day.ids.length} 题</span>
+                  </div>
+                  ${day.ids.length
+                    ? `<div class="problem-list">${day.ids.map(problemLink).join("")}</div>`
+                    : `<p class="rest-note">不新增题目，按原计划整理记录。</p>`}
+                </section>
+              `).join("")}
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      empty.style.display = weeks.length ? "none" : "block";
+    }
+
+    rangeButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        activeRange = button.dataset.range;
+        rangeButtons.forEach(item => item.classList.toggle("active", item === button));
+        render();
+      });
+    });
+
+    searchInput.addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>
