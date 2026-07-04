@@ -107,6 +107,7 @@ uv add <pkg>     # add a dependency (e.g. uv add fastapi)
 ## Conventions
 
 - **目录结构**：每个新方向/项目放在仓库根目录下独立的顶层目录中。
+- **Bilibili 视频解析**：所有 B 站视频解析与资料整理统一放到 `learning-resources/` 目录下，命名格式为 `bili-summary-{BV号}/`。
 - **飞轮统领**：所有子目录都按 `learning-flywheel/` 的双循环飞轮推进（市场锚定 → 聚焦单一项目 → 边学边做 → 公开输出 → 复盘沉淀）。
 - **Python 工具链**：统一用 `uv` 管理依赖与虚拟环境（`pyproject.toml`，不用 pip/requirements.txt）。
 - **学习记录**：每个子项目的 `README.md` 记录「学到了什么 / 原理要点 / 踩坑 / 面试问法」，作为可复述的复盘材料。
