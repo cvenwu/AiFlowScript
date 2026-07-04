@@ -1,0 +1,919 @@
+repo,lists
+it-ebooks-0/geektime-books,软技能 / 职业
+flycash/interview-baguwen,面试 / 八股
+929220967/books,软技能 / 职业
+visiky/visiky,UNCATEGORIZED
+moutsea/EasyLeetCode,算法;C / C++
+scutan90/DeepLearning-500-questions,LLM 基础
+microsoft/mcp-for-beginners,AI / Agent;LLM 基础;分布式 / 系统设计;Rust
+rohitg00/ai-engineering-from-scratch,AI / Agent;LLM 基础;Rust;软技能 / 职业
+Kocoro-lab/ai-agent-book,AI / Agent;软技能 / 职业
+Infrasys-AI/AIInfra,LLM 基础
+kdsz001/OpenWiki,Rust;工具 / 效率
+datawhalechina/hello-agents,AI / Agent;LLM 基础;软技能 / 职业
+WenyuChiou/awesome-agentic-ai-zh,AI / Agent;LLM 基础;工具 / 效率;软技能 / 职业
+FareedKhan-dev/all-agentic-architectures,AI / Agent;LLM 基础
+WeThinkIn/AIGC-Interview-Book,AI / Agent;LLM 基础;算法;面试 / 八股;软技能 / 职业
+liyupi/mianshiya,AI / Agent;LLM 基础;Go / 后端;分布式 / 系统设计;算法;面试 / 八股;C / C++;工具 / 效率
+didilili/ai-agents-from-zero,AI / Agent;LLM 基础;面试 / 八股;软技能 / 职业
+bcefghj/ai-agent-interview-guide,AI / Agent;面试 / 八股;软技能 / 职业
+luhengshiwo/LLMForEverybody,AI / Agent;LLM 基础;面试 / 八股
+adongwanai/AgentGuide,AI / Agent;LLM 基础;算法;面试 / 八股;软技能 / 职业
+JimLiu/Illustrated-Agent-Skills,AI / Agent
+guocong-bincai/ai-interview-guide,AI / Agent;LLM 基础;面试 / 八股;软技能 / 职业
+HKUDS/ViMax,AI / Agent
+geekjourneyx/md2wechat-skill,AI / Agent;Go / 后端;工具 / 效率
+harry0703/MoneyPrinterTurbo,LLM 基础
+op7418/guizang-social-card-skill,AI / Agent;工具 / 效率
+obra/superpowers,AI / Agent
+freestylefly/awesome-gpt-image-2,AI / Agent;LLM 基础;工具 / 效率
+Egonex-AI/Understand-Anything,AI / Agent;LLM 基础;工具 / 效率
+affaan-m/ECC,AI / Agent;LLM 基础;工具 / 效率
+CheeMao/ai-content,UNCATEGORIZED
+farion1231/cc-switch,AI / Agent;Rust;工具 / 效率
+tanweai/pua,AI / Agent
+openclaw/openclaw,UNCATEGORIZED
+fzy2012/rhzl-Agentic-Design-Patterns-cn,AI / Agent;软技能 / 职业
+ZhuLinsen/daily_stock_analysis,AI / Agent;LLM 基础
+0voice/cpp_backend_awsome_blog,Go / 后端;分布式 / 系统设计;算法;C / C++;云原生 / DevOps
+bytedance/deer-flow,AI / Agent;LLM 基础
+Arindam200/awesome-ai-apps,AI / Agent;LLM 基础;工具 / 效率
+cporter202/automate-faceless-content,UNCATEGORIZED
+nuxt-content/docus,UNCATEGORIZED
+chiphuyen/aie-book,LLM 基础;软技能 / 职业
+karpathy/nanochat,UNCATEGORIZED
+onnx/models,LLM 基础
+ashumishra2104/AI_Travel_agent_Streamlit,AI / Agent;LLM 基础
+rebase-network/who-is-hiring,UNCATEGORIZED
+JoeanAmier/TikTokDownloader,云原生 / DevOps
+sharvaridesai/hexo-theme-edinburgh,UNCATEGORIZED
+Andrew-Jang/RAGHub,AI / Agent;LLM 基础
+everywall/ladder,Go / 后端
+jamwithai/production-agentic-rag-course,AI / Agent
+Jason2Brownlee/awesome-llm-books,LLM 基础;工具 / 效率;软技能 / 职业
+easychen/opc-methodology,UNCATEGORIZED
+cvenwu/OpenPresetBFF,Go / 后端
+linshenkx/prompt-optimizer,AI / Agent;LLM 基础;工具 / 效率
+wassupjay/n8n-free-templates,工具 / 效率
+NanmiCoder/MediaCrawler,UNCATEGORIZED
+genieincodebottle/generative-ai,AI / Agent;LLM 基础;面试 / 八股;软技能 / 职业
+mindverse/Second-Me,UNCATEGORIZED
+comet-ml/opik,AI / Agent;LLM 基础
+aoguai/LiYing,UNCATEGORIZED
+microsoft/ai-agents-for-beginners,AI / Agent;LLM 基础;C / C++
+Sanster/IOPaint,AI / Agent;工具 / 效率
+zuruoke/watermark-removal,LLM 基础
+knowledgefxg/learning-english,UNCATEGORIZED
+moovweb/gvm,Go / 后端
+mastra-ai/mastra,AI / Agent;LLM 基础
+javabuddy/best-system-design-resources,分布式 / 系统设计;面试 / 八股
+CH563/shot-easy-website,C / C++
+DangJin/awesome-social-media-downloader,工具 / 效率
+Sairyss/system-design-patterns,Go / 后端;分布式 / 系统设计;软技能 / 职业
+ashishps1/awesome-low-level-design,面试 / 八股;工具 / 效率;软技能 / 职业
+Sairyss/backend-best-practices,Go / 后端;云原生 / DevOps;软技能 / 职业
+Sairyss/domain-driven-hexagon,Go / 后端;分布式 / 系统设计;软技能 / 职业
+svcvit/Awesome-Dify-Workflow,AI / Agent;工具 / 效率
+wechat-article/wechat-article-exporter,云原生 / DevOps
+ByronLeeeee/MiLike_watermark,UNCATEGORIZED
+dunwu/linux-tutorial,云原生 / DevOps;软技能 / 职业
+orhun/git-cliff,Rust
+krahets/hello-algo,算法;C / C++;Rust;软技能 / 职业
+cvenwu/GoDemo,UNCATEGORIZED
+ByteByteGoHq/system-design-101,分布式 / 系统设计;面试 / 八股
+leandromoreira/digital_video_introduction,LLM 基础;软技能 / 职业
+leandromoreira/cdn-up-and-running,云原生 / DevOps;软技能 / 职业
+karanpratapsingh/system-design,Go / 后端;分布式 / 系统设计;面试 / 八股
+Qexo/Qexo,UNCATEGORIZED
+squidfunk/mkdocs-material,UNCATEGORIZED
+princehuang/overseas-website-note,UNCATEGORIZED
+huangzworks/redis-3.0-annotated,分布式 / 系统设计;C / C++
+foxsen/archbase,UNCATEGORIZED
+027xiguapi/code-box,工具 / 效率
+maurodesouza/profile-readme-generator,工具 / 效率
+miss-mumu/developer2gwy,面试 / 八股
+posit-dev/great-tables,UNCATEGORIZED
+xuchengsheng/spring-reading,软技能 / 职业
+Pintree-io/pintree,UNCATEGORIZED
+yolain/ComfyUI-Yolain-Workflows,AI / Agent
+linyqh/NarratoAI,AI / Agent;LLM 基础
+Zeyi-Lin/HivisionIDPhotos,LLM 基础;算法;云原生 / DevOps
+systemdesign42/system-design-academy,分布式 / 系统设计;面试 / 八股
+ddean2009/MoneyPrinterPlus,AI / Agent;LLM 基础
+stas00/ml-engineering,LLM 基础;分布式 / 系统设计;软技能 / 职业
+allentofight/easy-cs,UNCATEGORIZED
+avast/retry-go,Go / 后端
+Beyondzjl/beijing-fushengji-gpt,LLM 基础
+cvenwu/AlgoBook,算法
+perkfly/reverse-interview-zh,面试 / 八股
+jwasham/coding-interview-university,算法;面试 / 八股
+gobyexample-cn/gobyexample,Go / 后端;软技能 / 职业
+Infrasys-AI/AISystem,LLM 基础
+Developer-Y/cs-video-courses,LLM 基础;分布式 / 系统设计;算法
+xiaolincoder/CS-Base,Go / 后端;分布式 / 系统设计;面试 / 八股;C / C++;云原生 / DevOps
+ashishps1/awesome-system-design-resources,Go / 后端;分布式 / 系统设计;面试 / 八股;工具 / 效率
+yourselfhosted/slash,工具 / 效率
+NginxProxyManager/nginx-proxy-manager,云原生 / DevOps
+kuchin/awesome-cto,面试 / 八股;工具 / 效率;软技能 / 职业
+tw93/Pake,Rust;云原生 / DevOps
+dromara/carbon,Go / 后端
+OpenGithubs/weekly,UNCATEGORIZED
+practical-tutorials/project-based-learning,Go / 后端;C / C++;软技能 / 职业
+lobehub/lobehub,AI / Agent;LLM 基础
+lobehub/sd-webui-lobe-theme,AI / Agent;工具 / 效率
+mao888/golang-guide,Go / 后端;面试 / 八股;软技能 / 职业
+chinesehuazhou/python-weekly,Rust;软技能 / 职业
+scottbez1/smartknob,C / C++
+JuanCrg90/Clean-Code-Notes,软技能 / 职业
+Kanaries/pygwalker,UNCATEGORIZED
+AUTOMATIC1111/stable-diffusion-webui,AI / Agent;LLM 基础
+jincheng9/go-tutorial,Go / 后端;分布式 / 系统设计;软技能 / 职业
+ntegrals/openbrowser,AI / Agent;工具 / 效率
+openmlsys/openmlsys,LLM 基础
+hua1995116/awesome-ai-painting,AI / Agent;工具 / 效率;软技能 / 职业
+dttung2905/kafka-in-production,分布式 / 系统设计;软技能 / 职业
+zhiyiYo/PyQt-Fluent-Widgets,C / C++
+linux-rdma/rdma-core,C / C++;云原生 / DevOps
+SYaoJun/cpp_Interview,面试 / 八股;C / C++;云原生 / DevOps
+rfyiamcool/notes,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+skywind3000/kcp,C / C++
+kyrolabs/awesome-langchain,AI / Agent;LLM 基础;工具 / 效率
+johnlui/PPHC,Rust
+reuixiy/hugo-theme-meme,UNCATEGORIZED
+HengMrZ/chat_azure,Go / 后端
+collabnix/dockerlabs,分布式 / 系统设计;云原生 / DevOps
+liou666/polyglot,UNCATEGORIZED
+fyne-io/fyne,Go / 后端;工具 / 效率
+DevToys-app/DevToysMac,UNCATEGORIZED
+OI-wiki/OI-wiki,算法;软技能 / 职业
+tidwall/gjson,Go / 后端
+imroc/req,Go / 后端
+reeceyng/v2ray-agent,AI / Agent
+PlexPt/awesome-chatgpt-prompts-zh,LLM 基础;工具 / 效率
+kissgyorgy/redbean-docker,云原生 / DevOps
+xugaoyi/vuepress-theme-vdoing,工具 / 效率
+shadowsocks/shadowsocks-windows,UNCATEGORIZED
+usememos/memos,Go / 后端;云原生 / DevOps;工具 / 效率
+jaywcjlove/reference,云原生 / DevOps;工具 / 效率
+visiky/resume,面试 / 八股
+zhisheng17/flink-learning,分布式 / 系统设计
+illacloud/illa-builder,AI / Agent;分布式 / 系统设计;工具 / 效率
+HappyCerberus/book-cpp-algorithms,算法;C / C++;软技能 / 职业
+eliaszon/Programmers-Overseas-Job-Interview-Handbook,面试 / 八股;软技能 / 职业
+zdz/ServerStatus-Rust,Rust
+nilbuild/design-patterns-for-humans,软技能 / 职业
+AmazingAng/WTF-Solidity,软技能 / 职业
+yangxuechen/resume_vue3_ts,面试 / 八股;工具 / 效率
+chubin/wttr.in,Go / 后端
+multiprocessio/datastation,分布式 / 系统设计;云原生 / DevOps
+phachon/mm-wiki,Go / 后端
+google/comprehensive-rust,Rust;软技能 / 职业
+Codesire-Deng/TemplateRepoCxx,C / C++;工具 / 效率
+go-telegram-bot-api/telegram-bot-api,Go / 后端
+Jackpopc/DevWeekly,UNCATEGORIZED
+jerryc127/hexo-theme-butterfly,UNCATEGORIZED
+xuxiaodong/usingcli-book,软技能 / 职业
+CompassSecurity/Hacking_Tools_Cheat_Sheet,UNCATEGORIZED
+Visualize-ML/Book4_Power-of-Matrix,LLM 基础
+timqian/chinese-independent-blogs,UNCATEGORIZED
+hehonghui/awesome-english-ebooks,工具 / 效率;软技能 / 职业
+haizlin/fe-interview,面试 / 八股;工具 / 效率
+public-apis/public-apis,UNCATEGORIZED
+jlevy/the-art-of-command-line,云原生 / DevOps
+AZeC4/TelegramGroup,UNCATEGORIZED
+mfontanini/libtins,C / C++
+vaxilu/x-ui,UNCATEGORIZED
+xxlllq/system_architect,UNCATEGORIZED
+ssnhd/googlevoice,UNCATEGORIZED
+auspbro/ebook-c,软技能 / 职业
+milanm/DevOps-Roadmap,云原生 / DevOps;软技能 / 职业
+koishijs/novelai-bot,AI / Agent
+dean2021/goss,Go / 后端
+zhaohongxuan/obsidian-weread-plugin,UNCATEGORIZED
+yzy1996/English-Writing,UNCATEGORIZED
+dunwu/nginx-tutorial,云原生 / DevOps;软技能 / 职业
+clown-coding/vpn,UNCATEGORIZED
+gonglei007/GameDevMind,C / C++;云原生 / DevOps;软技能 / 职业
+phil-opp/blog_os,C / C++;Rust
+rust-unofficial/awesome-rust,Rust;工具 / 效率
+renyijiu/douyin_downloader,UNCATEGORIZED
+guangzhengli/k8s-tutorials,Go / 后端;云原生 / DevOps;软技能 / 职业
+alibaba/nacos,AI / Agent;Go / 后端;分布式 / 系统设计;云原生 / DevOps
+IBM/sarama,Go / 后端;分布式 / 系统设计
+influxdata/influxdb1-client,Go / 后端
+apache/hertzbeat,AI / Agent;LLM 基础;Go / 后端;分布式 / 系统设计;云原生 / DevOps
+Chenyu-otf/chenyuluoyan_thin,UNCATEGORIZED
+nnethercote/perf-book,Rust;软技能 / 职业
+influxdata/influx-stress,Go / 后端;工具 / 效率
+spf13/cobra,Go / 后端;工具 / 效率
+chaosblade-io/chaosblade,Go / 后端;云原生 / DevOps;工具 / 效率
+cvenwu/os-guide-cn,C / C++;软技能 / 职业
+rocboss/paopao-ce,Go / 后端;分布式 / 系统设计;工具 / 效率
+GreaterWMS/GreaterWMS,UNCATEGORIZED
+tmplink/ipv6,UNCATEGORIZED
+codewithsadee/vcard-personal-portfolio,UNCATEGORIZED
+ahmedtariq01/Cloud-DevOps-Learning-Resources,面试 / 八股;云原生 / DevOps;软技能 / 职业
+kiddin9/Kwrt,UNCATEGORIZED
+rachitiitr/modern-cpp-tricks,算法;面试 / 八股;C / C++
+learntocloud/learn-to-cloud,云原生 / DevOps;工具 / 效率;软技能 / 职业
+loov/lensm,Go / 后端;C / C++
+Celthi/effective-debugging-zh,UNCATEGORIZED
+hackclub/some-assembly-required,C / C++
+remzi-arpacidusseau/ostep-translations,UNCATEGORIZED
+codersguild/System-Design,分布式 / 系统设计;面试 / 八股
+polarismesh/polaris-go,Go / 后端
+InterviewReady/system-design-resources,分布式 / 系统设计;面试 / 八股
+poor-circle/XMU-Daily-Reporter,C / C++
+OBKoro1/koro1FileHeader,工具 / 效率
+google/benchmark,C / C++
+Syllo/nvtop,C / C++;云原生 / DevOps;工具 / 效率
+0voice/cpp_new_features,C / C++
+rd2coding/Road2Coding,UNCATEGORIZED
+armink/EasyLogger,C / C++
+yitter/IdGenerator,分布式 / 系统设计;算法;C / C++;Rust
+nonstriater/Learn-Algorithms,算法;C / C++
+wuye9036/CppTemplateTutorial,C / C++;工具 / 效率;软技能 / 职业
+parallel101/course,C / C++
+SFUMECJF/cmake-examples-Chinese,C / C++
+RudjiGames/MTuner,C / C++;工具 / 效率
+sunface/rust-course,Rust;软技能 / 职业
+influxdata/influxdb,分布式 / 系统设计;Rust;云原生 / DevOps;工具 / 效率
+sunface/rust-by-practice,Rust
+LearningOS/rust-based-os-comp2023,C / C++;Rust
+cstack/db_tutorial,分布式 / 系统设计;C / C++;软技能 / 职业
+netdata/netdata,AI / Agent;LLM 基础;Go / 后端;分布式 / 系统设计;云原生 / DevOps
+qax-os/excelize,AI / Agent;Go / 后端
+apache/doris,AI / Agent;分布式 / 系统设计
+apache/dolphinscheduler,云原生 / DevOps
+yeasy/docker_practice,Go / 后端;云原生 / DevOps;软技能 / 职业
+httprunner/httprunner,AI / Agent;Go / 后端;工具 / 效率
+arriqaaq/flashdb,Go / 后端;分布式 / 系统设计
+arriqaaq/set,Go / 后端;分布式 / 系统设计;算法
+mohuishou/go-design-pattern,Go / 后端;软技能 / 职业
+qiangmzsx/Software-Engineering-at-Google,UNCATEGORIZED
+influxdata/telegraf,AI / Agent;Go / 后端;分布式 / 系统设计;云原生 / DevOps
+apolloconfig/apollo,Go / 后端;分布式 / 系统设计
+yujiangshui/A-Programmers-Guide-to-English,软技能 / 职业
+ithewei/libhv,C / C++
+TheAlgorithms/C,LLM 基础;算法;面试 / 八股;C / C++
+The-Run-Philosophy-Organization/run,UNCATEGORIZED
+clickvisual/clickvisual,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+menghuan/lnmp-code-analysis,分布式 / 系统设计;云原生 / DevOps
+gin-gonic/gin,Go / 后端;分布式 / 系统设计
+RameshMF/spring-boot-tutorial,软技能 / 职业
+yudaocode/SpringBoot-Labs,分布式 / 系统设计
+LukeMathWalker/zero-to-production,Rust;软技能 / 职业
+nusu/avvvatars,工具 / 效率
+amruthpillai/reactive-resume,面试 / 八股;工具 / 效率
+CoderLeixiaoshuai/wuhan-IT,UNCATEGORIZED
+CoderLeixiaoshuai/java-eight-part,分布式 / 系统设计;面试 / 八股
+Yin-Hongwei/music-website,分布式 / 系统设计;工具 / 效率
+wuyouzhuguli/SpringAll,UNCATEGORIZED
+web1992/read,C / C++
+youlookwhat/DesignPattern,软技能 / 职业
+itwanger/toBeBetterJavaer,分布式 / 系统设计;面试 / 八股
+LandGrey/SpringBootVulExploit,UNCATEGORIZED
+dilshankarunarathne/dilshankarunarathne,工具 / 效率
+dunwu/db-tutorial,Go / 后端;分布式 / 系统设计;软技能 / 职业
+yanfeizhang/coder-kung-fu,C / C++
+youngyangyang04/leetcode-master,算法;面试 / 八股;C / C++
+CodingDocs/awesome-java,分布式 / 系统设计;工具 / 效率
+varletjs/varlet,工具 / 效率
+rbmonster/learning-note,分布式 / 系统设计;面试 / 八股
+redis/redis,分布式 / 系统设计;算法;C / C++
+gotomicro/ego,Go / 后端;分布式 / 系统设计
+ShujiaHuang/Cpp-Primer-Plus-6th,C / C++
+go-resty/resty,Go / 后端;分布式 / 系统设计
+PlatformLab/NanoLog,C / C++
+bytedance/sonic,Go / 后端
+forthespada/CS-Books,Go / 后端;分布式 / 系统设计;算法;面试 / 八股;C / C++;云原生 / DevOps;软技能 / 职业
+Enter-tainer/cxx2flow,C / C++;Rust
+Alinshans/MyTinySTL,算法;C / C++
+TheAlgorithms/C-Plus-Plus,LLM 基础;算法;面试 / 八股;C / C++
+ascoders/weekly,工具 / 效率
+donnemartin/system-design-primer,分布式 / 系统设计;面试 / 八股;软技能 / 职业
+teivah/100-go-mistakes,Go / 后端;软技能 / 职业
+microsoft/calculator,C / C++
+feiskyer/sdn-handbook,C / C++;云原生 / DevOps;软技能 / 职业
+simplezhli/flutter_deer,UNCATEGORIZED
+mchong6/JoJoGAN,LLM 基础
+0voice/introduce_c-cpp_manual,算法;面试 / 八股;C / C++
+Knetic/govaluate,Go / 后端
+Vonng/ddia,分布式 / 系统设计;软技能 / 职业
+hengqiali/AwesomeCpp,面试 / 八股;C / C++;工具 / 效率
+applenob/Cpp_Primer_Practice,C / C++
+coolsnowwolf/lede,C / C++
+dibingfa/flash-linux0.11-talk,C / C++;云原生 / DevOps
+huihut/CS-Books,算法;面试 / 八股;C / C++;软技能 / 职业
+vendasta/setup-new-computer-script,UNCATEGORIZED
+Cpp-Club/Cxx_HOPL4_zh,C / C++
+tsherif/space-shooter.c,C / C++;云原生 / DevOps
+PKUFlyingPig/cs-self-learning,UNCATEGORIZED
+gibsjose/cpp-cheat-sheet,算法;C / C++
+jaywcjlove/linux-command,云原生 / DevOps
+qinguoyi/TinyWebServer,C / C++
+imarvinle/WebServer,C / C++;云原生 / DevOps
+linyacool/WebServer,C / C++
+wsdjeg/Learn-Vim_zh_cn,UNCATEGORIZED
+riba2534/TCP-IP-NetworkNote,C / C++
+FASTSHIFT/X-TRACK,C / C++
+lowlighter/metrics,工具 / 效率
+Light-City/CPlusPlusThings,C / C++
+0voice/learning_mind_map,Go / 后端;分布式 / 系统设计;算法;C / C++;云原生 / DevOps
+axiaoxin-com/investool,Go / 后端
+IceWhaleTech/CasaOS,Go / 后端;云原生 / DevOps;工具 / 效率
+hunterhug/goa.c,Go / 后端;算法
+penpot/penpot,分布式 / 系统设计
+fangzesheng/free-api,UNCATEGORIZED
+gopl-zh/gopl-zh.github.com,Go / 后端;软技能 / 职业
+robfig/cron,Go / 后端
+gorse-io/gitrec,工具 / 效率
+bryandlee/animegan2-pytorch,LLM 基础
+xxjwxc/caoguo,Go / 后端;工具 / 效率
+yeemachine/kalidokit,UNCATEGORIZED
+Sxela/face2comics,UNCATEGORIZED
+doggy8088/Learn-Git-in-30-days,UNCATEGORIZED
+spring2go/cs_study_plan,UNCATEGORIZED
+thedevsaddam/gojsonq,Go / 后端
+nndl/nndl,LLM 基础
+JordanKnott/taskcafe,Go / 后端;工具 / 效率
+k88hudson/git-flight-rules,UNCATEGORIZED
+acm-clan/algorithm-stone,算法;C / C++
+Kobaayyy/Awesome-ICCV2025-ICCV2021-Low-Level-Vision,工具 / 效率
+huangmingchuan/Cpp_Primer_Answers,C / C++
+yangchuansheng/envoy-handbook,云原生 / DevOps;软技能 / 职业
+rootsongjc/kubernetes-handbook,云原生 / DevOps;软技能 / 职业
+moby/libnetwork,Go / 后端;云原生 / DevOps
+projectcalico/calico,Go / 后端;云原生 / DevOps
+volcano-sh/volcano,LLM 基础;Go / 后端;云原生 / DevOps
+apache/servicecomb-pack,AI / Agent;Go / 后端;分布式 / 系统设计
+VickScarlet/lifeRestart,UNCATEGORIZED
+dapr/dapr,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+kubesphere-sigs/awesome-cloud-native-blogs,云原生 / DevOps;工具 / 效率
+danielgatis/rembg,工具 / 效率
+brilam/remove-bg,UNCATEGORIZED
+EasyDarwin/EasyDarwin,分布式 / 系统设计
+kubernetes-retired/dashboard,Go / 后端;云原生 / DevOps
+1Panel-dev/KubePi,Go / 后端;云原生 / DevOps
+huihut/interview,分布式 / 系统设计;算法;面试 / 八股;C / C++
+Tencent/secguide,软技能 / 职业
+RealKai42/qwerty-learner,UNCATEGORIZED
+wangdoc/clang-tutorial,C / C++;软技能 / 职业
+girliemac/a-picture-is-worth-a-1000-words,UNCATEGORIZED
+guanguans/design-patterns-for-humans-cn,软技能 / 职业
+docker/getting-started,云原生 / DevOps
+modelfoxdotdev/modelfox,LLM 基础;Go / 后端;Rust
+YatSenOS/YatSenOS-Tutorial-Volume-1,C / C++;软技能 / 职业
+GitHubDaily/GitHubDaily,Go / 后端;算法;云原生 / DevOps;工具 / 效率;软技能 / 职业
+istio/istio,Go / 后端;云原生 / DevOps
+jeffgerickson/algorithms,算法;软技能 / 职业
+envoyproxy/envoy,C / C++;云原生 / DevOps
+etcd-io/etcd,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+linkedin/school-of-sre,分布式 / 系统设计;云原生 / DevOps
+prabhuignoto/react-chrono,工具 / 效率
+r0eXpeR/Online_Tools,UNCATEGORIZED
+RedSpider1/concurrent,UNCATEGORIZED
+jbranchaud/til,UNCATEGORIZED
+kovacsv/Online3DViewer,UNCATEGORIZED
+kunal-kushwaha/DSA-Bootcamp-Java,算法;面试 / 八股
+holynova/gushi_namer,工具 / 效率
+graviraja/MLOps-Basics,LLM 基础
+swaroopch/byte-of-vim,软技能 / 职业
+nikivdev/code,AI / Agent;Rust
+andrews1022/web-development-course-list,UNCATEGORIZED
+wangdoc/bash-tutorial,软技能 / 职业
+talkgo/night,Go / 后端
+0voice/Introduction-to-Golang,Go / 后端;云原生 / DevOps
+common-nighthawk/go-figure,Go / 后端
+fengyuhetao/shell,UNCATEGORIZED
+p4gefau1t/trojan-go,Go / 后端;工具 / 效率
+nezhahq/nezha,Go / 后端;云原生 / DevOps;工具 / 效率
+shadow1ng/fscan,Go / 后端;工具 / 效率
+didi/sharingan,Go / 后端
+iovxw/rssbot,Rust
+chxuan/vimplus,云原生 / DevOps
+AliyunContainerService/terway,Go / 后端;云原生 / DevOps
+flannel-io/flannel,Go / 后端;云原生 / DevOps
+evrone/go-clean-template,Go / 后端;工具 / 效率
+EndlessCheng/mahjong-helper,Go / 后端;算法
+EndlessCheng/codeforces-go,Go / 后端;算法
+exadel-inc/CompreFace,云原生 / DevOps
+eastlakeside/awesome-productivity-cn,工具 / 效率
+yunlzheng/prometheus-book,云原生 / DevOps;软技能 / 职业
+ouqiang/gocron,Go / 后端
+hwholiday/learning_tools,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+golang-design/under-the-hood,Go / 后端
+link1st/gowebsocket,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+labring/sealos,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+KubeOperator/KubeOperator,Go / 后端;云原生 / DevOps
+go101/go101,Go / 后端;软技能 / 职业
+apache/jmeter,工具 / 效率
+kolypto/j2cli,工具 / 效率
+spaceship-prompt/spaceship-prompt,UNCATEGORIZED
+dracula/dracula-theme,UNCATEGORIZED
+harness/harness,Go / 后端;云原生 / DevOps
+hashicorp/packer,Go / 后端;工具 / 效率
+traefik/traefik,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+hajimehoshi/ebiten,Go / 后端
+disintegration/imaging,Go / 后端
+greyireland/algorithm-pattern,Go / 后端;算法;面试 / 八股
+chanify/chanify,Go / 后端;云原生 / DevOps
+cube2222/jql,Go / 后端
+laixintao/python-parallel-programming-cookbook-cn,软技能 / 职业
+docker/awesome-compose,云原生 / DevOps;工具 / 效率
+rosedblabs/rosedb,Go / 后端;分布式 / 系统设计;算法
+fenixsoft/awesome-fenix,Go / 后端;分布式 / 系统设计;云原生 / DevOps;工具 / 效率
+captn3m0/google-sre-ebook,软技能 / 职业
+Jeffail/tunny,Go / 后端
+chefyuan/algorithm-base,算法;面试 / 八股
+OAID/Tengine,LLM 基础;C / C++;云原生 / DevOps
+SSHeRun/CS-Xmind-Note,算法;C / C++
+Mrs4s/go-cqhttp,Go / 后端
+esrrhs/pingtunnel,Go / 后端;云原生 / DevOps;工具 / 效率
+xiaobaiTech/golangFamily,LLM 基础;Go / 后端;分布式 / 系统设计;算法;面试 / 八股;C / C++;软技能 / 职业
+sjqzhang/go-fastdfs,Go / 后端;分布式 / 系统设计;面试 / 八股
+golang-jwt/jwt,Go / 后端
+gourouting/singo,Go / 后端;分布式 / 系统设计
+wzcu/interview-comment,Go / 后端;分布式 / 系统设计;算法;面试 / 八股
+swaggo/gin-swagger,Go / 后端;分布式 / 系统设计
+marusama/semaphore,Go / 后端
+thanos-io/thanos,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+remram44/regex-cheatsheet,UNCATEGORIZED
+douchuan/algorithm,算法;面试 / 八股;Rust
+sger/RustBooks,Rust;软技能 / 职业
+rust-unofficial/patterns,Rust;软技能 / 职业
+mre/idiomatic-rust,Rust
+studygolang/gophers,Go / 后端
+golang/mock,Go / 后端
+apache/rocketmq-client-go,Go / 后端
+rust-lang/rust,Rust
+TheAlgorithms/Rust,算法;Rust
+rfyiamcool/share_ppt,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+excalidraw/excalidraw,工具 / 效率
+susam/muboard,UNCATEGORIZED
+antfu-collective/icones,工具 / 效率
+labulakalia/ibm_bak,Go / 后端
+yuanguangxin/LeetCode,算法;面试 / 八股
+oldratlee/useful-scripts,UNCATEGORIZED
+doocs/source-code-hunter,分布式 / 系统设计
+vanila-io/wireflow,工具 / 效率
+ArchLinuxStudio/ShellTutorial,云原生 / DevOps;软技能 / 职业
+go-yaml/yaml,Go / 后端
+cool-sun/cloudApp,Go / 后端;云原生 / DevOps
+zhangguanzhang/docker-need-to-know,云原生 / DevOps
+reviewdog/reviewdog,Go / 后端;工具 / 效率
+ginuerzh/gost,Go / 后端
+darjun/go-daily-lib,Go / 后端
+marmotedu/iam,Go / 后端
+SKeyerror/Psyduck,Go / 后端;分布式 / 系统设计;C / C++;云原生 / DevOps
+xinliangnote/go-gin-api,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+1zilc/fishing-funds,云原生 / DevOps;工具 / 效率
+xiandanin/magnetW,工具 / 效率
+Codexiaoyi/linweb,Go / 后端
+link1st/go-stress-testing,Go / 后端
+doocs/advanced-java,Go / 后端;分布式 / 系统设计;面试 / 八股
+formulahendry/955.WLB,UNCATEGORIZED
+overnote/over-golang,Go / 后端
+go-kratos/beer-shop,Go / 后端
+ffhelicopter/Go42,Go / 后端;软技能 / 职业
+golang-standards/project-layout,Go / 后端;工具 / 效率
+KeKe-Li/data-structures-questions,Go / 后端;算法
+dennyzhang/kubernetes-yaml-templates,云原生 / DevOps;工具 / 效率
+six-ddc/plow,Go / 后端;工具 / 效率
+kubernetes-sigs/cri-tools,Go / 后端;云原生 / DevOps;工具 / 效率
+kubernetes/enhancements,Go / 后端;云原生 / DevOps
+apache/apisix-ingress-controller,Go / 后端;云原生 / DevOps
+meshplus/bitxhub,Go / 后端
+kubernetes/cloud-provider-alibaba-cloud,Go / 后端;云原生 / DevOps
+kubernetes-sigs/gateway-api,Go / 后端;云原生 / DevOps
+yangchuansheng/prometheus-handbook,Go / 后端;云原生 / DevOps;软技能 / 职业
+aliyun/aliyun-log-go-sdk,Go / 后端
+prometheus/client_golang,Go / 后端;云原生 / DevOps
+kubernetes/client-go,Go / 后端;云原生 / DevOps
+nusr/hacker-laws-zh,UNCATEGORIZED
+yolossn/Prometheus-Basics,Go / 后端;云原生 / DevOps
+talkgo/read,Go / 后端;软技能 / 职业
+grafana/pyroscope,Go / 后端;云原生 / DevOps
+DataDog/the-monitor,UNCATEGORIZED
+kubernetes-sigs/metrics-server,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+zalando-incubator/kube-metrics-adapter,Go / 后端;云原生 / DevOps
+kubernetes/metrics,Go / 后端;云原生 / DevOps
+kubernetes/ingress-nginx,Go / 后端;云原生 / DevOps
+SharingSource/LogicStack-LeetCode,算法;面试 / 八股
+cloudreve/cloudreve,Go / 后端;分布式 / 系统设计
+cloudreve/frontend,工具 / 效率
+gwuhaolin/livego,Go / 后端
+ryo-ma/github-profile-trophy,工具 / 效率
+rahuldkjain/github-profile-readme-generator,工具 / 效率
+darius-khll/golang-developer-roadmap,Go / 后端;软技能 / 职业
+kata-containers/kata-containers,Rust;云原生 / DevOps
+tauri-apps/tauri,Rust;工具 / 效率
+qingshanyinyin/IHome,Go / 后端;云原生 / DevOps
+gee1k/uPic,工具 / 效率
+zeromicro/go-zero,Go / 后端;云原生 / DevOps;工具 / 效率
+PacktPublishing/Mastering-Go-Second-Edition,Go / 后端
+go-perf/awesome-go-perf,Go / 后端;工具 / 效率
+peterq/pan-light,Go / 后端
+golang-design/go2generics,Go / 后端
+cristaloleg/go-advice,Go / 后端;软技能 / 职业
+gocn/news,UNCATEGORIZED
+davidwhogg/MagicCube,UNCATEGORIZED
+petermattis/goid,Go / 后端
+v2rayA/v2rayA,Go / 后端;云原生 / DevOps
+gofiber/fiber,Go / 后端
+studygolang/go-collection,Go / 后端
+zhan3333/note,Go / 后端;算法;面试 / 八股
+weilanwl/coloruicss,工具 / 效率
+gopherchina/meetup,Go / 后端
+gonelist/gonelist,Go / 后端
+hugo-themes/toha,UNCATEGORIZED
+donng/Play-with-Data-Structures,Go / 后端;算法
+eddycjy/go-gin-example,Go / 后端
+sirupsen/logrus,Go / 后端
+smallnest/rpcx,Go / 后端
+Go-000/Go-000,UNCATEGORIZED
+Codexiaoyi/go-mapper,Go / 后端
+spf13/viper,Go / 后端
+DopplerHQ/awesome-interview-questions,面试 / 八股;工具 / 效率
+jobbole/awesome-go-cn,LLM 基础;Go / 后端;分布式 / 系统设计;工具 / 效率
+panjf2000/ants,Go / 后端
+xxjwxc/uber_go_guide_cn,软技能 / 职业
+uber-go/atomic,Go / 后端
+douyu/jupiter,Go / 后端;分布式 / 系统设计
+changkun/redir,Go / 后端
+wx-chevalier/DistributedSystem-Notes,分布式 / 系统设计;C / C++;云原生 / DevOps;软技能 / 职业
+shishan100/Java-Interview-Advanced,面试 / 八股
+geekxh/hello-algorithm,算法;面试 / 八股
+ruanyf/weekly,UNCATEGORIZED
+patrickmn/go-cache,Go / 后端
+cch123/asmshare,UNCATEGORIZED
+cch123/golang-notes,Go / 后端
+progrium/darwinkit,Go / 后端
+eddycjy/fake-useragent,AI / Agent;Go / 后端
+eddycjy/blog,Go / 后端;分布式 / 系统设计
+golang-design/go-questions,Go / 后端;面试 / 八股;软技能 / 职业
+lifei6671/interview-go,Go / 后端;面试 / 八股
+studygolang/Go-Interview-QA,Go / 后端;面试 / 八股
+shgopher/GOFamily,Go / 后端;算法
+yqchilde/Golang-Interview,Go / 后端;面试 / 八股
+AobingJava/JavaFamily,分布式 / 系统设计;面试 / 八股
+aceld/golang,Go / 后端
+lanpa/tensorboardX,LLM 基础
+junyanz/pytorch-CycleGAN-and-pix2pix,LLM 基础
+znxlwm/UGATIT-pytorch,UNCATEGORIZED
+eriklindernoren/PyTorch-GAN,UNCATEGORIZED
+nashory/gans-awesome-applications,工具 / 效率
+demuxin/pytorch_tricks,UNCATEGORIZED
+lib-pku/libpku,UNCATEGORIZED
+phith0n/Mind-Map,UNCATEGORIZED
+geektutu/high-performance-go,Go / 后端
+coder2gwy/coder2gwy,UNCATEGORIZED
+silenceper/wechat,Go / 后端
+jsyzchen/pan,Go / 后端
+vipstone/faceai,UNCATEGORIZED
+photoprism/photoprism,LLM 基础;Go / 后端
+v2fly/v2ray-core,Go / 后端
+halfrost/LeetCode-Go,Go / 后端;算法;面试 / 八股
+tychxn/jd-assistant,UNCATEGORIZED
+xiaobopang/go_init,Go / 后端
+wa8n/wblog,Go / 后端
+HipHopCoderS/ZSH_Config,UNCATEGORIZED
+gin-contrib/cors,Go / 后端;分布式 / 系统设计
+biningo/note-gin,Go / 后端;分布式 / 系统设计;工具 / 效率
+apache/rocketmq,云原生 / DevOps
+hezhizheng/go-movies,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+golang101/golang101,Go / 后端;软技能 / 职业
+coderminer/restful,Go / 后端
+facebookresearch/pifuhd,UNCATEGORIZED
+congz666/cmall-go,Go / 后端
+LLZUPUP/wxapp_wangyiyanxuan,UNCATEGORIZED
+uber-go/zap,Go / 后端
+go-pay/gopay,Go / 后端
+blankjee/file-storage-system,Go / 后端;分布式 / 系统设计
+peterq/practice-in-go,Go / 后端
+afatcoder/LeetcodeTop,算法;面试 / 八股
+go-swagger/go-swagger,Go / 后端
+filebrowser/filebrowser,Go / 后端;工具 / 效率
+ShameCom/ShameCom,面试 / 八股
+Xin-Felix/Mango,UNCATEGORIZED
+oubingbing/school_wechat,UNCATEGORIZED
+flipped-aurora/gin-vue-admin,AI / Agent;Go / 后端;工具 / 效率
+feixiao/Distributed-Systems,Go / 后端;分布式 / 系统设计
+sxs2473/go-performane-tuning,Go / 后端
+mohuishou/scuplus-go,Go / 后端
+royalrick/weapp,Go / 后端
+shen100/wemall,Go / 后端;工具 / 效率
+xiaogao67/gin-cloud-storage,Go / 后端;分布式 / 系统设计
+go-gorm/gorm,Go / 后端
+liweiwei1419/LeetCode-Solutions-in-Good-Style,算法
+gin-gonic/examples,Go / 后端;软技能 / 职业
+AliaksandrSiarohin/first-order-model,LLM 基础
+anandpawara/Real_Time_Image_Animation,UNCATEGORIZED
+qyuhen/book,软技能 / 职业
+yangwenmai/learning-golang,Go / 后端
+valyala/fasthttp,Go / 后端
+crawlab-team/crawlab,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+cookieY/Yearning,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+cookieY/Yearning-gemini,工具 / 效率
+seaweedfs/seaweedfs,Go / 后端;分布式 / 系统设计;云原生 / DevOps
+chzyer/go-fetcher,Go / 后端
+TreB1eN/InsightFace_Pytorch,LLM 基础
+minivision-ai/photo2cartoon,LLM 基础
+golang-china/go2-book,Go / 后端;软技能 / 职业
+GoesToEleven/GolangTraining,Go / 后端
+ldeng7/go-leetcode,Go / 后端;算法
+iikira/Baidu-Login,Go / 后端
+avelino/hugo-theme-sarah,UNCATEGORIZED
+go-admin-team/go-admin,Go / 后端;工具 / 效率
+volantis-x/hexo-theme-volantis,UNCATEGORIZED
+yinggaozhen/awesome-go-cn,Go / 后端;工具 / 效率
+shockerli/go-awesome,Go / 后端;工具 / 效率
+Leslie1sMe/golang,Go / 后端
+CodingDocs/advanced-programmer,UNCATEGORIZED
+unknwon/go-study-index,UNCATEGORIZED
+unknwon/go-fundamental-programming,Go / 后端
+nsqio/nsq,Go / 后端;分布式 / 系统设计
+youngyangyang04/fileHttpServer,Go / 后端
+yangshun/tech-interview-handbook,分布式 / 系统设计;算法;面试 / 八股;软技能 / 职业
+yangshun/front-end-interview-handbook,分布式 / 系统设计;面试 / 八股;软技能 / 职业
+draveness/go-internal,Go / 后端
+golang/groupcache,Go / 后端
+SamZhangQingChuan/Editorials,算法
+lvminghui/Java-Notes,面试 / 八股
+halfrost/Halfrost-Field,LLM 基础;Go / 后端;算法
+anuraghazra/github-readme-stats,工具 / 效率
+geektutu/7days-golang,Go / 后端;分布式 / 系统设计
+kkdai/project52,UNCATEGORIZED
+3xxx/engineercms,Go / 后端;分布式 / 系统设计
+aben1188/awesome-wepy,工具 / 效率
+coolhwm/leshare-seller-wepy,UNCATEGORIZED
+studygolang/studygolang,Go / 后端
+hoanhan101/algo,Go / 后端;面试 / 八股
+chai2010/go-ast-book,Go / 后端;软技能 / 职业
+xinliangnote/Go,Go / 后端
+wuzhl2018/hello-algorithm,算法;工具 / 效率
+baxiang/leetcode-go,Go / 后端;算法
+macdao/ocds-guide-to-setting-up-mac,软技能 / 职业
+Blankj/AndroidOfferKiller,算法;面试 / 八股;软技能 / 职业
+beego/beego,Go / 后端
+astaxie/go-best-practice,Go / 后端
+rubyhan1314/Golang-100-Days,Go / 后端
+czy36mengfei/tensorflow2_tutorials_chinese,LLM 基础;软技能 / 职业
+avelino/awesome-go,Go / 后端;工具 / 效率
+tutRPi/Raspberry-Pi-Gas-Sensor-MQ,UNCATEGORIZED
+nikolaydubina/calendarheatmap,Go / 后端;C / C++;工具 / 效率
+astaxie/build-web-application-with-golang,Go / 后端
+unknwon/the-way-to-go_ZH_CN,Go / 后端;软技能 / 职业
+chai2010/advanced-go-programming-book,Go / 后端;分布式 / 系统设计;工具 / 效率;软技能 / 职业
+quii/learn-go-with-tests,Go / 后端
+labuladong/fucking-algorithm,算法;面试 / 八股
+WuPeiqi/go_course,Go / 后端
+ojeveryday/AlgoWiki,算法
+iina/iina,UNCATEGORIZED
+hzwer/shareOI,算法
+howie6879/owllook,软技能 / 职业
+dongweiming/lyanna,工具 / 效率
+leisurelicht/wtfpython-cn,LLM 基础
+crazyguitar/pysheeet,UNCATEGORIZED
+HelloGitHub-Team/wiki,UNCATEGORIZED
+jamespacileo/django-pure-pagination,UNCATEGORIZED
+mbi/django-simple-captcha,UNCATEGORIZED
+huangruiteng/CS-Notes,UNCATEGORIZED
+pythonstock/stock,UNCATEGORIZED
+yehux/Coot,Go / 后端;工具 / 效率
+sanjinhub/hexo-theme-geek,工具 / 效率
+cteamx/Thief,工具 / 效率;软技能 / 职业
+JohnCoates/Aerial,UNCATEGORIZED
+manishbisht/Competitive-Programming,算法;面试 / 八股;C / C++;工具 / 效率;软技能 / 职业
+hollischuang/toBeTopJavaer,分布式 / 系统设计;软技能 / 职业
+hysts/pytorch_image_classification,UNCATEGORIZED
+serhii-londar/open-source-mac-os-apps,工具 / 效率
+fchollet/deep-learning-with-python-notebooks,LLM 基础;软技能 / 职业
+amusi/AI-Job-Notes,LLM 基础;算法;面试 / 八股
+pliang279/awesome-multimodal-ml,LLM 基础;工具 / 效率
+huzecong/oi-slides,UNCATEGORIZED
+facebookresearch/pytorch3d,UNCATEGORIZED
+jankapunkt/latexcv,面试 / 八股;工具 / 效率
+lucidrains/reformer-pytorch,LLM 基础
+awesomedata/awesome-public-datasets,工具 / 效率
+trimstray/the-book-of-secret-knowledge,云原生 / DevOps;工具 / 效率;软技能 / 职业
+easychen/howto-make-more-money,UNCATEGORIZED
+spmallick/learnopencv,LLM 基础;C / C++;软技能 / 职业
+donnemartin/data-science-ipython-notebooks,LLM 基础;软技能 / 职业
+cs230-stanford/cs230-code-examples,UNCATEGORIZED
+shenweichen/coding_interviews,面试 / 八股
+dragen1860/Deep-Learning-with-TensorFlow-book,LLM 基础;软技能 / 职业
+paperswithcode/ai-deadlines,LLM 基础
+pradeeplam/Anime-Sketch-Coloring-with-Swish-Gated-Residual-UNet,UNCATEGORIZED
+TachibanaYoshino/AnimeGAN,UNCATEGORIZED
+xunhuang1995/AdaIN-style,LLM 基础
+fg91/visualizing-cnn-feature-maps,LLM 基础
+Luolc/AdaBound,UNCATEGORIZED
+leemengtw/deep-learning-resources,LLM 基础
+znxlwm/pytorch-generative-model-collections,UNCATEGORIZED
+caicloud/tensorflow-tutorial,LLM 基础;软技能 / 职业
+aymericdamien/TensorFlow-Examples,LLM 基础;软技能 / 职业
+mnicnc404/CartoonGan-tensorflow,LLM 基础
+chenyuntc/pytorch-best-practice,UNCATEGORIZED
+jingweiz/pytorch-rl,LLM 基础
+L1aoXingyu/pytorch-beginner,软技能 / 职业
+victoresque/pytorch-template,工具 / 效率
+ealeksandrov/EAIntroView,UNCATEGORIZED
+vsouza/awesome-ios,工具 / 效率
+bizz84/SwiftyStoreKit,UNCATEGORIZED
+jobbole/awesome-ios-cn,工具 / 效率
+doocs/leetcode,Go / 后端;算法;面试 / 八股;C / C++
+doocs/data-structure-and-algorithm,算法
+doocs/coding-interview,算法;面试 / 八股
+doocs/deep-learning,LLM 基础
+doocs/technical-books,LLM 基础;Go / 后端;分布式 / 系统设计;软技能 / 职业
+Kaixhin/grokking-pytorch,LLM 基础;软技能 / 职业
+chiphuyen/python-is-cool,LLM 基础;软技能 / 职业
+fengdu78/Data-Science-Notes,LLM 基础
+tensorflow/tfjs-models,LLM 基础
+jhao104/proxy_pool,分布式 / 系统设计
+shengqiangzhang/examples-of-web-crawlers,AI / Agent
+eriklindernoren/ML-From-Scratch,LLM 基础;算法
+jobbole/awesome-python-cn,分布式 / 系统设计;工具 / 效率
+jobbole/awesome-sysadmin-cn,工具 / 效率
+ddbourgin/numpy-ml,LLM 基础
+huailiang/knead_proj,UNCATEGORIZED
+royeo/awesome-programming-books,Go / 后端;分布式 / 系统设计;算法;C / C++;云原生 / DevOps;工具 / 效率;软技能 / 职业
+LeCoupa/awesome-cheatsheets,Go / 后端;分布式 / 系统设计;云原生 / DevOps;工具 / 效率
+veggiemonk/awesome-docker,云原生 / DevOps;工具 / 效率
+Entromorgan/Autoticket,UNCATEGORIZED
+zhanghang1989/PyTorch-Multi-Style-Transfer,LLM 基础
+znxlwm/pytorch-CartoonGAN,UNCATEGORIZED
+Yijunmaverick/CartoonGAN-Test-Pytorch-Torch,UNCATEGORIZED
+soumith/ganhacks,UNCATEGORIZED
+mattya/chainer-DCGAN,UNCATEGORIZED
+tdrussell/IllustrationGAN,UNCATEGORIZED
+ycjing/Neural-Style-Transfer-Papers,UNCATEGORIZED
+lengstrom/fast-style-transfer,LLM 基础
+NVlabs/stylegan2,UNCATEGORIZED
+NVlabs/stylegan,UNCATEGORIZED
+jayleicn/animeGAN,LLM 基础
+Prinsphield/ELEGANT,UNCATEGORIZED
+sunshineatnoon/PytorchWCT,UNCATEGORIZED
+naoto0804/pytorch-AdaIN,UNCATEGORIZED
+CompVis/adaptive-style-transfer,UNCATEGORIZED
+una-dinosauria/3d-pose-baseline,UNCATEGORIZED
+wuhuikai/GP-GAN,LLM 基础
+datitran/face2face-demo,UNCATEGORIZED
+LynnHo/AttGAN-Tensorflow,UNCATEGORIZED
+lutzroeder/netron,LLM 基础
+L1aoXingyu/code-of-learn-deep-learning-with-pytorch,LLM 基础;软技能 / 职业
+chiphuyen/machine-learning-systems-design,LLM 基础;软技能 / 职业
+JDAI-CV/fast-reid,UNCATEGORIZED
+layumi/Person_reID_baseline_pytorch,工具 / 效率;软技能 / 职业
+hindupuravinash/the-gan-zoo,LLM 基础
+dragen1860/TensorFlow-2.x-Tutorials,LLM 基础;软技能 / 职业
+miguelgfierro/ai_projects,LLM 基础
+creafz/pytorch-cnn-finetune,LLM 基础
+d2l-ai/berkeley-stat-157,LLM 基础
+xinario/awesome-gan-for-medical-imaging,LLM 基础;工具 / 效率
+apachecn/ailearning,LLM 基础
+TingsongYu/PyTorch_Tutorial,软技能 / 职业
+nitrain/nitrain,LLM 基础
+jindongwang/transferlearning,LLM 基础;软技能 / 职业
+floodsung/Deep-Learning-Papers-Reading-Roadmap,LLM 基础;软技能 / 职业
+StanfordVL/cs131_notes,UNCATEGORIZED
+amusi/Deep-Learning-Interview-Book,LLM 基础;面试 / 八股;软技能 / 职业
+Sophia-11/Machine-Learning-Notes,LLM 基础;算法
+huailiang/face-nn,UNCATEGORIZED
+justjavac/free-programming-books-zh_CN,工具 / 效率;软技能 / 职业
+1adrianb/face-alignment,LLM 基础
+chenyuntc/pytorch-book,LLM 基础;软技能 / 职业
+MorvanZhou/PyTorch-Tutorial,LLM 基础;软技能 / 职业
+INTERMT/Awesome-PyTorch-Chinese,LLM 基础;工具 / 效率
+fengdu78/AiLearning,LLM 基础
+fengdu78/DeepLearning-500-questions,LLM 基础
+fengdu78/deeplearning_ai_books,LLM 基础;软技能 / 职业
+ondyari/FaceForensics,UNCATEGORIZED
+deepfakes/faceswap,LLM 基础
+zergtant/pytorch-handbook,LLM 基础;软技能 / 职业
+ShusenTang/Dive-into-DL-PyTorch,LLM 基础;软技能 / 职业
+yunjey/pytorch-tutorial,LLM 基础;软技能 / 职业
+deeplearning-ai/machine-learning-yearning-cn,LLM 基础;工具 / 效率;软技能 / 职业
+Azure/MachineLearningNotebooks,LLM 基础;软技能 / 职业
+yongxinz/backend-interview,Go / 后端;分布式 / 系统设计;算法;面试 / 八股
+xitu/gold-miner,工具 / 效率;软技能 / 职业
+cy69855522/Shortest-LeetCode-Python-Solutions,算法
+apachecn/awesome-data-comp-solution,工具 / 效率
+apachecn/ai-roadmap,软技能 / 职业
+fengdu78/lihang-code,LLM 基础
+toutiaoio/awesome-architecture,工具 / 效率
+sorenduan/awesome-java-books,算法;面试 / 八股;工具 / 效率;软技能 / 职业
+CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers,LLM 基础
+justauth/JustAuth,UNCATEGORIZED
+apachecn/sklearn-doc-zh,LLM 基础;工具 / 效率;软技能 / 职业
+houshanren/hangzhou_house_knowledge,工具 / 效率
+mrvautin/adminMongo,分布式 / 系统设计;工具 / 效率
+benedekrozemberczki/awesome-community-detection,LLM 基础;工具 / 效率
+rmusser01/Infosec_Reference,云原生 / DevOps;工具 / 效率
+TeamStuQ/skill-map,UNCATEGORIZED
+lazyprogrammer/machine_learning_examples,LLM 基础;软技能 / 职业
+rebeyond/Behinder,UNCATEGORIZED
+trekhleb/homemade-machine-learning,LLM 基础;算法
+getgridea/gridea,工具 / 效率
+olivia-ai/olivia,LLM 基础;Go / 后端
+formulahendry/formulahendry.github.io.source,UNCATEGORIZED
+formulahendry/944.Life,UNCATEGORIZED
+stanzhai/be-a-professional-programmer,工具 / 效率
+liminalpurr/jizhi,UNCATEGORIZED
+gorse-io/gorse,LLM 基础;Go / 后端
+Remix-Design/Sogou-Input-Skin,UNCATEGORIZED
+kefranabg/readme-md-generator,工具 / 效率
+0voice/interview_internal_reference,分布式 / 系统设计;面试 / 八股;云原生 / DevOps
+wwenj/tripRecord,工具 / 效率
+0voice/from_coder_to_expert,UNCATEGORIZED
+openspug/spug,AI / Agent;云原生 / DevOps
+apachecn/.github,工具 / 效率
+Honlan/DeepInterests,LLM 基础
+jasonlong/isometric-contributions,UNCATEGORIZED
+azl397985856/leetcode,算法;面试 / 八股;C / C++
+algorithm-visualizer/algorithm-visualizer,算法
+amusi/AI-Job-Recommend,LLM 基础;面试 / 八股
+zhengzhugithub/CV-arXiv-Daily,UNCATEGORIZED
+Honlan/fullstack-data-engineer,LLM 基础
+begeekmyfriend/leetcode,算法;C / C++
+vega/altair,UNCATEGORIZED
+instillai/machine-learning-course,LLM 基础;算法
+youfou/wxpy,UNCATEGORIZED
+Snailclimb/JavaGuide,AI / Agent;Go / 后端;分布式 / 系统设计;面试 / 八股;软技能 / 职业
+MisterBooo/LeetCodeAnimation,算法
+microsoft/terminal,C / C++
+huaxz1986/git_book,LLM 基础
+darknessomi/musicbox,云原生 / DevOps;工具 / 效率
+nicolargo/glances,云原生 / DevOps
+xchaoinfo/fuck-login,UNCATEGORIZED
+TheAlgorithms/Go,Go / 后端;算法;面试 / 八股
+qiyuangong/leetcode,算法
+apachecn/Interview,LLM 基础;算法;面试 / 八股
+borisbanushev/stockpredictionai,LLM 基础
+wangqingbaidu/Dr.Sure,LLM 基础;软技能 / 职业
+TheAlgorithms/Python,算法;面试 / 八股
+makcedward/nlp,LLM 基础
+zhongyi-tong/git-recipes,软技能 / 职业
+apachecn/apachecn-algo-zh,算法;面试 / 八股
+chinabugotech/hutool,工具 / 效率
+521xueweihan/git-tips,UNCATEGORIZED
+521xueweihan/HelloGitHub,UNCATEGORIZED
+frank-lam/fullstack-tutorial,面试 / 八股;软技能 / 职业
+vinta/awesome-python,工具 / 效率
+cs231n/cs231n.github.io,LLM 基础
+chiphuyen/lazynlp,LLM 基础
+xingshaocheng/architect-awesome,Go / 后端
+tongtzeho/PKUCourse,算法;C / C++
+USTC-Resource/USTC-Course,C / C++
+PKUanonym/REKCARC-TSC-UHT,UNCATEGORIZED
+zh-google-styleguide/zh-google-styleguide,软技能 / 职业
+NLPchina/Awesome-Chinese-NLP,LLM 基础;工具 / 效率
+dennybritz/deeplearning-papernotes,LLM 基础
+996icu/996.ICU,UNCATEGORIZED
+CyC2018/Job-Recommend,面试 / 八股
+CyC2018/Markdown-Resume,面试 / 八股
+h2pl/JavaTutorial,面试 / 八股;软技能 / 职业
+wangkuiwu/datastructs_and_algorithm,算法;C / C++
+resumejob/awesome-resume,面试 / 八股;工具 / 效率
+salomonelli/best-resume-ever,面试 / 八股;工具 / 效率
+billryan/resume,面试 / 八股;工具 / 效率
+geekcompany/ResumeSample,面试 / 八股;C / C++;工具 / 效率
+exacity/deeplearningbook-chinese,LLM 基础;软技能 / 职业
+DeathKing/Learning-SICP,UNCATEGORIZED
+iluwatar/java-design-patterns,工具 / 效率;软技能 / 职业
+Blankj/awesome-java-leetcode,算法;工具 / 效率
+prakhar1989/awesome-courses,工具 / 效率;软技能 / 职业
+ivmm/Student-resources,UNCATEGORIZED
+dipakkr/A-to-Z-Resources-for-Students,工具 / 效率
+yanhaijing/loveTimeline,UNCATEGORIZED
+gouthampradhan/leetcode,算法;面试 / 八股
+reyzal2018/nowcoder,C / C++
+shiqitao/NowCoder-Solutions,算法;C / C++
+protream/iquery,UNCATEGORIZED
+HugoBlox/kit,工具 / 效率
+gohugoio/hugo,Go / 后端;工具 / 效率
+AmyliaY/caipiao,UNCATEGORIZED
+CyC2018/CS-Notes,分布式 / 系统设计;算法;面试 / 八股;C / C++;软技能 / 职业
+hyper0x/goc2p,Go / 后端;软技能 / 职业
+hackerzhou/Love,UNCATEGORIZED
+LRH1993/LiveCircle,UNCATEGORIZED
+getgrav/grav-theme-resume,面试 / 八股
+resume/resume.github.com,面试 / 八股
+izuolan/zresume,面试 / 八股
+wupeixuan/JDKSourceCode1.8,UNCATEGORIZED
+byoungd/Resume-template-for-Coder,面试 / 八股;工具 / 效率
+byoungd/up,软技能 / 职业
+codefine/hexo-theme-mellow,UNCATEGORIZED
+akarineren/hexo-theme-primer,UNCATEGORIZED
+EbookFoundation/free-programming-books,软技能 / 职业
+airyland/china-area-data,UNCATEGORIZED
+fengdu78/Coursera-ML-AndrewNg-Notes,LLM 基础
+binarywang/WxJava,Go / 后端
+judasn/IntelliJ-IDEA-Tutorial,软技能 / 职业
+layui/layui,UNCATEGORIZED
+google/material-design-lite,UNCATEGORIZED
+home-assistant/core,工具 / 效率
+kevin-wayne/algs4,算法
+karan/Projects,UNCATEGORIZED
+hellokaton/java-bible,云原生 / DevOps;软技能 / 职业
