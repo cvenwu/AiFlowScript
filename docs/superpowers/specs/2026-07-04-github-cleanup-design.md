@@ -47,7 +47,7 @@
 | 5 | 重点投入 | **主页 README + Pinned** 与 **AiFlow / AiKnowledge README 深度打磨** |
 | 6 | 整体编排 | **清理优先**：① 清理 → ② 主页 → ③ 旗舰 README → ④ Star |
 | 7 | 噪音学习仓合并力度 | **合并成 1 个 `study-notes` 总仓**（原仓归档） |
-| 8 | Pinned 偏向 | **均衡（AI + 系统）** |
+| 8 | Pinned 偏向 | **聚焦 AI**（仅 AiFlowScript / AiFlow / AiKnowledge 三个 AI 项目置顶） |
 | 9 | 主页语言 | **中文主导**（关键术语保留英文） |
 | 10 | Stats 卡片 | **加动态 stats 卡片** |
 | 11 | 「关于我」定位 | 不写「转型」，写「**能同时胜任 Go 后端 & AI 工程**」双栈 |
@@ -63,7 +63,7 @@
 阶段①  仓库清理           阶段②  主页门面            阶段③  旗舰打磨          阶段④  Star 重组
  ├─ 归档全部 fork(17)  →   ├─ cvenwu/cvenwu     →   ├─ AiFlow 深度     →   ├─ 32→11 类
  ├─ 合并→study-notes(25)   │   README 重写            └─ AiKnowledge 深度    ├─ 未分类 star 归位
- ├─ 归档噪音仓(22)         └─ 设置 6 个 Pinned                              └─ UI 手动执行
+ ├─ 归档噪音仓(21)         └─ 设置 3 个 Pinned                              └─ UI 手动执行
  └─ 保留+优化 meta(15)
     （需 gh/token）          （需 gh/token + UI）      （本地改 + push）       （纯 UI，无需 token）
 ```
@@ -80,7 +80,7 @@
 
 | 标记 | 动作 | 是否可逆 | 说明 |
 |---|---|---|---|
-| 📌 PIN | 保留 + 打磨 + 置顶 | — | 招聘方首屏 6 个 |
+| 📌 PIN | 保留 + 打磨 + 置顶 | — | 招聘方首屏 3 个 |
 | ✅ KEEP | 保留 + 优化 description/topics | — | 有 star 或支撑定位的项目 |
 | 🔀 MERGE | 内容迁入 `study-notes`，原仓归档 | 可逆 | 25 个纯学习仓合并成 1 仓 |
 | 📦 ARCHIVE | 翻为只读归档 | 可逆（unarchive） | 博客/图床/模板/离题仓 + 全部 fork，star 保留 |
@@ -107,38 +107,36 @@ study-notes/
 
 > 迁移方式：保留原仓历史（`git subtree` 或按目录复制 + 在 study-notes 的 README 标注来源链接），原仓 archive。**内容不丢失、star 不丢失**（原仓归档仍可见）。
 
-### 4.3 六个 Pinned 仓（均衡 AI + 系统）
+### 4.3 三个 Pinned 仓（聚焦 AI）
 
 | Pinned | 语言 | 价值定位 | star |
 |---|---|---|---|
 | `AiFlowScript` | Python | AI Agent 项目驱动学习与实战 | — |
 | `AiFlow` | — | 103 个可公开 Agent Skill 合集（蹭 skills 热点） | — |
 | `AiKnowledge` | VitePress | AI 学习知识库（已部署站点） | — |
-| `OpenPresetBFF` | Go | Go BFF 服务 | 1 |
-| `DistributedFileServer` | Go | Go 分布式文件上传服务 | 3 |
-| `GraduationProject` | Python | 基于 CNN 与词向量的句子相似度（AI 方向对口） | 14 |
 
-> `SimpleERP`（112★, Java 2018）不置顶：语言与年代不贴合 AI/Go 后端定位，改为 KEEP 保留，作为背景社会证明仍可见。
-> Pinned 六仓覆盖 AI 应用（AiFlowScript/AiFlow/AiKnowledge）+ Go 后端分布式（OpenPresetBFF/DistributedFileServer）+ AI 学术产出（GraduationProject），整体偏 AI、兼顾后端。
+> 用户已确认：Pinned 只保留 3 个 AI 项目。`OpenPresetBFF`、`DistributedFileServer`、`GraduationProject` 移出置顶、降为 KEEP（仍保留可见）。
+> ⚠️ 权衡提示：Pinned 全为 AI 项目，主页「精选项目」区不再直接展示 Go 后端代码。Go 后端能力仍由主页 README 的「关于我 / 技术栈」文字承载，且 `OpenPresetBFF` / `DistributedFileServer` 仍在仓库列表可见。
 
 ### 4.4 全 79 仓决策表
 
 > 说明：本方案零删除，所有仓库归入 保留 / 合并 / 归档 三类；⚠️ 仅在离题但有 star 的仓库上提示可复核。
 
-#### 📌 PIN（6）
+#### 📌 PIN（3）
 | 仓库 | 语言 | star | 动作 |
 |---|---|---|---|
 | AiFlowScript | Python | — | 保留+置顶（README 已精品，仅微调） |
 | AiFlow | TS | — | 保留+置顶+**深度打磨 README** |
 | AiKnowledge | VitePress | — | 保留+置顶+**深度打磨 README** |
-| OpenPresetBFF | Go | 1 | 保留+置顶+补 meta |
-| DistributedFileServer | Go | 3 | 保留+置顶+补 meta |
-| GraduationProject | Python | 14 | 保留+置顶+补 meta（AI 方向对口） |
 
-#### ✅ KEEP（9）
+#### ✅ KEEP（13）
 | 仓库 | 语言 | star | 动作 |
 |---|---|---|---|
 | cvenwu | — | — | Profile README 专用仓（阶段②重写） |
+| OpenPresetBFF | Go | 1 | 保留+补 meta（移出 Pinned） |
+| DistributedFileServer | Go | 3 | 保留+补 meta（移出 Pinned） |
+| GraduationProject | Python | 14 | 保留+优化 meta（移出 Pinned，AI 方向对口） |
+| OnlineDocuments | — | — | 保留（用户指定不归档） |
 | PersonalResume | Astro | — | 保留，补 description |
 | CheatSheetCollection | — | — | 保留（活跃、有用） |
 | SimpleERP | Java | 112 | 保留+优化 meta（背景社会证明，不置顶） |
@@ -151,18 +149,18 @@ study-notes/
 #### 🔀 MERGE → `study-notes`（25，原仓归档）
 GoDemo(1★) · OldBoyGolang(2★) · GoInAction · GinFrameworkDemo · Gin_vue · GoWorkFlow · GoAppTemplate · gin_blog · GithubWebhookGo · LeetCodeSolutions · AlgoSolutions · CppLibrary · CppTemplates · PythonNote · PythonCodeHelper · MySqlCookbook · ML_AndrewNg · BasicCompu · CrawlDoubanMovie · BaiduMapSpider(1★) · CrawlITBooks(1★) · GitCommandDemo · GitBook · Wiki · LearningRecord
 
-#### 📦 ARCHIVE（22，只读、star 保留）
+#### 📦 ARCHIVE（21，只读、star 保留）
 **博客/主页（10）**：VuePressPlumeTheme · stellar_blog · YiBlog · sivanWu0222.github.io · sivanWu0222.github.io.sourcecode · sivanWu0222.github.io2(1★) · sivanWu0222 · sivan0222.cn · love.sivanWu0222.github.io · resume.sivanWu0222.github.io
 **图床（3）**：UpicGallery · UpicImageHosting · ImageHosting
 **模板（2）**：MaterialDocTemplate · DocsifyTemplate
-**离题/旧（7）**：OnlineDocuments · GithubApiVi · ResourceManage · ApplyMaster(1★) · LoveTimeLine(1★) · ChooseCourse(3★，旧 ASP.NET) · DiplomaProject（GraduationProject 的重复项）
+**离题/旧（6）**：GithubApiVi · ResourceManage · ApplyMaster(1★) · LoveTimeLine(1★) · ChooseCourse(3★，旧 ASP.NET) · DiplomaProject（GraduationProject 的重复项）
 
 #### 📦 ARCHIVE — 全部 fork（17，只读、star 保留、不删除）
 ohmyzsh · Cloudreve · new-pac · LeetCode-Go · EasyLeetCode · prometheus-book · go-stress-testing · ego-kit · photo2cartoon · ZSH_Config · gin-cloud-storage · practice-in-go · books · interview-baguwen · geektime-books · os-guide-cn(1★) · rhzl-Agentic-Design-Patterns-cn
 
 > 用户已确认：所有 fork 一律归档（archive），不删除。归档保留 star、可随时 unarchive、可重新对比 upstream。
 
-> 合计：6(PIN) + 9(KEEP) + 25(MERGE) + 22(ARCHIVE 噪音仓) + 17(ARCHIVE fork) = **79** ✓
+> 合计：3(PIN) + 13(KEEP) + 25(MERGE) + 21(ARCHIVE 噪音仓) + 17(ARCHIVE fork) = **79** ✓
 
 ---
 
@@ -177,7 +175,7 @@ ohmyzsh · Cloudreve · new-pac · LeetCode-Go · EasyLeetCode · prometheus-boo
    - 🧩 **双栈工程师**：既能做 **Go 服务端研发**（高并发、分布式、微服务治理），也能做 **AI Agent 应用 & Harness 工程**（Agent Loop、Tool Calling、上下文管理、评测）
    - 🏗️ 有大规模后端系统经验（可脱敏表述，如 10w+ QPS 延迟收益系统）
    - 🔬 偏好从第一性原理讲清底层机制，不止会用框架
-3. **🚀 精选项目**：6 个 Pinned 的两列表格（一句话价值 + 技术标签），供 15 秒扫读。
+3. **🚀 精选项目**：3 个 Pinned 的两列表格（一句话价值 + 技术标签），供 15 秒扫读。
 4. **🛠️ 技术栈**：徽章行 Go / Python / AI Agent（LangGraph、MCP、Ollama）/ 分布式 / DevOps。
 5. **📊 GitHub Stats**：`github-readme-stats` + top-langs + streak 卡片（动态自更新）。
 6. **📫 联系方式**：博客 `yirufeng.top`，邮箱（可选）。
@@ -275,7 +273,7 @@ superpowers / ECC → AI/Agent；hello-agents / all-agentic-architectures / ai-a
 
 ## 9. 成功标准（招聘方视角）
 
-1. 主页首屏：清晰定位 + 6 个 Pinned + stats，15 秒看懂「能做 Go 后端 & AI」。
+1. 主页首屏：清晰定位 + 3 个 Pinned + stats，15 秒看懂「能做 Go 后端 & AI」。
 2. 仓库列表首页不再被博客/图床/学习记录刷屏。
 3. `AiFlow` / `AiKnowledge` 具备专业 README（badges + 架构图 + demo）。
 4. Star 从 32 碎片列表 → 11 类，新 AI star 全部归位。
