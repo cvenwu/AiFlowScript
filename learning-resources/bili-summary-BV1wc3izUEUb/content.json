@@ -1,0 +1,251 @@
+{
+  "title": "使用 Python 构建 RAG 系统 —— 用代码还原 RAG 系统的每个细节",
+  "meta": {
+    "up": "马克的技术工作坊",
+    "duration": "17:30",
+    "url": "https://www.bilibili.com/video/BV1wc3izUEUb",
+    "bvid": "BV1wc3izUEUb",
+    "is_multipart": false
+  },
+  "overview": "本视频是一期「纯手写代码」的 RAG 实战教程：作者用 Python 从零实现一个完整的 RAG（检索增强生成）系统，把 RAG 的每一个环节——分片、索引、召回、重排、生成——都用可运行的代码还原出来，帮助观众彻底搞懂 RAG 到底是怎么跑起来的。整个项目基于 uv（Python 包管理器）+ Jupyter Notebook 搭建，使用 sentence-transformers 加载 Embedding 模型（text2vec-base-chinese）与 Cross-Encoder 重排模型（mmarco-mMiniLMv2），用 ChromaDB 作为向量数据库，最终用 Google 的 Gemini 2.5 Flash 大模型生成答案。为保证测试不被大模型「背题」污染，作者特意编造了一篇「哆啦A梦与超级赛亚人一起打败黑暗势力、拯救地球」的原创文章 doc.md 作为知识库，并以「哆啦A梦使用的3个秘密道具分别是什么？」为例，完整演示了从提问到生成答案的全过程。视频还特别展示了一个关键现象：向量检索（Embedding 召回）把正确答案片段召回了，但没排在第一，而经过 Cross-Encoder 重排后，正确片段被准确地排到了第一位——直观证明了「重排」这一步的价值。全部代码可在作者的 GitHub 仓库获取。",
+  "framework_diagram": {
+    "type": "mermaid",
+    "code": "graph TD\n    Start([RAG 系统实现]) --> Prep[环境准备]\n    Prep --> P1[\"安装 uv + Jupyter Notebook\"]\n    Prep --> P2[\"mkdir rag / uv init / uv add 依赖\"]\n    Prep --> P3[\"准备知识库文档 doc.md\"]\n    Start --> Before[\"提问前：数据准备\"]\n    Before --> B1[\"① 分片 Chunking\"]\n    Before --> B2[\"② 索引 Indexing\"]\n    B2 --> B2a[\"Embedding 模型生成向量\"]\n    B2 --> B2b[\"存入 ChromaDB 向量数据库\"]\n    Start --> After[\"提问后：回答生成\"]\n    After --> A1[\"③ 召回 Retrieve（向量相似度 Top-K）\"]\n    After --> A2[\"④ 重排 Rerank（Cross-Encoder）\"]\n    After --> A3[\"⑤ 生成 Generate（Gemini 2.5 Flash）\"]\n    A3 --> End([最终答案])\n    style Before fill:#1e3a5f,color:#fff\n    style After fill:#5f1e3a,color:#fff\n    style Prep fill:#3a5f1e,color:#fff"
+  },
+  "sections": [
+    {
+      "heading": "〇、开场：本期目标（00:00 - 00:07）",
+      "points": [
+        "本期主题：用 Python 亲手实现一个 RAG 系统，让观众彻底搞明白 RAG 到底是怎么运行的。",
+        "教学方式：不是讲概念，而是「用代码还原 RAG 系统的每个细节」，每一步都写真实可运行的代码并当场执行看结果。"
+      ]
+    },
+    {
+      "heading": "一、RAG 原理回顾（00:07 - 01:37）",
+      "points": [
+        "RAG 是构建「知识库」和「智能客服」的首选方案。",
+        "RAG 整体流程分为两大部分：第一部分是【用户提问前的数据准备】，第二部分是【用户提问后的回答生成】。",
+        "【提问前·数据准备】包含两个环节：① 分片（Chunking）② 索引（Indexing）。做法：把资料做分片 → 把所有片段丢给 Embedding 模型 → 每个片段产出一个对应的向量 → 把向量存入向量数据库。到这里知识库就构建完毕，等用户来用。",
+        "【提问后·回答生成】包含三个环节：③ 召回（Retrieve）④ 重排（Rerank）⑤ 生成（Generate）。",
+        "召回：用户问题先经 Embedding 模型转成向量 → 传给向量数据库 → 找出与问题最相似的 10 个片段。",
+        "重排：把这 10 个片段送给 Cross-Encoder 模型做重排 → 从 10 个里再筛选出相关程度最高的 3 个。",
+        "生成：把这 3 个最相关片段 + 用户问题一起发给大模型 → 大模型产出最终答案。",
+        "作者提示：若对该流程不熟悉，建议先看其上一期讲 RAG 原理的视频。"
+      ],
+      "screenshots": ["frames/diag_prep.jpg", "frames/diag_query.jpg"],
+      "diagrams": [
+        {
+          "caption": "提问前·数据准备流程：文档 → 分片 → Embedding → 向量 → 向量数据库",
+          "type": "mermaid",
+          "code": "graph LR\n    Doc[\"产品使用手册\"] --> Chunks[\"片段列表\"]\n    Chunks --> Embed[\"Embedding 模型\"]\n    Embed --> Vec[\"向量\"]\n    Vec --> DB[(\"向量数据库\")]\n    style Doc fill:#3a5f1e,color:#fff\n    style DB fill:#1e3a5f,color:#fff"
+        },
+        {
+          "caption": "提问后·回答生成流程：问题 → 向量 → 召回10个 → 重排取3个 → 大模型生成",
+          "type": "mermaid",
+          "code": "graph LR\n    Q[\"用户问题\"] --> E[\"Embedding 模型\"]\n    E --> V[\"向量\"]\n    V --> DB[(\"向量数据库\")]\n    DB -->|召回| Ten[\"10 个相关片段\"]\n    Ten -->|重排 Cross-Encoder| Three[\"3 个相关片段\"]\n    Three --> LLM[\"大模型\"]\n    Q --> LLM\n    LLM --> Ans[\"最终答案\"]\n    style Q fill:#5f1e3a,color:#fff\n    style LLM fill:#5f3a1e,color:#fff\n    style Ans fill:#1e5f3a,color:#fff"
+        }
+      ]
+    },
+    {
+      "heading": "二、代码地址与工具准备（01:37 - 02:25）",
+      "points": [
+        "本视频涉及的全部代码都放在作者的 GitHub 仓库，看视频时不用急着抄代码，直接去 GitHub 找即可。",
+        "开始前请确保系统已安装两个工具：uv 和 Jupyter Notebook。",
+        "uv：Python 的一个包管理器，用它可以很方便地管理 Python 的各项依赖。",
+        "Jupyter Notebook：可大致理解为一个「交互式的代码执行环境」，可以实时看到每一段代码的执行结果，很适合做各种调试和验证，在人工智能领域非常常用。"
+      ]
+    },
+    {
+      "heading": "三、项目环境搭建（02:25 - 05:27）",
+      "points": [
+        "构建项目执行环境 = 创建项目目录 + 安装相关 Python 依赖。",
+        "第 1 步：用 mkdir 创建项目目录，命名为 rag，后面所有代码都写在这个目录里。",
+        "第 2 步：cd rag 进入目录，执行 uv init . 让 uv 对目录做初始化。",
+        "初始化后目录会多出 3 个文件（用 tree 命令查看）：main.py（uv 初始化的 Python 文件）、pyproject.toml（存储项目的元信息和依赖列表）、README.md（uv 初始化的项目说明文件）。",
+        "其中 main.py 用不到（因为用的是 Jupyter Notebook），所以删掉它。",
+        "第 3 步：执行 uv add 命令安装依赖。四个核心依赖及其作用：",
+        "① sentence-transformers —— 用于加载 Embedding 模型和 Cross-Encoder 模型。",
+        "② chromadb —— 要用到的向量数据库。",
+        "③ google-genai —— Google 的 AI 依赖，最终生成答案时要用到其中的 Gemini 2.5 Flash 模型。",
+        "④ python-dotenv —— 用于把 Gemini 的 API key 映射到环境变量中，以供 google-genai 读取。",
+        "第 4 步：准备 RAG 系统背后的知识库文档。为保证测试准确性（避免大模型早已见过该内容），作者特意编造了一篇「谁也不可能看过」的原创文章：讲述哆啦A梦、大雄与超级赛亚人一起合力打败黑暗势力、拯救地球的故事，保存为 rag 目录下的 doc.md。等会儿会把这篇文章喂给 RAG 系统，让它基于此文章回答问题。"
+      ],
+      "screenshots": ["frames/term_init.jpg", "frames/term_jupyter.jpg"],
+      "diagrams": [
+        {
+          "caption": "项目初始化命令序列",
+          "type": "mermaid",
+          "code": "graph TD\n    A[\"mkdir rag\"] --> B[\"cd rag\"]\n    B --> C[\"uv init .\"]\n    C --> D[\"删除无用的 main.py\"]\n    D --> E[\"uv add sentence-transformers chromadb google-genai python-dotenv\"]\n    E --> F[\"准备知识库 doc.md\"]\n    F --> G[\"uv run --with jupyter jupyter lab\"]\n    style E fill:#3a5f1e,color:#fff\n    style G fill:#1e3a5f,color:#fff"
+        }
+      ]
+    },
+    {
+      "heading": "四、启动 Jupyter 与新建代码文件（04:37 - 05:27）",
+      "points": [
+        "文档准备好后，需要打开 Jupyter Notebook。",
+        "关键坑点：普通方式直接启动 Jupyter Notebook，会无法使用刚才用 uv 安装的那些依赖。",
+        "解决办法：变通一下，用 uv 来启动 Jupyter Notebook，命令为 uv run --with jupyter jupyter lab（这样 Jupyter 才能访问 uv 管理的依赖）。",
+        "打开后新建一个文件（代码就写在这个文件里），并把它重命名成自己喜欢的名字（如 main.ipynb），文件名可随意起。",
+        "内核选择：Python 3 (ipykernel)。"
+      ],
+      "screenshots": ["frames/term_jupyter.jpg"]
+    },
+    {
+      "heading": "五、① 分片 Chunking（05:27 - 06:29）",
+      "points": [
+        "RAG 系统的第一步就是分片，先看分片相关代码。",
+        "先导入 List（from typing import List），用于标识函数返回结果的类型。",
+        "创建处理分片逻辑的函数 split_into_chunks，参数 doc_file（文档名），返回值是一个字符串列表（即分好的片段列表 List[str]）。",
+        "函数内部逻辑：先读取文件内容放入 content 变量 → 然后按「空行」拆分（content.split(\"\\n\\n\")），把 content 切分为多个 chunk。即以段落/空行为分片边界。",
+        "调用 chunks = split_into_chunks(\"doc.md\")，再循环遍历拿到所有片段，把片段的编号和内容都打印出来验证。",
+        "执行结果：一共拿到 10 个片段，分片成功。片段 [0] 是标题「# 哆啦A梦与超级赛亚人：时空之战」，片段 [1] 是正文第一段，依此类推。"
+      ],
+      "screenshots": ["frames/code_chunk1.jpg"],
+      "diagrams": [
+        {
+          "caption": "split_into_chunks 分片逻辑",
+          "type": "mermaid",
+          "code": "graph LR\n    F[\"读取 doc.md 全文\"] --> S[\"content.split('\\\\n\\\\n')\"]\n    S --> C[\"得到 10 个片段 chunks\"]\n    style S fill:#3a5f1e,color:#fff"
+        }
+      ]
+    },
+    {
+      "heading": "六、② 索引之生成向量 Embedding（06:29 - 08:41）",
+      "points": [
+        "分片结束后，下一个环节是索引。索引第一步：给每个片段生成向量。",
+        "先引入 SentenceTransformer 对象（from sentence_transformers import SentenceTransformer）。",
+        "用它加载一个 Embedding 模型：embedding_model = SentenceTransformer(\"shibing624/text2vec-base-chinese\")（一个中文文本向量化模型）。",
+        "写函数 embed_chunk(chunk: str) -> List[float]：用来获取某个给定片段对应的向量。参数 chunk 是片段内容，返回的数字列表就是对应的向量。内部使用加载好的 embedding_model 求出片段的向量值并返回。",
+        "写测试代码调用 embed_chunk，打印向量的大小和内容（变量 test_embedding，仅用于测试，后面不会用）。",
+        "注意：第一次运行会从 HuggingFace 拉取模型（约 400MB），需保持网络畅通、可能等几分钟；作者已提前下载过所以很快。",
+        "从输出可看出：这是一个 768 维的向量。",
+        "然后循环调用 embed_chunk 给所有片段生成向量：embeddings = [embed_chunk(chunk) for chunk in chunks]。所有片段向量放在 embeddings 列表里，每个元素代表对应片段的向量值。",
+        "打印验证：一共有 10 个向量，分别对应 10 个片段，一切符合预期。"
+      ],
+      "screenshots": ["frames/code_embed.jpg"],
+      "diagrams": [
+        {
+          "caption": "Embedding 环节：片段 → 768 维向量",
+          "type": "mermaid",
+          "code": "graph LR\n    Model[\"SentenceTransformer\\ntext2vec-base-chinese\"] --> Fn[\"embed_chunk(chunk)\"]\n    Chunks[\"10 个片段\"] --> Loop[\"列表推导循环\"]\n    Fn --> Loop\n    Loop --> Emb[\"embeddings：10 个 768 维向量\"]\n    style Model fill:#1e3a5f,color:#fff\n    style Emb fill:#3a5f1e,color:#fff"
+        }
+      ]
+    },
+    {
+      "heading": "七、② 索引之存入向量数据库 ChromaDB（08:41 - 10:53）",
+      "points": [
+        "向量求出来后，需要把这些向量存入向量数据库。作者选用 ChromaDB（一个比较有名的向量数据库）。",
+        "引入 chromadb 对象（import chromadb），创建客户端：chromadb_client = chromadb.EphemeralClient()。",
+        "EphemeralClient 说明：创建一个「内存型」向量数据库，数据不写入磁盘，脚本运行结束后自动清除数据。",
+        "若希望数据持久化到磁盘，可改用 chromadb.PersistentClient(path=\"chroma.db\")，后面接具体的文件名（如 chroma.db），数据就会存放到该文件中。",
+        "创建一个 collection，名字叫 default。collection 是 ChromaDB 的概念，可理解为传统数据库里的「表格」。",
+        "写函数 save_embeddings(chunks, embeddings) 把所有片段内容和对应向量存入数据库。两个参数：chunks 是片段内容列表、embeddings 是对应的片段向量列表，长度都是 10。",
+        "函数内部：先生成 ids 变量，值是从 0 到 9 的字符串列表（ChromaDB 要求每条记录都要有一个 id）。然后把片段内容 chunks、片段向量 embeddings、片段编号 ids 一起通过 collection.add(documents=chunks, embeddings=embeddings, ids=ids) 传给 ChromaDB。",
+        "调用 save_embeddings(chunks, embeddings) 执行。",
+        "执行时会输出几条 “Failed to send telemetry event ... capture() takes 1 positional argument but 3 were given” 的报错信息 —— 作者说不用理会，这是 ChromaDB 与其它库版本没对齐导致的遥测（telemetry）问题，不影响正常使用，观众测试时大概率已被修复。",
+        "到这里，「索引」这一步（也是提问前的全部准备工作）就结束了，知识库构建完毕。"
+      ],
+      "screenshots": ["frames/code_chroma_client.jpg", "frames/code_chroma_save.jpg"],
+      "diagrams": [
+        {
+          "caption": "ChromaDB 存储：内存型 vs 持久化 + collection.add",
+          "type": "mermaid",
+          "code": "graph TD\n    Client{\"选择客户端\"} -->|内存型/用完即弃| Eph[\"EphemeralClient()\"]\n    Client -->|持久化到磁盘| Per[\"PersistentClient('chroma.db')\"]\n    Eph --> Col[\"get/create collection: default\"]\n    Per --> Col\n    Col --> Add[\"collection.add：传入 documents、embeddings、ids\"]\n    style Add fill:#3a5f1e,color:#fff"
+        }
+      ]
+    },
+    {
+      "heading": "八、③ 召回 Retrieve（10:53 - 12:47）",
+      "points": [
+        "以上都发生在用户提问前。下面处理用户提问后的三件事：召回、重排、生成。首先是召回。",
+        "定义函数 retrieve(query: str, top_k: int) -> List[str]：专门用作召回。参数 query 是用户问题、top_k 是最终要召回的记录数量。返回一个列表，代表召回的片段内容，列表大小与 top_k 相同。",
+        "函数内部：先调用 embed_chunk(query) 把用户问题转换为向量（query_embedding）→ 再把向量传入 ChromaDB：results = chromadb_collection.query(query_embeddings=[query_embedding], n_results=top_k)，查询与问题最相似的前 top_k 个结果 → return results['documents'][0]。",
+        "调用演示：query = 「哆啦A梦使用的三个秘密道具分别是什么？」，调用 retrieve(query, 5) 获取最相关的 5 个片段并打印。",
+        "执行结果：先输出一条同样的 CollectionQueryEvent 遥测报错（同前，忽略即可），后面就是召回的 5 个片段，数量与要求一致。",
+        "关键观察：答案就在召回的片段里（召回成功），但这个包含答案的片段没有排在最上面 —— 向量数据库认为另一条才是最匹配的。说明「向量相似度检索」的排序准确性确实欠佳，只是排序有点问题。",
+        "带着这个问题进入下一步：看看重排阶段能不能把正确片段排到第一位。"
+      ],
+      "screenshots": ["frames/code_retrieve.jpg", "frames/result_retrieve.jpg"],
+      "diagrams": [
+        {
+          "caption": "retrieve 召回流程",
+          "type": "mermaid",
+          "code": "graph LR\n    Q[\"用户问题 query\"] --> Emb[\"embed_chunk(query)\"]\n    Emb --> QV[\"query_embedding\"]\n    QV --> Query[\"collection.query(n_results=top_k)\"]\n    Query --> Docs[\"返回 results 里的 documents，即 top_k 个片段\"]\n    style Query fill:#1e3a5f,color:#fff"
+        }
+      ]
+    },
+    {
+      "heading": "九、④ 重排 Rerank（12:47 - 15:01）",
+      "points": [
+        "重排阶段需要的模型是 Cross-Encoder，先引入：from sentence_transformers import CrossEncoder。",
+        "写重排函数 rerank(query: str, retrieved_chunks: List[str], top_k: int) -> List[str]。三个参数：用户问题 query、召回的片段列表 retrieved_chunks、重排后保留的片段数量 top_k。返回重排后保留的片段列表（top_k 有多大，列表就有多少元素）。",
+        "函数内部：① 创建 Cross-Encoder 模型 cross_encoder = CrossEncoder('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1')。",
+        "② 构造列表 pairs = [(query, chunk) for chunk in retrieved_chunks]，每个元素是「用户问题 + 一个召回片段」组成的对。",
+        "③ 把 pairs 发给模型打分：scores = cross_encoder.predict(pairs)，分值代表用户问题与对应片段内容的相似程度。",
+        "④ 把召回片段和分数打包在一起：chunk_with_score_list = [(chunk, score) for chunk, score in zip(retrieved_chunks, scores)]。",
+        "⑤ 按分数倒序排序：chunk_with_score_list.sort(key=lambda pair: pair[1], reverse=True)。排完后列表第一个元素就是与问题最相关的片段（加对应分数），第二个次之，依此类推。",
+        "⑥ 单独取出片段内容部分（丢掉分数），再取前 top_k：return [chunk for chunk, _ in chunk_with_score_list][:top_k]。这就是重排结果。",
+        "调用演示：调用 rerank 只取前 3 个片段并打印内容。",
+        "注意：这段代码也要下载一个约 400MB 的 Cross-Encoder 模型，第一次运行需耐心等待几分钟（作者已提前下载，运行很快）。",
+        "执行结果（关键收益）：重排后，包含答案的那个片段被排到了第一名的位置！由此可见重排的效果确实比单纯 Embedding 好很多 —— Cross-Encoder 模型可以非常准确地识别哪些片段与用户问题最相关。"
+      ],
+      "screenshots": ["frames/code_rerank.jpg"],
+      "diagrams": [
+        {
+          "caption": "rerank 重排流程：Cross-Encoder 打分 → 倒序 → 取 Top-K",
+          "type": "mermaid",
+          "code": "graph TD\n    Pairs[\"pairs：问题与每个召回片段配对\"] --> Predict[\"cross_encoder.predict(pairs)\"]\n    Predict --> Scores[\"每个片段的相关性分数\"]\n    Scores --> Zip[\"片段与分数打包\"]\n    Zip --> Sort[\"按 score 倒序 sort\"]\n    Sort --> TopK[\"取前 top_k 个 chunk\"]\n    style Predict fill:#5f1e3a,color:#fff\n    style TopK fill:#3a5f1e,color:#fff"
+        },
+        {
+          "caption": "Embedding 召回 vs Cross-Encoder 重排 的对比效果",
+          "type": "mermaid",
+          "code": "graph LR\n    subgraph 召回后\n    R1[\"片段A（最匹配?）\"]\n    R2[\"含答案片段（排第2）\"]\n    R3[\"片段C\"]\n    end\n    subgraph 重排后\n    K1[\"含答案片段（升到第1）\"]\n    K2[\"片段A\"]\n    K3[\"片段C\"]\n    end\n    召回后 -->|Cross-Encoder 打分排序| 重排后\n    style R2 fill:#5f5f1e,color:#fff\n    style K1 fill:#1e5f3a,color:#fff"
+        }
+      ]
+    },
+    {
+      "heading": "十、⑤ 生成 Generate（15:01 - 17:27）",
+      "points": [
+        "重排结束，来到最后的生成阶段。生成阶段需要一个大模型，作者选用 Gemini 2.5 Flash。",
+        "选它的最大优点：不要钱（免费），作者调侃「Google 就是大方」。",
+        "前置：需先注册一个 Gemini 的 API key 才能使用该模型。没有的同学可到 Google AI Studio 的 Get API key 页面，点 create API key 即可获取。",
+        "拿到 API key 后，在项目目录下新建一个 .env 文件，内容为：GEMINI_API_KEY=<你的具体 API key>。",
+        "回到 Jupyter Notebook 继续写代码。先导入对象：from dotenv import load_dotenv、from google import genai。",
+        "执行 load_dotenv()：功能是把刚写入 .env 的 GEMINI_API_KEY 变成一个「环境变量」。后面 Gemini 会从环境变量里找这个 API key，它不会去读 .env 文件本身 —— .env 文件只是个中介。",
+        "生成 Google 客户端：google_client = genai.Client()，后面用这个 client 去调用 Gemini 2.5 Flash 模型。",
+        "写 generate(query, chunks) 函数，两个参数：用户问题 query、重排后得到的片段列表 chunks，返回最终答案。",
+        "函数内部：① 写好送给大模型的 prompt（提示词模板）：\"你是一位知识助手，请根据用户的问题和下列片段生成准确的回答。用户问题：{query} 相关片段：{片段用换行拼接} 请基于上述内容作答，不要编造信息。\" —— 用户问题写在 {query}，相关片段用 \"\\n\\n\".join(chunks) 拼接写入。",
+        "② 打印 prompt 看一下（便于观察最终送给模型的完整提示词）。",
+        "③ 调用模型：response = google_client.models.generate_content(model=\"gemini-2.5-flash\", contents=prompt)，把提示词送给它生成最终答案。",
+        "④ return response.text 返回答案。",
+        "调用 answer = generate(query, reranked_chunks) 并打印 answer 执行。",
+        "执行结果：先打印出完整提示词（含用户问题与拼接的相关片段），提示词较长、屏幕放不下需向下滚动查看；提示词后面就是模型的最终返回。",
+        "最终答案（正确）：根据提供的片段，哆啦A梦使用的 3 个秘密道具分别是 —— ① 复制斗篷（可以临时赋予超级战力）② 时间停止手表（能暂停时间五秒）③ 精神与时光屋便携版（可在一分钟中完成一年修行）。模型返回没有问题，都是正确答案。",
+        "至此，一个从分片到生成的完整 RAG 系统就用代码全部实现并跑通了。"
+      ],
+      "screenshots": ["frames/code_generate.jpg", "frames/code_gemini.jpg", "frames/result_final.jpg"],
+      "diagrams": [
+        {
+          "caption": "generate 生成流程：API key → 环境变量 → 拼 prompt → Gemini 2.5 Flash → 答案",
+          "type": "mermaid",
+          "code": "graph TD\n    Key[\".env: GEMINI_API_KEY=xxx\"] --> Load[\"load_dotenv() 转为环境变量\"]\n    Load --> Client[\"genai.Client()\"]\n    Q[\"用户问题 query\"] --> Prompt[\"拼接 Prompt\"]\n    Chunks[\"重排后的 3 个片段\"] --> Prompt\n    Prompt --> Gen[\"models.generate_content\\n(model='gemini-2.5-flash')\"]\n    Client --> Gen\n    Gen --> Ans[\"response.text 最终答案\"]\n    style Gen fill:#5f3a1e,color:#fff\n    style Ans fill:#1e5f3a,color:#fff"
+        }
+      ]
+    },
+    {
+      "heading": "十一、结尾（17:27 - 17:30）",
+      "points": [
+        "今天的视频到此结束，作者提醒别忘了点赞关注，下次再见。"
+      ]
+    }
+  ],
+  "key_screenshots": [
+    "frames/diag_query.jpg",
+    "frames/code_chunk1.jpg",
+    "frames/code_embed.jpg",
+    "frames/code_retrieve.jpg",
+    "frames/code_rerank.jpg",
+    "frames/code_generate.jpg",
+    "frames/result_final.jpg"
+  ]
+}

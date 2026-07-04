@@ -1,0 +1,21 @@
+{
+  "title": "使用Python构建RAG系统 —— 用代码还原 RAG系统的每个细节",
+  "up": "马克的技术工作坊",
+  "duration": 1050.538,
+  "duration_display": "17:30",
+  "bvid": "BV1wc3izUEUb",
+  "url": "https://www.bilibili.com/video/BV1wc3izUEUb",
+  "is_multipart": false,
+  "video_path": "./bili-summary-BV1wc3izUEUb/BV1wc3izUEUb.mp4",
+  "subtitle_path": null,
+  "description": "使用Python构建RAG系统 —— 用代码还原 RAG系统的每个细节",
+  "chapters": [
+    {"title": "RAG 原理回顾", "start_time": 0, "end_time": 98},
+    {"title": "代码地址与工具准备", "start_time": 98, "end_time": 146},
+    {"title": "项目环境搭建", "start_time": 146, "end_time": 326},
+    {"title": "开始写代码", "start_time": 326, "end_time": 1051}
+  ],
+  "tags": ["编程", "Embedding", "chromadb", "RAG", "代码", "Python", "知识库", "LLM", "智能客服"],
+  "view_count": 167392,
+  "like_count": 6899
+}
