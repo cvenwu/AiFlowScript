@@ -32,7 +32,7 @@
 
 - **Star Lists 无写 API**：只能在 GitHub 网页 UI 手动编辑 → 该部分以「可复制文案 + 逐步 UI 操作清单」交付。
 - **仓库操作需鉴权**：archive / rename / description / topics / README push 需 `gh` CLI 或 token。当前机器**无 `gh`、无 token** → 用户已确认「提供授权代执行」，执行阶段前需先完成鉴权。
-- **Archive 是可逆只读**：归档后仓库仍可见、保留 star/fork，可随时 unarchive；本方案对**原创仓零删除**。
+- **Archive 是可逆只读**：归档后仓库仍可见、保留 star/fork，可随时 unarchive；本方案对**所有仓库零删除**。
 
 ---
 
@@ -41,7 +41,7 @@
 | # | 决策点 | 结论 |
 |---|---|---|
 | 1 | 目标人群 | **AI / 后端招聘方**：展示可运行项目 + 深度学习产出 |
-| 2 | 清理力度 | **保守**：Archive + 合并，**原创仓零删除**（可逆） |
+| 2 | 清理力度 | **保守**：Archive + 合并，**零删除**（含 fork，全程可逆） |
 | 3 | Star 策略 | 32 列表 → **归并为 11 类精简分类** |
 | 4 | 执行方式 | 用户提供授权，可自动化部分代执行；Star Lists 走 UI 引导 |
 | 5 | 重点投入 | **主页 README + Pinned** 与 **AiFlow / AiKnowledge README 深度打磨** |
@@ -53,7 +53,7 @@
 | 11 | 「关于我」定位 | 不写「转型」，写「**能同时胜任 Go 后端 & AI 工程**」双栈 |
 | 12 | 旗舰打磨范围 | **仅 `AiFlow` 与 `AiKnowledge`**，两者都做**深度**打磨 |
 | 13 | 文档位置 | `AiFlowScript/docs/superpowers/specs/` |
-| 14 | Fork 处理 | **删除无用 fork**（删除前逐个校验无个人提交） |
+| 14 | Fork 处理 | **全部 fork 一律归档**（archive，不删除，可逆） |
 
 ---
 
@@ -61,7 +61,7 @@
 
 ```
 阶段①  仓库清理           阶段②  主页门面            阶段③  旗舰打磨          阶段④  Star 重组
- ├─ 删无用 fork(17)   →    ├─ cvenwu/cvenwu     →   ├─ AiFlow 深度     →   ├─ 32→11 类
+ ├─ 归档全部 fork(17)  →   ├─ cvenwu/cvenwu     →   ├─ AiFlow 深度     →   ├─ 32→11 类
  ├─ 合并→study-notes(25)   │   README 重写            └─ AiKnowledge 深度    ├─ 未分类 star 归位
  ├─ 归档噪音仓(22)         └─ 设置 6 个 Pinned                              └─ UI 手动执行
  └─ 保留+优化 meta(15)
@@ -69,6 +69,8 @@
 ```
 
 每个阶段**独立可停**，完成即有可见收益。阶段①③可用脚本自动化；②的 Pinned 设置与④全程走 UI。
+
+> **纯零删除方案**：本方案对所有仓库（含 fork）一律「保留 / 合并 / 归档」，不删除任何仓库，全程可逆。
 
 ---
 
@@ -81,8 +83,7 @@
 | 📌 PIN | 保留 + 打磨 + 置顶 | — | 招聘方首屏 6 个 |
 | ✅ KEEP | 保留 + 优化 description/topics | — | 有 star 或支撑定位的项目 |
 | 🔀 MERGE | 内容迁入 `study-notes`，原仓归档 | 可逆 | 25 个纯学习仓合并成 1 仓 |
-| 📦 ARCHIVE | 翻为只读归档 | 可逆（unarchive） | 博客/图床/模板/离题仓，star 保留 |
-| 🗑️ DELETE | 删除 | 可逆（可重新 fork） | 仅限**无个人提交的 fork** |
+| 📦 ARCHIVE | 翻为只读归档 | 可逆（unarchive） | 博客/图床/模板/离题仓 + 全部 fork，star 保留 |
 
 ### 4.2 合并仓 `study-notes` 结构
 
@@ -115,13 +116,14 @@ study-notes/
 | `AiKnowledge` | VitePress | AI 学习知识库（已部署站点） | — |
 | `OpenPresetBFF` | Go | Go BFF 服务 | 1 |
 | `DistributedFileServer` | Go | Go 分布式文件上传服务 | 3 |
-| `SimpleERP` | Java | 完整 ERP 系统（最强社会证明） | 112 |
+| `GraduationProject` | Python | 基于 CNN 与词向量的句子相似度（AI 方向对口） | 14 |
 
-> 备选：`GraduationProject`（14★，NLP）是第 7 个强候选。若后续想更偏 AI，可替换 `SimpleERP` 或 `DistributedFileServer`。本方案先按均衡定。
+> `SimpleERP`（112★, Java 2018）不置顶：语言与年代不贴合 AI/Go 后端定位，改为 KEEP 保留，作为背景社会证明仍可见。
+> Pinned 六仓覆盖 AI 应用（AiFlowScript/AiFlow/AiKnowledge）+ Go 后端分布式（OpenPresetBFF/DistributedFileServer）+ AI 学术产出（GraduationProject），整体偏 AI、兼顾后端。
 
 ### 4.4 全 79 仓决策表
 
-> 说明：⚠️ 标记表示执行前需人工复核（fork 是否含个人提交、离题但有 star 等）。
+> 说明：本方案零删除，所有仓库归入 保留 / 合并 / 归档 三类；⚠️ 仅在离题但有 star 的仓库上提示可复核。
 
 #### 📌 PIN（6）
 | 仓库 | 语言 | star | 动作 |
@@ -131,7 +133,7 @@ study-notes/
 | AiKnowledge | VitePress | — | 保留+置顶+**深度打磨 README** |
 | OpenPresetBFF | Go | 1 | 保留+置顶+补 meta |
 | DistributedFileServer | Go | 3 | 保留+置顶+补 meta |
-| SimpleERP | Java | 112 | 保留+置顶+补 description/topics |
+| GraduationProject | Python | 14 | 保留+置顶+补 meta（AI 方向对口） |
 
 #### ✅ KEEP（9）
 | 仓库 | 语言 | star | 动作 |
@@ -139,7 +141,7 @@ study-notes/
 | cvenwu | — | — | Profile README 专用仓（阶段②重写） |
 | PersonalResume | Astro | — | 保留，补 description |
 | CheatSheetCollection | — | — | 保留（活跃、有用） |
-| GraduationProject | Python | 14 | 保留+优化 meta（AI 社会证明） |
+| SimpleERP | Java | 112 | 保留+优化 meta（背景社会证明，不置顶） |
 | GetLinksFromSoBooks | Python | 7 | 保留+优化 meta |
 | AlgoBook | — | 6 | 保留（刷题文档，有 star） |
 | ImageEntropy | Python | 5 | 保留 |
@@ -155,14 +157,12 @@ GoDemo(1★) · OldBoyGolang(2★) · GoInAction · GinFrameworkDemo · Gin_vue 
 **模板（2）**：MaterialDocTemplate · DocsifyTemplate
 **离题/旧（7）**：OnlineDocuments · GithubApiVi · ResourceManage · ApplyMaster(1★) · LoveTimeLine(1★) · ChooseCourse(3★，旧 ASP.NET) · DiplomaProject（GraduationProject 的重复项）
 
-#### 🗑️ DELETE — 无用 fork（15，删前逐个校验）
-ohmyzsh · Cloudreve · new-pac · LeetCode-Go · EasyLeetCode · prometheus-book · go-stress-testing · ego-kit · photo2cartoon · ZSH_Config · gin-cloud-storage · practice-in-go · books · interview-baguwen · geektime-books
+#### 📦 ARCHIVE — 全部 fork（17，只读、star 保留、不删除）
+ohmyzsh · Cloudreve · new-pac · LeetCode-Go · EasyLeetCode · prometheus-book · go-stress-testing · ego-kit · photo2cartoon · ZSH_Config · gin-cloud-storage · practice-in-go · books · interview-baguwen · geektime-books · os-guide-cn(1★) · rhzl-Agentic-Design-Patterns-cn
 
-#### ⚠️ 待用户拍板的 fork（2，默认保留）
-- `os-guide-cn`（fork 有 1★）：删前复核，倾向保留。
-- `rhzl-Agentic-Design-Patterns-cn`（AI「智能体设计模式」，与定位契合）：**建议保留**并可考虑纳入 KEEP。
+> 用户已确认：所有 fork 一律归档（archive），不删除。归档保留 star、可随时 unarchive、可重新对比 upstream。
 
-> 合计：6(PIN) + 9(KEEP) + 25(MERGE) + 22(ARCHIVE) + 15(DELETE) + 2(待拍板 fork) = **79** ✓
+> 合计：6(PIN) + 9(KEEP) + 25(MERGE) + 22(ARCHIVE 噪音仓) + 17(ARCHIVE fork) = **79** ✓
 
 ---
 
@@ -257,8 +257,7 @@ superpowers / ECC → AI/Agent；hello-agents / all-agentic-architectures / ai-a
 
 ### 8.2 安全护栏
 
-- **原创仓零删除**：一律 archive（可逆）。仅删除**无个人提交**的 fork。
-- **删 fork 前校验**：对每个 fork 用 API 比对是否 ahead-of upstream（有个人提交则改为保留/归档）。
+- **零删除**：所有仓库（含 fork）一律 archive 或合并归档（可逆），不删除任何仓库。
 - **合并保历史**：`study-notes` 迁移保留来源信息；原仓 archive 而非删除。
 - **批量前 dry-run**：每个批量动作先输出待操作清单供用户确认，再执行。
 - **分批提交**：README/仓库改动按仓提交，信息清晰，便于回滚。
@@ -267,10 +266,9 @@ superpowers / ECC → AI/Agent；hello-agents / all-agentic-architectures / ai-a
 
 | 动作 | 回滚 |
 |---|---|
-| Archive | UI/API `unarchive` |
+| Archive（含 fork） | UI/API `unarchive` |
 | Rename | 改回原名（GitHub 保留重定向） |
 | Merge | 原仓归档仍在，可 unarchive 恢复独立 |
-| Delete fork | 重新 fork upstream |
 | README | git 历史回退 |
 
 ---
@@ -287,5 +285,5 @@ superpowers / ECC → AI/Agent；hello-agents / all-agentic-architectures / ai-a
 
 ## 10. 范围与非目标（YAGNI）
 
-- **本计划不做**：孵化某个明星开源项目（需持续投入，仅在后续单独立项）；重写 `AiFlowScript` README（已精品）；打磨除 AiFlow/AiKnowledge 外的旗舰 README。
-- **可选、留待用户拍板**：删除有 star 的 fork（`os-guide-cn`）、保留 AI 相关 fork（`rhzl-Agentic-Design-Patterns-cn`）、旧列表是否清空。
+- **本计划不做**：孵化某个明星开源项目（需持续投入，仅在后续单独立项）；重写 `AiFlowScript` README（已精品）；打磨除 AiFlow/AiKnowledge 外的旗舰 README；删除任何仓库。
+- **可选、留待用户拍板**：Star 旧列表是否清空；`SimpleERP` 是否后续也补 topics。
