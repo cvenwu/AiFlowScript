@@ -1,0 +1,106 @@
+{
+  "title": "【2026必学！】LlamaIndex自主式RAG，比传统RAG强10倍的检索方案【自主检索→推理循环→多文档代理】允许白嫖，拿走不谢！",
+  "up": "吴恩达AIAgent",
+  "duration": 2686,
+  "bvid": "BV1uWQYBqE1c",
+  "url": "https://www.bilibili.com/video/BV1uWQYBqE1c?spm_id_from=333.788.videopod.episodes&vd_source=cf2e9f5999e6c08e64ad9dcb15c29c1b",
+  "pages": [
+    {
+      "cid": 37489083938,
+      "page": 1,
+      "from": "vupload",
+      "part": "1-Introduction 介绍",
+      "duration": 171,
+      "vid": "",
+      "weblink": "",
+      "dimension": {
+        "width": 1920,
+        "height": 1080,
+        "rotate": 0
+      },
+      "first_frame": "http://i2.hdslb.com/bfs/storyff/_000036nywrfgk83cn2a19og8nu1eanb_firsti.jpg",
+      "ctime": 1776137977
+    },
+    {
+      "cid": 37489084156,
+      "page": 2,
+      "from": "vupload",
+      "part": "2-路由器查询引擎",
+      "duration": 550,
+      "vid": "",
+      "weblink": "",
+      "dimension": {
+        "width": 1920,
+        "height": 1080,
+        "rotate": 0
+      },
+      "first_frame": "http://i0.hdslb.com/bfs/storyff/_00001fiqq8zsja5zd2rn5916rm3l8eb_firsti.jpg",
+      "ctime": 1776137977
+    },
+    {
+      "cid": 37489084212,
+      "page": 3,
+      "from": "vupload",
+      "part": "3-工具调用",
+      "duration": 612,
+      "vid": "",
+      "weblink": "",
+      "dimension": {
+        "width": 1920,
+        "height": 1080,
+        "rotate": 0
+      },
+      "first_frame": "http://i0.hdslb.com/bfs/storyff/_00000mipjavm3qhi825x2bnpd7zw0bb_firsti.jpg",
+      "ctime": 1776137977
+    },
+    {
+      "cid": 37489084259,
+      "page": 4,
+      "from": "vupload",
+      "part": "4-构建代理推理循环",
+      "duration": 699,
+      "vid": "",
+      "weblink": "",
+      "dimension": {
+        "width": 1920,
+        "height": 1080,
+        "rotate": 0
+      },
+      "first_frame": "http://i1.hdslb.com/bfs/storyff/_00002ewl0lzmzqbcv2gpt39bwvivwvb_firsti.jpg",
+      "ctime": 1776137977
+    },
+    {
+      "cid": 37489084541,
+      "page": 5,
+      "from": "vupload",
+      "part": "5-构建多文档代理",
+      "duration": 623,
+      "vid": "",
+      "weblink": "",
+      "dimension": {
+        "width": 1920,
+        "height": 1080,
+        "rotate": 0
+      },
+      "first_frame": "http://i2.hdslb.com/bfs/storyff/_00003ravywn6x7bq62erlx0wv65hvjb_firsti.jpg",
+      "ctime": 1776137977
+    },
+    {
+      "cid": 37489084756,
+      "page": 6,
+      "from": "vupload",
+      "part": "6-Conclusion结论",
+      "duration": 31,
+      "vid": "",
+      "weblink": "",
+      "dimension": {
+        "width": 1920,
+        "height": 1080,
+        "rotate": 0
+      },
+      "first_frame": "http://i2.hdslb.com/bfs/storyff/_00002dga0nv9e9w5d206l0xautzhavb_firsti.jpg",
+      "ctime": 1776137977
+    }
+  ],
+  "desc": "这套课直接带你吃透LlamaIndex全栈开发，从路由引擎到代理推理循环，从0到1搭建自主RAG智能体，全程实操无废话，小白也能上手！！！"
+}

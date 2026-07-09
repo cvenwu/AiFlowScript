@@ -1,0 +1,944 @@
+1
+00:00:00,000 --> 00:00:02,000
+LCEL
+
+2
+00:00:02,000 --> 00:00:07,000
+In this lesson, we'll introduce LaneChain Expression Language, or LCEL.
+
+3
+00:00:07,000 --> 00:00:10,000
+This is a new syntax that makes it much easier
+
+4
+00:00:10,000 --> 00:00:14,000
+and more transparent to construct and work with different chains and agents.
+
+5
+00:00:14,000 --> 00:00:16,000
+Let's get to it.
+
+6
+00:00:16,000 --> 00:00:18,000
+A lot of the power of LaneChain
+
+7
+00:00:18,000 --> 00:00:22,000
+comes from composing chains of different components together.
+
+8
+00:00:22,000 --> 00:00:24,000
+And we have a new way of doing this.
+
+9
+00:00:24,000 --> 00:00:28,000
+And this is LCEL and a runnable protocol which define a few things.
+
+10
+00:00:28,000 --> 00:00:32,000
+First, it defines an allowed set of input types
+
+11
+00:00:32,000 --> 00:00:35,000
+and a corresponding allowed set of output types.
+
+12
+00:00:35,000 --> 00:00:39,000
+There's then a bunch of standard methods, and we'll go over all of these.
+
+13
+00:00:39,000 --> 00:00:43,000
+But these are standard methods that all runnables will expose.
+
+14
+00:00:43,000 --> 00:00:45,000
+So you can call them all in the same way.
+
+15
+00:00:45,000 --> 00:00:48,000
+There are ways of modifying parameters at runtime
+
+16
+00:00:48,000 --> 00:00:50,000
+and adding other options like fallbacks.
+
+17
+00:00:50,000 --> 00:00:53,000
+And you can do all of this, you can do all this composition
+
+18
+00:00:53,000 --> 00:00:55,000
+using the Linux pipe syntax.
+
+19
+00:00:55,000 --> 00:00:57,000
+So it'll look something like this.
+
+20
+00:00:57,000 --> 00:01:02,000
+What is this interface that we expect all runnables to expose?
+
+21
+00:01:02,000 --> 00:01:05,000
+First, there are a few common methods.
+
+22
+00:01:05,000 --> 00:01:09,000
+There's invoke, which calls the runnable on a single input.
+
+23
+00:01:09,000 --> 00:01:14,000
+There's stream, which calls it on a single input in stream's backer response.
+
+24
+00:01:14,000 --> 00:01:18,000
+And then there's batch, which calls it on a list of inputs.
+
+25
+00:01:18,000 --> 00:01:22,000
+For all of these synchronous methods, there's also a corresponding async method.
+
+26
+00:01:22,000 --> 00:01:26,000
+So there's a invoke, a stream, a batch.
+
+27
+00:01:26,000 --> 00:01:31,000
+There's common properties that all runnables have, namely an input schema and an output schema.
+
+28
+00:01:31,000 --> 00:01:37,000
+And you can see a list of the input and output types for common components below.
+
+29
+00:01:37,000 --> 00:01:40,000
+Why use LCEL?
+
+30
+00:01:40,000 --> 00:01:42,000
+There are a few benefits that this gets you.
+
+31
+00:01:42,000 --> 00:01:47,000
+First, you get async batch and streaming support out of the box.
+
+32
+00:01:47,000 --> 00:01:51,000
+So even if you're writing your code and testing it in a synchronous version,
+
+33
+00:01:51,000 --> 00:01:58,000
+you can easily port it over to production server that needs batch or needs async or needs streaming.
+
+34
+00:01:58,000 --> 00:02:03,000
+Second, a big part of working with LLMs is that they're a little bit unpredictable sometimes.
+
+35
+00:02:03,000 --> 00:02:06,000
+They don't always respond how you want them to respond.
+
+36
+00:02:06,000 --> 00:02:11,000
+And so you can easily attach fallbacks, not only to LLMs, but also to entire chains.
+
+37
+00:02:11,000 --> 00:02:14,000
+So you can have a fallback safety mechanism.
+
+38
+00:02:14,000 --> 00:02:16,000
+Third, parallelism.
+
+39
+00:02:16,000 --> 00:02:18,000
+LLM calls can be time consuming.
+
+40
+00:02:18,000 --> 00:02:19,000
+They often take a while.
+
+41
+00:02:19,000 --> 00:02:22,000
+And so it's really important to run them in parallel if you can.
+
+42
+00:02:22,000 --> 00:02:26,000
+And the LCEL syntax makes it easy to do that.
+
+43
+00:02:26,000 --> 00:02:28,000
+And fourth, logging is built in.
+
+44
+00:02:28,000 --> 00:02:31,000
+As these chains and agents get more and more complex,
+
+45
+00:02:31,000 --> 00:02:38,000
+being able to see the sequence of steps and the inputs and outputs becomes crucial for building an LLM application.
+
+46
+00:02:38,000 --> 00:02:41,000
+And we've added things into the open source library.
+
+47
+00:02:41,000 --> 00:02:45,000
+And then we also have Linksmith, which is a platform for logging and debugging steps.
+
+48
+00:02:45,000 --> 00:02:51,000
+And LCEL natively logs all of these things and all the inputs and outputs correspondingly.
+
+49
+00:02:51,000 --> 00:02:55,000
+With that, it's time to get to the code and see what this actually looks like.
+
+50
+00:02:55,000 --> 00:02:59,000
+First, let's set up our environment as before.
+
+51
+00:02:59,000 --> 00:03:03,000
+We'll then import a few different components that we're going to compose together.
+
+52
+00:03:03,000 --> 00:03:19,000
+First, we'll import a prompt template.
+
+53
+00:03:19,000 --> 00:03:30,000
+Next, we'll import a language model and we'll be using OpenAI.
+
+54
+00:03:30,000 --> 00:03:32,000
+And finally, we'll import an output parser.
+
+55
+00:03:32,000 --> 00:03:34,000
+And this is a really simple output parser.
+
+56
+00:03:34,000 --> 00:03:37,000
+It's just going to take a chat message and convert it into a string.
+
+57
+00:03:37,000 --> 00:03:44,000
+Let's now use these components to create a simple chain of prompt template to language model to output parser.
+
+58
+00:03:44,000 --> 00:03:46,000
+So first, let's create a prompt template.
+
+59
+00:03:46,000 --> 00:04:05,000
+And we'll create one that asks the language model to tell us a short joke.
+
+60
+00:04:05,000 --> 00:04:11,000
+We'll then initialize the language model that we're going to use.
+
+61
+00:04:11,000 --> 00:04:18,000
+And finally, we'll create the output parser that we're going to use.
+
+62
+00:04:18,000 --> 00:04:26,000
+Now, to combine these all together into a chain, all we have to do is connect them with this pipe syntax.
+
+63
+00:04:26,000 --> 00:04:32,000
+And we can now call this chain using the invoke method on some inputs.
+
+64
+00:04:32,000 --> 00:04:35,000
+And the inputs here are going to be the inputs of the prompt template.
+
+65
+00:04:35,000 --> 00:04:40,000
+So that's going to be a dictionary with a keyword of topic.
+
+66
+00:04:40,000 --> 00:04:42,000
+And let's tell some joke about bears to start.
+
+67
+00:04:42,000 --> 00:04:46,000
+And so if we call this, we can see we get back a joke.
+
+68
+00:04:46,000 --> 00:04:48,000
+Why don't bears ever get caught in traffic?
+
+69
+00:04:48,000 --> 00:04:51,000
+Because they always take the beariest best routes.
+
+70
+00:04:51,000 --> 00:04:56,000
+Now's a good time to pause a little bit, pass in some other arguments to this function,
+
+71
+00:04:56,000 --> 00:05:00,000
+ maybe change up the prompt, play around with it and get a sense for these different components,
+
+72
+00:05:00,000 --> 00:05:03,000
+ and also combining them with this pipe syntax.
+
+73
+00:05:03,000 --> 00:05:06,000
+We'll now create a slightly more complex chain.
+
+74
+00:05:06,000 --> 00:05:11,000
+In the previous short course, we went over how to do retrieval augmented generation.
+
+75
+00:05:11,000 --> 00:05:15,000
+And so we'll replicate that same process using link chain expression language.
+
+76
+00:05:15,000 --> 00:05:18,000
+First, we need to set up our retriever.
+
+77
+00:05:18,000 --> 00:05:20,000
+We're first going to create a really simple vector store.
+
+78
+00:05:20,000 --> 00:05:23,000
+We're going to do this by initializing it with two texts.
+
+79
+00:05:23,000 --> 00:05:25,000
+First, harrisonwork.kencho.
+
+80
+00:05:25,000 --> 00:05:27,000
+And next, bears like dehoney.
+
+81
+00:05:27,000 --> 00:05:30,000
+We'll then also pass in an embedding model, open AI embeddings.
+
+82
+00:05:30,000 --> 00:05:34,000
+And then we'll create a retriever by doing vector store dot as retriever.
+
+83
+00:05:34,000 --> 00:05:37,000
+As a reminder from the previous lesson,
+
+84
+00:05:37,000 --> 00:05:40,000
+We can now call dot get relevant documents on this retriever.
+
+85
+00:05:40,000 --> 00:05:42,000
+And we get back relevant documents.
+
+86
+00:05:42,000 --> 00:05:44,000
+So we call it with where did Harrison work.
+
+87
+00:05:44,000 --> 00:05:46,000
+And we get back a list of documents.
+
+88
+00:05:46,000 --> 00:05:49,000
+And we can see that harrisonwork.kencho is the first one returned.
+
+89
+00:05:49,000 --> 00:05:52,000
+If we call it on something different.
+
+90
+00:05:52,000 --> 00:05:56,000
+If we call it on what do bears like to eat.
+
+91
+00:05:56,000 --> 00:06:03,000
+We can see that the first result that we get back is bears like to eat honey.
+
+92
+00:06:03,000 --> 00:06:06,000
+So this is a simple example because there's only two documents.
+
+93
+00:06:06,000 --> 00:06:08,000
+And so it's returning both of them.
+
+94
+00:06:08,000 --> 00:06:12,000
+But the important thing is that you can do this on a larger number of documents.
+
+95
+00:06:12,000 --> 00:06:14,000
+And it will return the most relevant documents,
+
+96
+00:06:14,000 --> 00:06:18,000
+which we will then use in our retrieval augmented generation pipeline.
+
+97
+00:06:18,000 --> 00:06:23,000
+In order to create this pipeline we're first going to create a prompt.
+
+98
+00:06:23,000 --> 00:06:28,000
+That basically asks the language model to answer the question based only on the following context.
+
+99
+00:06:28,000 --> 00:06:31,000
+And has two variables here has context and question.
+
+100
+00:06:31,000 --> 00:06:33,000
+And so we're going to be passing in two things.
+
+101
+00:06:33,000 --> 00:06:36,000
+We're going to be passing in the question, which is going to be the user question.
+
+102
+00:06:36,000 --> 00:06:38,000
+And then we're going to be passing in the context.
+
+103
+00:06:38,000 --> 00:06:40,000
+And these are going to be the documents that we fetch from the retriever.
+
+104
+00:06:40,000 --> 00:06:43,000
+So how are we going to think about creating this chain?
+
+105
+00:06:43,000 --> 00:06:48,000
+We want the first and only input to the chain to be the user question.
+
+106
+00:06:48,000 --> 00:06:51,000
+From then we want to fetch relevant context.
+
+107
+00:06:51,000 --> 00:06:53,000
+And then we want to pass that into the prompt.
+
+108
+00:06:53,000 --> 00:06:55,000
+And then we want to pass that into a model.
+
+109
+00:06:55,000 --> 00:06:59,000
+And then we want to pass that into the output parser and convert the chat message into a string.
+
+110
+00:06:59,000 --> 00:07:04,000
+So the first thing that we're going to do is create something that takes in a single question.
+
+111
+00:07:04,000 --> 00:07:09,000
+And then turns it into a dictionary of two elements context and question.
+
+112
+00:07:09,000 --> 00:07:22,000
+To do that we're going to use a runnable map, which we can import this way.
+
+113
+00:07:22,000 --> 00:07:24,000
+We want this runnable map to have two elements.
+
+114
+00:07:24,000 --> 00:07:26,000
+First is going to be context.
+
+115
+00:07:26,000 --> 00:07:28,000
+And the context is going to call the retriever.
+
+116
+00:07:28,000 --> 00:07:47,000
+We can write a lambda function that calls retriever.getRelevantDocuments and passes in the question parameter.
+
+117
+00:07:47,000 --> 00:07:51,000
+We also want to pass along the original question parameter.
+
+118
+00:07:51,000 --> 00:07:55,000
+And we can do that by just using another simple lambda function.
+
+119
+00:07:55,000 --> 00:08:00,000
+From here we want to pass it into the prompt.
+
+120
+00:08:00,000 --> 00:08:02,000
+And then we want to pass it in to the model.
+
+121
+00:08:02,000 --> 00:08:04,000
+And then we want to pass it into the output parser.
+
+122
+00:08:04,000 --> 00:08:07,000
+And so we can just compose all those together with pipes.
+
+123
+00:08:07,000 --> 00:08:11,000
+We can then name this as our chain.
+
+124
+00:08:11,000 --> 00:08:13,000
+And we now have a new runnable.
+
+125
+00:08:22,000 --> 00:08:25,000
+And now if we invoke this with a question like where did Harrison work?
+
+126
+00:08:25,000 --> 00:08:28,000
+We can see that it responds with Harrison worked at Kensho.
+
+127
+00:08:28,000 --> 00:08:32,000
+And we want to take a closer look at what exactly is going on under the scenes.
+
+128
+00:08:32,000 --> 00:08:35,000
+We can just look at this runnable map directly.
+
+129
+00:08:35,000 --> 00:08:39,000
+So let's create this as its own variable called inputs.
+
+130
+00:08:39,000 --> 00:08:43,000
+And then if we just run this on the same thing.
+
+131
+00:08:43,000 --> 00:08:50,000
+We can see that we get back context which is a list of documents.
+
+132
+00:08:50,000 --> 00:08:52,000
+And then the question as well.
+
+133
+00:08:52,000 --> 00:08:53,000
+So that's both elements there.
+
+134
+00:08:53,000 --> 00:08:55,000
+This is then getting passed into the prompt.
+
+135
+00:08:55,000 --> 00:08:59,000
+Which is then creating a prompt value which is getting passed into the model.
+
+136
+00:08:59,000 --> 00:09:00,000
+Which calls the model.
+
+137
+00:09:00,000 --> 00:09:02,000
+Returns a chat message which gets passed to the output parser.
+
+138
+00:09:02,000 --> 00:09:04,000
+And that finally returns a string.
+
+139
+00:09:04,000 --> 00:09:09,000
+One of the other things that we can do with runnables is we can bind parameters to them.
+
+140
+00:09:09,000 --> 00:09:14,000
+So we'll do that with an example of open AI functions which we just covered.
+
+141
+00:09:14,000 --> 00:09:19,000
+So if we have this list of functions we want to call the language model with those functions.
+
+142
+00:09:19,000 --> 00:09:26,000
+And so normally this would look like a prompt and then a model.
+
+143
+00:09:26,000 --> 00:09:28,000
+But where do the functions go in?
+
+144
+00:09:28,000 --> 00:09:34,000
+And so in order to insert the functions what we can do is we can do bind and then we can do functions equals functions.
+
+145
+00:09:34,000 --> 00:09:41,000
+And what this will do under the hood is that when the model is called it will pass any parameters and bind along to the invocation.
+
+146
+00:09:41,000 --> 00:09:45,000
+So now if we create a runnable by doing prompt and then pipe model.
+
+147
+00:09:45,000 --> 00:09:55,000
+When we call the runnable on some inputs that should use the function.
+
+148
+00:09:55,000 --> 00:10:02,000
+Like what is the weather in SF.
+
+149
+00:10:02,000 --> 00:10:08,000
+We can see that what we get back is an AI message which has this additional quards parameter.
+
+150
+00:10:08,000 --> 00:10:13,000
+And in there we see the function call that we expect to be returned.
+
+151
+00:10:13,000 --> 00:10:16,000
+If you wanted to change that you would just override it.
+
+152
+00:10:16,000 --> 00:10:22,000
+So if we add in another function and let's name this one sports search.
+
+153
+00:10:22,000 --> 00:10:26,000
+And it's going to search for.
+
+154
+00:10:26,000 --> 00:10:38,000
+It's going to search for news of recent sport events.
+
+155
+00:10:38,000 --> 00:10:41,000
+And it's going to take in a team name.
+
+156
+00:10:41,000 --> 00:10:51,000
+And it's going to take in a team name.
+
+157
+00:10:51,000 --> 00:10:52,000
+And now we have these two different functions here.
+
+158
+00:10:52,000 --> 00:11:04,000
+We can just update the model by binding it with new functions.
+
+159
+00:11:04,000 --> 00:11:25,000
+And then when we call this new runnable which we're using the new model in.
+
+160
+00:11:25,000 --> 00:11:27,000
+And we call it with how did the Patriots do yesterday.
+
+161
+00:11:27,000 --> 00:11:31,000
+We can see that it now knows to use sports search.
+
+162
+00:11:31,000 --> 00:11:36,000
+One of the really powerful things about language and expression language is you can easily attach fallbacks.
+
+163
+00:11:36,000 --> 00:11:40,000
+Not only the individual components but to entire sequences.
+
+164
+00:11:40,000 --> 00:11:45,000
+So let's take a look at that when we're trying to get a language model to output JSON.
+
+165
+00:11:45,000 --> 00:11:47,000
+In order to create a situation where this is going to fail.
+
+166
+00:11:47,000 --> 00:11:53,000
+We'll actually use an older version of a language model from OpenAI that isn't quite as good.
+
+167
+00:11:59,000 --> 00:12:03,000
+And to do that we're going to import an OpenAI language model from Langchain.LLMs.
+
+168
+00:12:03,000 --> 00:12:05,000
+This is different than the chat models.
+
+169
+00:12:05,000 --> 00:12:07,000
+The chat models are newer types of models.
+
+170
+00:12:07,000 --> 00:12:10,000
+And so they're generally pretty good at things like outputting JSON.
+
+171
+00:12:10,000 --> 00:12:22,000
+But older models which is Langchain.LLMs generally aren't.
+
+172
+00:12:22,000 --> 00:12:26,000
+We'll now create a simple model and a simple chain.
+
+173
+00:12:26,000 --> 00:12:30,000
+In this simple model we're going to be setting temperature equals zero.
+
+174
+00:12:30,000 --> 00:12:31,000
+So we get some determinism.
+
+175
+00:12:31,000 --> 00:12:35,000
+And then we're also going to be using this model text DaVinci 001.
+
+176
+00:12:35,000 --> 00:12:38,000
+This is a really early version of an OpenAI model.
+
+177
+00:12:38,000 --> 00:12:43,000
+Our chain is just going to be calling this language model and then piping the result into JSON.loads.
+
+178
+00:12:43,000 --> 00:12:48,000
+This will break if the result of the language model isn't valid JSON.
+
+179
+00:12:48,000 --> 00:12:51,000
+Let's now create a challenge problem statement for the language model.
+
+180
+00:12:51,000 --> 00:12:54,000
+We're going to ask it to write three poems in a JSON blob.
+
+181
+00:12:54,000 --> 00:12:58,000
+Where each poem is a JSON blob of the title, author, and the first line.
+
+182
+00:12:58,000 --> 00:13:02,000
+This is a pretty challenging problem and we want it to respond in valid JSON.
+
+183
+00:13:02,000 --> 00:13:06,000
+And so if we run the simple model on this.
+
+184
+00:13:10,000 --> 00:13:14,000
+We can see that it responds with some structured format and it's kind of close.
+
+185
+00:13:14,000 --> 00:13:20,000
+But if we take this and we try to decode it with JSON.
+
+186
+00:13:20,000 --> 00:13:23,000
+We can see that we get a JSON decode error.
+
+187
+00:13:23,000 --> 00:13:27,000
+Because of what that model is outputting isn't actually valid JSON.
+
+188
+00:13:27,000 --> 00:13:32,000
+The new models from OpenAI are pretty good at outputting valid JSON.
+
+189
+00:13:32,000 --> 00:13:38,000
+So we're going to create a model called ChatOpenAI and then we're going to create a chain by piping that model with an output parser.
+
+190
+00:13:38,000 --> 00:13:43,000
+That's basically taking the chat message from the model and converting it into a string.
+
+191
+00:13:43,000 --> 00:13:48,000
+And then we're going to pipe that string into JSON.loads.
+
+192
+00:13:48,000 --> 00:13:55,000
+If we use the same challenge with this model, we can see that it correctly out splits valid JSON.
+
+193
+00:13:55,000 --> 00:14:01,000
+In order to use fallbacks, what we can do is we can create a final chain and we can start with the simple chain.
+
+194
+00:14:01,000 --> 00:14:08,000
+And then we can add fallbacks by using with fallbacks.
+
+195
+00:14:08,000 --> 00:14:12,000
+In with fallbacks, we'll pass in a list of other runnables.
+
+196
+00:14:12,000 --> 00:14:16,000
+And basically what will happen is that first, the core runnable tries to get run.
+
+197
+00:14:16,000 --> 00:14:20,000
+If an error is raised, then it goes through this list in order.
+
+198
+00:14:20,000 --> 00:14:21,000
+In this case, there's only one element.
+
+199
+00:14:21,000 --> 00:14:23,000
+But if there was more, we'd go through this in order.
+
+200
+00:14:23,000 --> 00:14:32,000
+And it would call those until it succeeds.
+
+201
+00:14:32,000 --> 00:14:38,000
+If we now call this chain on the challenge, we can see that it responds in the correct format.
+
+202
+00:14:38,000 --> 00:14:46,000
+So what happened was that it tried on the simple chain, it failed, and then it went back to the good chain that's using chat open AI, and it succeeds.
+
+203
+00:14:46,000 --> 00:14:49,000
+And so that's what we're getting back from this final chain.
+
+204
+00:14:49,000 --> 00:14:53,000
+Finally, let's talk about the interface that these runnables expose.
+
+205
+00:14:53,000 --> 00:14:55,000
+Let's go back to the chain that we had before.
+
+206
+00:14:55,000 --> 00:14:57,000
+We're asking it to tell us a joke.
+
+207
+00:14:57,000 --> 00:15:01,000
+And let's take a look at a few different elements of this interface.
+
+208
+00:15:01,000 --> 00:15:04,000
+The one that we were using from the get-go is invoke.
+
+209
+00:15:04,000 --> 00:15:09,000
+This is a synchronous method that calls it on one input.
+
+210
+00:15:09,000 --> 00:15:13,000
+There's also batch, which is going to call it on a list of inputs.
+
+211
+00:15:13,000 --> 00:15:19,000
+So here we pass in two different inputs, one with bears, one with frogs, and we call chain.batch.
+
+212
+00:15:19,000 --> 00:15:25,000
+And under the hood, this is actually executing them in parallel as much as possible.
+
+213
+00:15:25,000 --> 00:15:28,000
+We can also stream back responses.
+
+214
+00:15:28,000 --> 00:15:31,000
+So chain.stream is going to return an iterable.
+
+215
+00:15:31,000 --> 00:15:34,000
+And we can loop over that iterable and print out the different elements.
+
+216
+00:15:34,000 --> 00:15:39,000
+So if we run this now, we can see the response streaming back to the user.
+
+217
+00:15:39,000 --> 00:15:44,000
+This is really important for LLM applications because sometimes LLM applications can take a while.
+
+218
+00:15:44,000 --> 00:15:48,000
+And so it's very, very nice to stream back some of these responses.
+
+219
+00:15:48,000 --> 00:15:51,000
+So it's not just an empty screen that the user is looking at.
+
+220
+00:15:51,000 --> 00:15:56,000
+And finally, all of these methods have corresponding asynchronous methods.
+
+221
+00:15:56,000 --> 00:16:00,000
+So chain.ainvoke calls it an asynchronous manner.
+
+222
+00:16:00,000 --> 00:16:03,000
+And so that's why we have this await here because we want to see the response.
+
+223
+00:16:03,000 --> 00:16:08,000
+And this does the exact same thing as invoke, but it's just asynchronous.
+
+224
+00:16:08,000 --> 00:16:09,000
+That is it for this lesson.
+
+225
+00:16:09,000 --> 00:16:18,000
+But there's a lot of different ways that you can combine all these elements and put together really complicated types of chains and sequences.
+
+226
+00:16:18,000 --> 00:16:24,000
+We sometimes see sequences that get up to 300 or 400 components in a row.
+
+227
+00:16:24,000 --> 00:16:29,000
+And so before moving on, I would definitely take a moment to pause and try this out on some sequences of your own.
+
+228
+00:16:29,000 --> 00:16:33,000
+Can you do two, three, even four language model calls in a row?
+
+229
+00:16:33,000 --> 00:16:34,000
+What does that look like?
+
+230
+00:16:34,000 --> 00:16:36,000
+Lots of fun things to explore.
+
+231
+00:16:36,000 --> 00:16:39,000
+In the next lesson, we're going to combine what we just learned here.
+
+232
+00:16:39,000 --> 00:16:41,000
+Languechain expression language.
+
+233
+00:16:41,000 --> 00:16:43,000
+With what we covered in the previous lesson.
+
+234
+00:16:43,000 --> 00:16:44,000
+OpenAI function calls.
+
+235
+00:16:44,000 --> 00:16:47,000
+And we're going to show how to use those two things together.
+
+236
+00:16:47,000 --> 00:16:47,780
+字幕志愿者 李宗盛
+

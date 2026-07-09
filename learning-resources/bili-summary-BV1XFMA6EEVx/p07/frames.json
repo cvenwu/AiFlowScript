@@ -1,0 +1,99 @@
+{
+  "frames": [
+    {
+      "file": "frames/scene_001.jpg",
+      "ts_seconds": 50.47,
+      "ts_display": "00:50"
+    },
+    {
+      "file": "frames/scene_002.jpg",
+      "ts_seconds": 76.83,
+      "ts_display": "01:16"
+    },
+    {
+      "file": "frames/scene_003.jpg",
+      "ts_seconds": 85.5,
+      "ts_display": "01:25"
+    },
+    {
+      "file": "frames/scene_004.jpg",
+      "ts_seconds": 327.43,
+      "ts_display": "05:27"
+    },
+    {
+      "file": "frames/scene_005.jpg",
+      "ts_seconds": 328.3,
+      "ts_display": "05:28"
+    },
+    {
+      "file": "frames/scene_006.jpg",
+      "ts_seconds": 342.1,
+      "ts_display": "05:42"
+    },
+    {
+      "file": "frames/scene_007.jpg",
+      "ts_seconds": 342.3,
+      "ts_display": "05:42"
+    },
+    {
+      "file": "frames/scene_008.jpg",
+      "ts_seconds": 353.8,
+      "ts_display": "05:53"
+    },
+    {
+      "file": "frames/scene_009.jpg",
+      "ts_seconds": 371.1,
+      "ts_display": "06:11"
+    },
+    {
+      "file": "frames/scene_010.jpg",
+      "ts_seconds": 371.27,
+      "ts_display": "06:11"
+    },
+    {
+      "file": "frames/scene_011.jpg",
+      "ts_seconds": 601.0,
+      "ts_display": "10:01"
+    },
+    {
+      "file": "frames/scene_012.jpg",
+      "ts_seconds": 617.73,
+      "ts_display": "10:17"
+    },
+    {
+      "file": "frames/scene_013.jpg",
+      "ts_seconds": 622.3,
+      "ts_display": "10:22"
+    },
+    {
+      "file": "frames/scene_014.jpg",
+      "ts_seconds": 622.43,
+      "ts_display": "10:22"
+    },
+    {
+      "file": "frames/scene_015.jpg",
+      "ts_seconds": 626.43,
+      "ts_display": "10:26"
+    },
+    {
+      "file": "frames/scene_016.jpg",
+      "ts_seconds": 628.27,
+      "ts_display": "10:28"
+    },
+    {
+      "file": "frames/scene_017.jpg",
+      "ts_seconds": 680.5,
+      "ts_display": "11:20"
+    },
+    {
+      "file": "frames/scene_018.jpg",
+      "ts_seconds": 682.57,
+      "ts_display": "11:22"
+    },
+    {
+      "file": "frames/scene_019.jpg",
+      "ts_seconds": 688.4,
+      "ts_display": "11:28"
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+1
+00:00:00,000 --> 00:00:06,000
+ Welcome to this short course on Lanchain for Large Language Model Application Development.
+
+2
+00:00:06,000 --> 00:00:09,000
+ By prompting an LLM, or Large Language Model,
+
+3
+00:00:09,000 --> 00:00:14,000
+ it is now possible to develop AI applications much faster than ever before.
+
+4
+00:00:14,000 --> 00:00:20,000
+ But an application can require prompting an LLM multiple times and parsing its output,
+
+5
+00:00:20,000 --> 00:00:24,000
+ and so there's a lot of glue code that needs to be written.
+
+6
+00:00:24,000 --> 00:00:30,000
+ Lanchain, created by Harrison Chase, makes this development process much easier.
+
+7
+00:00:30,000 --> 00:00:38,000
+ I'm thrilled to have Harrison here, who had built this short course in collaboration with deeplearning.ai to teach how to use this amazing tool.
+
+8
+00:00:38,000 --> 00:00:41,000
+ Thanks for having me. I'm really excited to be here.
+
+9
+00:00:41,000 --> 00:00:45,000
+ Lanchain started as an open source framework for building LLM applications.
+
+10
+00:00:45,000 --> 00:00:51,000
+ It came about when I was talking to a bunch of folks in the field who were building more complex applications
+
+11
+00:00:51,000 --> 00:00:55,000
+ and saw some common abstractions in terms of how they were being developed.
+
+12
+00:00:55,000 --> 00:01:00,000
+ And we've been really thrilled at the community adoption of Lanchain so far.
+
+13
+00:01:00,000 --> 00:01:04,000
+ And so look forward to sharing it with everyone here and look forward to seeing what people build with it.
+
+14
+00:01:04,000 --> 00:01:10,000
+ And in fact, as a sign of Lanchain's momentum, not only does it have numerous users,
+
+15
+00:01:10,000 --> 00:01:14,000
+ but there are also many hundreds of contributors to the open source.
+
+16
+00:01:14,000 --> 00:01:18,000
+ And this has been instrumental for its rapid rate of development.
+
+17
+00:01:18,000 --> 00:01:22,000
+ This team really ships code and features at an amazing pace.
+
+18
+00:01:22,000 --> 00:01:29,000
+ So hopefully, after this short course, you'll be able to quickly put together some really cool applications using Lanchain.
+
+19
+00:01:29,000 --> 00:01:35,000
+ And who knows, maybe you even decide to contribute back to the open source Lanchain effort.
+
+20
+00:01:35,000 --> 00:01:41,000
+ Lanchain is an open source development framework for building LLM applications.
+
+21
+00:01:41,000 --> 00:01:45,000
+ We have two different packages, a Python one and a JavaScript one.
+
+22
+00:01:45,000 --> 00:01:48,000
+ They're focused on composition and modularity.
+
+23
+00:01:48,000 --> 00:01:54,000
+ So they have a lot of individual components that can be used in conjunction with each other or by themselves.
+
+24
+00:01:54,000 --> 00:01:56,000
+ And so that's one of the key value adds.
+
+25
+00:01:56,000 --> 00:01:59,000
+ And then the other key value add is a bunch of different use cases.
+
+26
+00:01:59,000 --> 00:02:04,000
+ So chains of ways of combining these modular components into more end-to-end applications
+
+27
+00:02:04,000 --> 00:02:08,000
+ and making it very easy to get started with those use cases.
+
+28
+00:02:08,000 --> 00:02:11,000
+ In this class, we'll cover the common components of Lanchain.
+
+29
+00:02:11,000 --> 00:02:13,000
+ So we'll talk about models.
+
+30
+00:02:13,000 --> 00:02:17,000
+ We'll talk about prompts, which are how you get models to do useful and interesting things.
+
+31
+00:02:17,000 --> 00:02:23,000
+ We'll talk about indexes, which are ways of ingesting data so that you can combine it with models.
+
+32
+00:02:23,000 --> 00:02:28,000
+ And then we'll talk about chains, which are more end-to-end use cases, along with agents,
+
+33
+00:02:28,000 --> 00:02:33,000
+ which are a very exciting type of end-to-end use case, which uses the model as a reasoning engine.
+
+34
+00:02:33,000 --> 00:02:40,000
+ We're also grateful to Ankhush Gola, who is a co-founder of Lanchain alongside Harrison Chase,
+
+35
+00:02:40,000 --> 00:02:46,000
+ for also putting a lot of thoughts into these materials and helping with the creation of this short course.
+
+36
+00:02:46,000 --> 00:02:54,000
+ And on the deep learning.ai side, Jeff Lodwick, Eddie Hsu, and Diala Ezzedine have also contributed to these materials.
+
+37
+00:02:54,000 --> 00:03:01,000
+ And so with that, let's go on to the next video where we'll learn about Lanchain's models, prompts, and pauses.
+

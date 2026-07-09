@@ -1,0 +1,316 @@
+1
+00:00:00,000 --> 00:00:08,460
+I this lesson we will go over function calling a new capability added to the open AI API a few
+
+2
+00:00:08,460 --> 00:00:14,060
+ months ago we'll go over how exactly to use this and some tips and tricks for getting best results
+
+3
+00:00:14,060 --> 00:00:20,380
+ open AI has fine-tuned some of the most recent models to accept additional parameters for
+
+4
+00:00:20,380 --> 00:00:25,200
+ function calling these models are fine-tuned to determine if it's relevant to call one of
+
+5
+00:00:25,200 --> 00:00:29,800
+ these functions and if so what the parameters to those functions should be in
+
+6
+00:00:29,800 --> 00:00:34,920
+ this lesson we'll use the open AI SDK directly and show what these additional
+
+7
+00:00:34,920 --> 00:00:39,960
+ parameters are and how to use them first we're gonna set up our environment by
+
+8
+00:00:39,960 --> 00:00:45,000
+ loading in our open AI API key to walk through this example we're gonna imagine
+
+9
+00:00:45,000 --> 00:00:49,780
+ that we have a function that we think is interesting to provide to the language
+
+10
+00:00:49,780 --> 00:00:53,220
+ model and we'll go over what interesting means later on because there are a bunch
+
+11
+00:00:53,220 --> 00:00:59,200
+ of different use cases for this new parameter here we're gonna define a get
+
+12
+00:00:59,200 --> 00:01:03,500
+ current weather function this is an example from open AI themselves when they
+
+13
+00:01:03,500 --> 00:01:08,460
+ first released this functionality this is a good example to use because getting the
+
+14
+00:01:08,460 --> 00:01:12,500
+ current weather is something that the language model can't necessarily do by
+
+15
+00:01:12,500 --> 00:01:17,200
+ itself and so we often want to connect language models to functions like this one
+
+16
+00:01:17,200 --> 00:01:21,440
+ to augment it with current information and we'll talk more about that later on in
+
+17
+00:01:21,440 --> 00:01:26,680
+ the lesson in this example we hard code the information that's returned but in
+
+18
+00:01:26,680 --> 00:01:30,980
+ production this could be hitting a weather API or some external source of
+
+19
+00:01:30,980 --> 00:01:36,480
+ knowledge so how do we pass this information to the language model open AI has
+
+20
+00:01:36,480 --> 00:01:41,920
+ exposed a new parameter called functions through which you can pass a list of
+
+21
+00:01:41,920 --> 00:01:48,160
+ of function definitions the full function definition for the above is right here as
+
+22
+00:01:48,160 --> 00:01:53,100
+ you can see it's a list and then the element in the list there's only one because we're only
+
+23
+00:01:53,100 --> 00:01:59,040
+ passing one function and here it is this JSON object with a few different parameters you've
+
+24
+00:01:59,040 --> 00:02:04,980
+ got a name parameter and this is the name of the function you've then got a description parameter and this
+
+25
+00:02:04,980 --> 00:02:21,220
+ this is a description that we're going to give the function and then next you have this parameter object and in here there's properties properties is itself another object and we can see that there's two elements location and unit
+
+26
+00:02:21,220 --> 00:02:50,220
+ each of these elements has a type string and then a description unit is an enum because we wanted to be either celsius or fahrenheit and so we can reflect that here we can also convey that the only required parameter is location we're going to pass these functions directly to the language model the description parameter here and then also here on the properties are really important because these are going to pass directly to the language model and so the language model will use these descriptions here and then also here on the properties are really important because these are going to pass directly to the language model and so the language model will use these descriptors
+
+27
+00:02:50,220 --> 00:03:18,220
+ to determine whether to use this function any information you want the language model to have in order to determine whether to call a function or how to call a function should be in the description here or here and now that we have these functions defined let's use them in a call to the language model first we're going to create a list of messages to pass to the language model
+
+28
+00:03:18,220 --> 00:03:37,220
+ let's make the first message we pass something that's related to the above function so let's make it a question about weather what's the weather like in boston
+
+29
+00:03:37,220 --> 00:03:56,220
+ let's then import the open ai sdk and call the chat completion endpoint first we're going to specify the model we're going to make sure to specify one of the more recent ones that has this capability
+
+30
+00:03:56,220 --> 00:04:02,220
+ next we're going to be able to pass in our messages defined above
+
+31
+00:04:02,220 --> 00:04:03,220
+ next we're going to pass in our messages defined above
+
+32
+00:04:03,220 --> 00:04:06,220
+ next we're going to pass in our messages defined above
+
+33
+00:04:06,220 --> 00:04:10,220
+ then we're going to pass in the functions we defined above using the functions parameter
+
+34
+00:04:10,220 --> 00:04:17,220
+ let's run this and see what we get
+
+35
+00:04:17,220 --> 00:04:39,220
+ let's look at the full response we can see that the message we get back has role of assistant has null for content and instead has this function call parameter which has two objects name and arguments name is get current weather this is the same name as the function that we passed in and then arguments is this JSON
+
+36
+00:04:39,220 --> 00:04:46,220
+ let's take a closer look at the response message
+
+37
+00:04:46,220 --> 00:04:48,220
+ let's take a closer look at the response message
+
+38
+00:04:48,220 --> 00:04:53,220
+ let's take a closer look at the response message
+
+39
+00:04:53,220 --> 00:05:07,220
+ again content is now empty
+
+40
+00:05:07,220 --> 00:05:14,220
+ and function call is this dictionary
+
+41
+00:05:14,220 --> 00:05:34,220
+ the arguments parameter in function call is a JSON dictionary itself so we can use JSON dot loads to load this into a Python dictionary the arguments that it passed back can be directly passed into the get current weather function
+
+42
+00:05:34,220 --> 00:06:01,220
+ as you can see function calling with open AI doesn't directly call the function we still have to do that ourselves rather it just tells us what function to call that's the name and what the arguments to that function should be it's also worth noting that although this is trained to return a JSON blob it's actually not strictly enforced
+
+43
+00:06:01,220 --> 00:06:28,220
+ so if you're decoding it with JSON dot loads and you run into some error that's actually an issue on the model side and so you might want to put in some safeguards around that and we can talk about how to do that later on in the lessons what happens if the message that you pass in isn't related to the function at all let's try it out and see what happens then let's create a new set of messages this time ones that aren't related to the weather at all
+
+44
+00:06:28,220 --> 00:06:58,220
+ when we call it this time we can see that the message that's returned has content as normal and it doesn't have that function call parameter what's going on under the hood is that the model is determining the
+
+45
+00:06:58,220 --> 00:07:05,220
+ whether to use a function or whether to use a function or not there are additional parameters that we can pass in to force the model to use or not to use a function let's take a look at those
+
+46
+00:07:05,220 --> 00:07:12,220
+ that additional parameter is the function call parameter by default it's set to auto this means that the language model chooses this is what we've been doing so far
+
+47
+00:07:12,220 --> 00:07:19,220
+ there's two other modes that we can use it in in the first mode we can force it to call a function this is good if we always want to return the function and we'll see some use cases for that later on in the lesson as you can see because we're using auto and we're letting the language model choose what to do
+
+48
+00:07:19,220 --> 00:07:26,220
+ here it recognizes that it doesn't need to call the function and so it's responding as before with role and content only
+
+49
+00:07:26,220 --> 00:07:33,220
+ another mode for function call that we can use is none this forces the language model that we can use it in in the first mode we can force it to call a function
+
+50
+00:07:33,220 --> 00:07:41,220
+ this is good if we always want to return the function and we'll see some use cases for that later on in the lesson as you can see because we're using auto and we're letting the language model choose what to do
+
+51
+00:07:41,220 --> 00:07:48,220
+ here it recognizes that it doesn't need to call the function and so it's responding as before with role and content only
+
+52
+00:07:48,220 --> 00:08:00,220
+ another mode for function call that we can use is none this forces the language model not to use any of the functions provided in this example it doesn't really matter
+
+53
+00:08:00,220 --> 00:08:10,220
+ because the content high doesn't need the function call anyways so we see it's not used but what happens when the messages should call function here
+
+54
+00:08:10,220 --> 00:08:39,220
+ here we can see that the message we passed in should call function it should call the get current weather function but when we look down we still see the usual role and content that's because we're forcing it not to call the function and so it's getting confused it's trying to call the function but this isn't the correct function call parameter that will be returned if it actually is calling the function
+
+55
+00:08:39,220 --> 00:08:46,220
+ so the final option for the function call parameter is forcing it to call a function let's see how to do that
+
+56
+00:08:46,220 --> 00:08:56,220
+ here we specify name get current weather and this will force it to use the get current weather function
+
+57
+00:08:56,220 --> 00:09:06,220
+ and if we look at the response we can see that in fact we do get this function call object returned and it's got name get current weather with some arguments
+
+58
+00:09:06,220 --> 00:09:13,220
+ just for fun let's see what happens if we pass in a message that doesn't need to call the function but we force it to
+
+59
+00:09:13,220 --> 00:09:30,220
+ here we can see the language model is getting confused and making things up because it's forced to call the get current weather function but there's absolutely nothing in the user's message that provides any information about how it should call that function
+
+60
+00:09:30,220 --> 00:09:37,220
+ so here it's making up San Francisco California if we run it again it keeps on calling San Francisco California
+
+61
+00:09:37,220 --> 00:09:52,220
+ now is a good time to take a pause and play around with different functions that you want the language model to call different input messages different values of this function call parameter and see how the language model responds
+
+62
+00:09:52,220 --> 00:10:11,220
+ some final things to note first the functions themselves and the descriptions count against the token usage limit that you passed open AI so if we run this we can see that we get back prompt tokens 89 if we comment out functions and function call
+
+63
+00:10:11,220 --> 00:10:38,220
+ we can see that prompt tokens goes down to 15 in this particular example the function definition and the function description are taking up a lot of the tokens this is important to note because open AI models have a token limit on them and so as you're constructing your messages to pass to open AI you now not only have to be aware of the length of your messages but also the length of the functions that you pass
+
+64
+00:10:38,220 --> 00:11:00,220
+ finally let's now take a look at how you can pass some of these function calls and the results of actually doing the function calls back into the language model this is important because oftentimes you want to use the language model to determine what function to call then run that function but then pass it back into the language model to get a final response
+
+65
+00:11:00,220 --> 00:11:07,220
+ so let's run this again and we'll get back this response that has this function call parameter in it
+
+66
+00:11:07,220 --> 00:11:23,220
+ we'll then take this message and we'll append it to our list of messages
+
+67
+00:11:23,220 --> 00:11:26,220
+ we can then simulate calling the get current weather function with the only one
+
+68
+00:11:26,220 --> 00:11:29,220
+ we can then simulate calling the get current weather function with the only one
+
+69
+00:11:29,220 --> 00:11:30,220
+ we can then simulate calling the get current weather function with the only one
+
+70
+00:11:30,220 --> 00:11:47,220
+ we can then simulate calling the get current weather function with the only one
+
+71
+00:11:47,220 --> 00:11:51,220
+ we can then simulate calling the get current weather function with the only one
+
+72
+00:11:51,220 --> 00:11:54,220
+ the get current weather function with the arguments that the language model provides
+
+73
+00:11:54,220 --> 00:11:58,220
+ that the language model provides
+
+74
+00:11:58,220 --> 00:12:13,220
+ let's save this to a variable and then we can append a new message to the list representing the response from the function that we just call
+
+75
+00:12:13,220 --> 00:12:26,220
+ we do this with a new type of message notice that it has a role equal to function this is used to convey to the language model that it's the response of calling a function
+
+76
+00:12:26,220 --> 00:12:34,220
+ we then also pass in the name which is the name of the function and a content variable which we can set up equal to observation which we calculated above
+
+77
+00:12:34,220 --> 00:12:56,220
+ if we then call the language model with this list of messages we can see that the language model takes the response of the observation and converts it into a nice natural language response the current weather in Boston is 72 degrees Fahrenheit with a sunny and windy forecast
+
+78
+00:12:56,220 --> 00:13:11,220
+ now is a good time to again stop and go back to some of the functions that you created earlier and try them with this pattern of calling the language model getting the function to use and the inputs then running that function on those inputs and then passing it all back in to the language model
+
+79
+00:13:11,220 --> 00:13:29,220
+ that's all for this lesson where we introduced open AI function calling and how to use it with the open AI SDK directly and the next lessons we're going to cover how to combine this with laying chain primitives to make it easier and faster to use this functionality
+

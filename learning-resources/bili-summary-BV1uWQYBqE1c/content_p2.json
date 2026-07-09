@@ -1,0 +1,154 @@
+{
+  "title": "LlamaIndex 路由器查询引擎：单文档 Agentic RAG 实战",
+  "meta": {
+    "video_title": "【2026必学！】LlamaIndex自主式RAG，比传统RAG强10倍的检索方案【自主检索→推理循环→多文档代理】允许白嫖，拿走不谢！",
+    "part_title": "2-路由器查询引擎",
+    "up": "吴恩达AIAgent",
+    "duration": "09:10",
+    "duration_seconds": 550,
+    "bvid": "BV1uWQYBqE1c",
+    "page": 2,
+    "url": "https://www.bilibili.com/video/BV1uWQYBqE1c?p=2",
+    "content_type": "技术教程 / 代码实操 / RAG 架构讲解",
+    "core_theme": "用 LlamaIndex 的 RouterQueryEngine 在同一份 MetaGPT PDF 上自动选择 SummaryIndex 或 VectorStoreIndex，让问题根据意图走摘要或向量检索路径。",
+    "materials_note": "基于第 2P 本地视频 p02.mp4、Whisper 转写文本、画面中英文字幕与关键帧截图整理；官方字幕接口因 B 站 412 风控未能直接获取。"
+  },
+  "overview": "本节从最简单的 Agentic RAG 形态切入：围绕一个 MetaGPT 文档，同时构建摘要索引与向量索引，再把二者封装为查询工具交给 RouterQueryEngine。路由器会先判断问题意图，再把问题分发给更合适的 Query Engine：全局概括类问题走 SummaryIndex，具体事实/上下文检索类问题走 VectorStoreIndex。",
+  "key_takeaways": [
+    "RouterQueryEngine 的核心价值不是增强某一个检索器，而是让系统能够按问题类型自动选择最合适的检索/回答路径。",
+    "同一份文档可以同时建立 SummaryIndex 与 VectorStoreIndex：前者适合整篇总结，后者适合局部事实检索。",
+    "QueryEngineTool 的 description 非常关键，路由器正是依靠工具描述理解每个引擎适合解决什么问题。",
+    "LlamaIndex 提供 LLM selector 与 Pydantic selector 等选择器；本节演示使用 LLMSingleSelector 构建单路由选择。",
+    "演示验证了两个典型问题：总结类问题会路由到摘要工具；具体上下文问题会路由到向量检索工具。"
+  ],
+  "framework": [
+    {"title": "问题引入：为什么要路由", "children": ["单个文档内既有宏观总结问题，也有具体事实问题", "不同问题适合不同 Query Engine", "Router 负责在多个候选引擎之间做选择"]},
+    {"title": "数据与模型准备", "children": ["读取 MetaGPT PDF", "切分为 nodes", "设置全局 LLM 与 Embedding 模型"]},
+    {"title": "构建两类索引", "children": ["SummaryIndex：汇总全部节点", "VectorStoreIndex：按 embedding 相似度取相关节点", "分别转换为 query engine"]},
+    {"title": "封装工具并构建 Router", "children": ["用 QueryEngineTool 包装每个 query engine", "写清工具 description", "用 LLMSingleSelector + RouterQueryEngine 组装路由器"]},
+    {"title": "验证与复用", "children": ["测试总结类问题", "测试局部事实类问题", "封装为 get_router_query_engine 工具函数"]}
+  ],
+  "author_logic": [
+    "先定义目标：构建一个处理单文档问答与总结的最小 Agentic RAG。",
+    "再拆基础部件：文档、nodes、LLM、embedding、SummaryIndex、VectorStoreIndex。",
+    "然后解释差异：摘要索引面向整篇文档，向量索引面向相似片段检索。",
+    "接着引入路由：把不同 query engine 包装成 tool，通过 selector 选择工具。",
+    "最后实测闭环：用总结问题和具体事实问题观察 verbose 输出中的选择理由。"
+  ],
+  "flow": ["用户问题", "RouterQueryEngine 接收 Query", "LLMSingleSelector 阅读工具描述", "选择 Summary Tool 或 Vector Tool", "调用对应 Query Engine", "返回答案与选择理由"],
+  "sections": [
+    {
+      "id": "intro",
+      "title": "课程目标：从最简单的 Agentic RAG 开始",
+      "time": "00:00 - 00:30",
+      "summary": "作者把本节定位为 Agentic RAG 的起点：不是马上进入复杂多文档代理，而是先做一个单文档路由器，让系统具备“选择查询路径”的最小自主能力。",
+      "points": ["图中 Router 位于查询入口之后，下游有两个 Query Engine：一个连接 Vector Index 做 Q&A，一个连接 Summary Index 做总结。", "核心问题是：当用户问的问题不同，系统如何自动决定该调用哪一个查询引擎。", "这节的目标不是只跑通一个查询，而是建立“路由选择”这个可迁移的设计模式。"],
+      "highlight": "Router Engine = 先判断问题意图，再选择合适的 Query Engine；这是 Agentic RAG 从固定检索走向自主检索的第一步。",
+      "code_blocks": [{"caption": "本节目标（概念）", "code": "Query -> Router -> {\n    Q&A path: VectorStoreIndex.as_query_engine(),\n    Summary path: SummaryIndex.as_query_engine()\n}"}],
+      "screenshots": [
+        {"file": "frames/shot_000005.jpg", "time": "00:05", "caption": "开场说明：本节从最简单的 Agentic RAG 形态开始。"},
+        {"file": "frames/shot_000030.jpg", "time": "00:30", "caption": "Router Engine 图示：同一份 MetaGPT 文档可根据问题走 Q&A 或 Summarization。"}
+      ]
+    },
+    {
+      "id": "setup",
+      "title": "Notebook 初始化：API Key、异步循环与文档读取",
+      "time": "00:30 - 02:30",
+      "summary": "搭建代码运行环境，读取 MetaGPT PDF，并把文档切分成 nodes，为后续两个索引提供共同输入。",
+      "points": ["先通过 helper 获取 OpenAI API Key。", "在 Jupyter 环境中需要处理后台事件循环，常见做法是使用 nest_asyncio。", "用 SimpleDirectoryReader 读取单个 PDF 文件 metagpt.pdf。", "用 SentenceSplitter(chunk_size=1024) 将文档切成 nodes，后续 SummaryIndex 和 VectorStoreIndex 都基于这些 nodes 构建。"],
+      "highlight": "nodes 是后续两个索引的共同输入：同一批文档切片可以服务于摘要路径，也可以服务于向量检索路径。",
+      "code_blocks": [{"caption": "读取文档并切分 nodes", "code": "from helper import get_openai_api_key\nOPENAI_API_KEY = get_openai_api_key()\n\nimport nest_asyncio\nnest_asyncio.apply()\n\nfrom llama_index.core import SimpleDirectoryReader\ndocuments = SimpleDirectoryReader(input_files=[\"metagpt.pdf\"]).load_data()\n\nfrom llama_index.core.node_parser import SentenceSplitter\nsplitter = SentenceSplitter(chunk_size=1024)\nnodes = splitter.get_nodes_from_documents(documents)"}],
+      "screenshots": [
+        {"file": "frames/shot_000100.jpg", "time": "01:00", "caption": "Notebook 中处理 OpenAI API Key 与 Jupyter 异步事件循环。"},
+        {"file": "frames/shot_000200.jpg", "time": "02:00", "caption": "读取 metagpt.pdf，并使用 SentenceSplitter 将文档切分为 nodes。"}
+      ]
+    },
+    {
+      "id": "models-indexes",
+      "title": "设置 LLM/Embedding，并构建 SummaryIndex 与 VectorStoreIndex",
+      "time": "02:00 - 03:30",
+      "summary": "明确两类索引的语义差异：一个面向全局总结，一个面向相似片段检索。",
+      "points": ["通过 LlamaIndex 的 Settings 设置全局 LLM 与 embedding 模型。视频中使用 GPT-3.5 Turbo 与 text-embedding-ada-002。", "SummaryIndex(nodes) 适合需要整篇文档视角的问题，例如“总结这篇论文”。", "VectorStoreIndex(nodes) 适合需要定位具体上下文的问题，例如某个实验结果、某个机制细节。", "两类索引不是谁替代谁，而是互补：路由器的价值就在于让它们各自处理擅长的问题。"],
+      "highlight": "SummaryIndex 解决“全局概括”，VectorStoreIndex 解决“局部检索”；路由器负责把问题发给正确的一边。",
+      "code_blocks": [{"caption": "全局模型设置与两类索引", "code": "from llama_index.llms.openai import OpenAI\nfrom llama_index.embeddings.openai import OpenAIEmbedding\nfrom llama_index.core import Settings\n\nSettings.llm = OpenAI(model=\"gpt-3.5-turbo\")\nSettings.embed_model = OpenAIEmbedding(model=\"text-embedding-ada-002\")\n\nfrom llama_index.core import SummaryIndex, VectorStoreIndex\nsummary_index = SummaryIndex(nodes)\nvector_index = VectorStoreIndex(nodes)"}],
+      "screenshots": [
+        {"file": "frames/shot_000230.jpg", "time": "02:30", "caption": "准备构建两个索引：Vector Index 与 Summary Index。"},
+        {"file": "frames/shot_000300.jpg", "time": "03:00", "caption": "Vector Index 负责根据 embedding 相似度返回最相似的 nodes。"}
+      ]
+    },
+    {
+      "id": "query-tools",
+      "title": "把索引转换为 Query Engine，再封装为工具",
+      "time": "03:30 - 05:00",
+      "summary": "让路由器不直接面对索引，而是面对有描述的 QueryEngineTool。工具描述会成为 selector 判断工具能力的依据。",
+      "points": ["先调用 as_query_engine()，让每个索引具备统一的查询接口。", "Summary query engine 使用 response_mode='tree_summarize'，更适合汇总整篇文档。", "Vector query engine 保持向量检索默认路径，用于返回最相关节点。", "再用 QueryEngineTool.from_defaults 包装它们，并给每个 tool 写清楚适用场景。"],
+      "highlight": "QueryEngineTool 的 description 不是装饰文字，而是 Router 理解工具能力的“提示词接口”。",
+      "code_blocks": [{"caption": "将两个 query engine 封装成工具", "code": "summary_query_engine = summary_index.as_query_engine(\n    response_mode=\"tree_summarize\",\n    use_async=True,\n)\nvector_query_engine = vector_index.as_query_engine()\n\nfrom llama_index.core.tools import QueryEngineTool\n\nsummary_tool = QueryEngineTool.from_defaults(\n    query_engine=summary_query_engine,\n    description=\"Useful for summarization questions related to MetaGPT\",\n)\n\nvector_tool = QueryEngineTool.from_defaults(\n    query_engine=vector_query_engine,\n    description=\"Useful for retrieving specific context from the MetaGPT paper\",\n)"}],
+      "screenshots": [
+        {"file": "frames/shot_000330.jpg", "time": "03:30", "caption": "将 summary_index 与 vector_index 转换成 query engine。"},
+        {"file": "frames/shot_000400.jpg", "time": "04:00", "caption": "Summary query engine 使用 tree_summarize，并启用 use_async=True。"}
+      ]
+    },
+    {
+      "id": "selectors-router",
+      "title": "选择器机制：LLM Selector、Pydantic Selector 与 LLMSingleSelector",
+      "time": "05:00 - 06:10",
+      "summary": "解释 LlamaIndex 中 selector 的类型，并用 LLMSingleSelector 构建 RouterQueryEngine。",
+      "points": ["LLM selector 会让模型根据工具描述输出选择结果，通常以可解析的 JSON 表达。", "Pydantic selector 借助 OpenAI function calling API，直接生成 Pydantic selection objects，避免手动解析原始 JSON。", "selector 既可以选择一个路由，也可以支持多路由选择；本节使用的是单选版本 LLMSingleSelector。", "RouterQueryEngine 由 selector 与 query_engine_tools 组成，verbose=True 用于观察选择过程和理由。"],
+      "highlight": "本节的路由器不是硬编码 if/else，而是让 LLM 根据工具描述选择最合适的 Query Engine。",
+      "code_blocks": [{"caption": "构建 RouterQueryEngine", "code": "from llama_index.core.query_engine.router_query_engine import RouterQueryEngine\nfrom llama_index.core.selectors import LLMSingleSelector\n\nquery_engine = RouterQueryEngine(\n    selector=LLMSingleSelector.from_defaults(),\n    query_engine_tools=[summary_tool, vector_tool],\n    verbose=True,\n)"}],
+      "screenshots": [
+        {"file": "frames/shot_000500.jpg", "time": "05:00", "caption": "LlamaIndex 提供多种 selectors，支持构建路由器。"},
+        {"file": "frames/shot_000530.jpg", "time": "05:30", "caption": "LLM selectors 输出 JSON；Pydantic selectors 使用函数调用产生结构化选择对象。"},
+        {"file": "frames/shot_000600.jpg", "time": "06:00", "caption": "演示使用 LLMSingleSelector.from_defaults() 构建 RouterQueryEngine。"}
+      ]
+    },
+    {
+      "id": "verify-summary",
+      "title": "验证一：总结类问题应走 Summary Tool",
+      "time": "06:10 - 07:25",
+      "summary": "通过全局总结问题观察 Router 是否选择摘要查询引擎，并检查 source_nodes 数量。",
+      "points": ["第一个测试问题是文档总结类问题，例如询问 MetaGPT 文档的总体内容。", "verbose 输出会显示选择了适合 summarization 的 query engine。", "回答会给出 MetaGPT 论文的整体总结，而不是只抽取某几个相似片段。", "作者进一步查看 response.source_nodes，并看到数量为 34，说明摘要路径覆盖了当前索引中的全部节点。"],
+      "highlight": "如果问题需要整篇文档视角，Router 应选择 SummaryIndex 路径；source_nodes 数量可作为验证信号。",
+      "code_blocks": [{"caption": "总结类问题测试", "code": "response = query_engine.query(\n    \"What is the summary of the MetaGPT document?\"\n)\nprint(str(response))\n\nprint(len(response.source_nodes))\n# 画面显示：34"}],
+      "screenshots": [
+        {"file": "frames/shot_000700.jpg", "time": "07:00", "caption": "通过 response.source_nodes 检查回答使用的来源节点数量。"}
+      ]
+    },
+    {
+      "id": "verify-vector",
+      "title": "验证二：具体上下文问题应走 Vector Search",
+      "time": "07:25 - 08:10",
+      "summary": "通过局部事实问题验证 Router 会选择向量检索路径。",
+      "points": ["作者提出具体问题：How do agents share information with other agents?", "Router 输出选择 Query Engine 1，理由是该问题需要从 MetaGPT 论文中检索特定上下文。", "返回内容提到 agents 通过 shared message pool 发布、读取结构化消息，从而共享信息并提升协作效率。", "这说明路由器能区分“总结整篇文档”和“查找局部事实”两类需求。"],
+      "highlight": "局部事实问题不应该强行做全文总结，而应该走 VectorStoreIndex，先定位相关片段再生成回答。",
+      "code_blocks": [{"caption": "具体上下文问题测试", "code": "response = query_engine.query(\n    \"How do agents share information with other agents?\"\n)\nprint(str(response))\n\n# verbose 输出要点：\n# Selecting query engine 1 ... focuses on retrieving specific context ..."}],
+      "screenshots": [
+        {"file": "frames/shot_000800.jpg", "time": "08:00", "caption": "问题“agents 如何共享信息”触发 Query Engine 1，选择更适合检索具体上下文的向量工具。"}
+      ]
+    },
+    {
+      "id": "helper-wrapup",
+      "title": "封装复用：get_router_query_engine 与第二个检索测试",
+      "time": "08:10 - 09:10",
+      "summary": "把前面的流程封装为工具函数，方便替换 PDF 后复用，并用 ablation study 问题再次验证向量路径。",
+      "points": ["作者把读取文件、构建索引、创建 summary/vector tools、组装 RouterQueryEngine 的逻辑封装成 get_router_query_engine。", "使用时只需要传入 metagpt.pdf，即可得到可查询的 router query engine。", "再次测试 Tell me about the ablation study results?，Router 选择 Query Engine 1。", "理由同样是：消融实验结果属于论文中的具体上下文，适合向量检索而不是全文总结。", "结尾提示：可以把自己的 PDF 放进去，复用同样的路由查询模式。"],
+      "highlight": "把路由器构建过程封装成函数后，Router Query Engine 就从一次性 demo 变成可迁移的单文档 RAG 模板。",
+      "code_blocks": [{"caption": "封装函数复用", "code": "from utils import get_router_query_engine\n\nquery_engine = get_router_query_engine(\"metagpt.pdf\")\n\nresponse = query_engine.query(\n    \"Tell me about the ablation study results?\"\n)\nprint(str(response))"}],
+      "screenshots": [
+        {"file": "frames/shot_000830.jpg", "time": "08:30", "caption": "将构建流程封装到 utils.get_router_query_engine 中，只需传入 PDF 路径。"},
+        {"file": "frames/shot_000900.jpg", "time": "09:00", "caption": "询问 ablation study results 时，Router 仍选择向量检索路径。"}
+      ]
+    }
+  ],
+  "key_screenshots": [
+    {"file": "frames/shot_000030.jpg", "time": "00:30", "caption": "Router Engine 总体结构：Router 在 Summary 与 Q&A 两条路径间选择。"},
+    {"file": "frames/shot_000230.jpg", "time": "02:30", "caption": "Vector Index vs Summary Index：两类索引服务不同问题类型。"},
+    {"file": "frames/shot_000530.jpg", "time": "05:30", "caption": "Selectors：LLM selector 与 Pydantic selector 的区别。"},
+    {"file": "frames/shot_000800.jpg", "time": "08:00", "caption": "verbose 输出显示 Router 选择向量检索工具并说明理由。"}
+  ],
+  "final_summary": {
+    "checklist": ["读取 PDF，并切分为 nodes。", "设置 LLM 与 embedding model。", "同一批 nodes 同时建立 SummaryIndex 与 VectorStoreIndex。", "分别调用 as_query_engine()，摘要路径可使用 tree_summarize。", "用 QueryEngineTool 包装 query engine，并写清 description。", "RouterQueryEngine = selector + query_engine_tools。", "总结类问题看是否走 Summary Tool，具体事实问题看是否走 Vector Tool。"],
+    "value": ["这个模式适合单文档但问题类型复杂的场景：既要总结全文，又要精准检索局部信息。", "如果要落地到企业知识库，可先为不同数据源或不同索引策略写清工具描述，再让 Router 统一分发问题。", "真正影响路由质量的关键，不只是 selector 本身，还包括每个工具 description 是否准确表达适用边界。", "后续扩展到多文档代理时，这里的“工具封装 + 选择器路由”会成为更复杂 agent 推理循环的基础。"]
+  }
+}

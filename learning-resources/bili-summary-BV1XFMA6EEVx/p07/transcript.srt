@@ -1,0 +1,716 @@
+1
+00:00:00,000 --> 00:00:05,120
+為什麼要做到大語言?
+
+2
+00:00:05,120 --> 00:00:08,880
+ Sometimes people think of a large language model as a knowledge store,
+
+3
+00:00:08,880 --> 00:00:13,200
+ as if it learns to memorize a lot of information, maybe off the internet,
+
+4
+00:00:13,200 --> 00:00:16,560
+ so when you ask the question, it can answer the question.
+
+5
+00:00:16,560 --> 00:00:20,320
+ But I think an even more useful way to think of a large language model
+
+6
+00:00:20,320 --> 00:00:22,880
+ is sometimes as a reasoning engine,
+
+7
+00:00:22,880 --> 00:00:27,200
+ in which you can give it chunks of text or other sources of information.
+
+8
+00:00:27,200 --> 00:00:31,520
+ And then the large language model, LLM, will maybe use this background knowledge,
+
+9
+00:00:31,520 --> 00:00:35,360
+ this learn off the internet, but to use the new information you give it
+
+10
+00:00:35,360 --> 00:00:41,040
+ to help you answer questions or reason through content or decide even what to do next.
+
+11
+00:00:41,040 --> 00:00:44,640
+ And that's what LangChain's Agents framework helps you to do.
+
+12
+00:00:44,640 --> 00:00:48,240
+ Agents are probably my favorite part of LangChain.
+
+13
+00:00:48,240 --> 00:00:50,240
+ I think they're also one of the most powerful parts,
+
+14
+00:00:50,240 --> 00:00:52,160
+ but they're also one of the newer parts.
+
+15
+00:00:52,160 --> 00:00:55,920
+ So we're seeing a lot of stuff emerge here that's really new to everyone in the field.
+
+16
+00:00:55,920 --> 00:01:00,400
+ And so this should be a very exciting lesson as we dive into what agents are,
+
+17
+00:01:00,400 --> 00:01:02,560
+ how to create and how to use agents,
+
+18
+00:01:02,560 --> 00:01:04,560
+ how to equip them with different types of tools,
+
+19
+00:01:04,560 --> 00:01:07,280
+ like search engines that come built into LangChain,
+
+20
+00:01:07,280 --> 00:01:09,200
+ and then also how to create your own tools,
+
+21
+00:01:09,200 --> 00:01:13,440
+ so that you can let agents interact with any data stores,
+
+22
+00:01:13,440 --> 00:01:16,880
+ any APIs, any functions that you might want them to.
+
+23
+00:01:16,880 --> 00:01:19,360
+ So this is exciting cutting edge stuff,
+
+24
+00:01:19,360 --> 00:01:23,120
+ but already with emerging important use cases.
+
+25
+00:01:23,120 --> 00:01:24,640
+ So with that, let's dive in.
+
+26
+00:01:24,640 --> 00:01:28,720
+ First, we're going to set the environment variables
+
+27
+00:01:28,720 --> 00:01:31,600
+ and import a bunch of stuff that we will use later on.
+
+28
+00:01:31,600 --> 00:01:35,600
+ Next, we're going to initialize a language model.
+
+29
+00:01:35,600 --> 00:01:37,360
+ We're going to use ChatOpenAI.
+
+30
+00:01:37,360 --> 00:01:40,080
+ And importantly, we're going to set the temperature equal to zero.
+
+31
+00:01:40,080 --> 00:01:43,760
+ This is important because we're going to be using the language model
+
+32
+00:01:43,760 --> 00:01:50,240
+ as the reasoning engine of an agent where it's connecting to other sources of data and computation.
+
+33
+00:01:50,240 --> 00:01:56,160
+ And so we want this reasoning engine to be as good and as precise as possible.
+
+34
+00:01:56,160 --> 00:02:00,160
+ And so we're going to set it to zero to get rid of any randomness that might arise.
+
+35
+00:02:02,240 --> 00:02:04,000
+ Next, we're going to load some tools.
+
+36
+00:02:04,000 --> 00:02:10,000
+ The two tools that we're going to load are the LLM Math tool and the Wikipedia tool.
+
+37
+00:02:10,000 --> 00:02:13,840
+ The LLM Math tool is actually a chain itself,
+
+38
+00:02:13,840 --> 00:02:19,440
+ which uses a language model in conjunction with a calculator to do math problems.
+
+39
+00:02:20,400 --> 00:02:23,920
+ The Wikipedia tool is an API that connects to Wikipedia,
+
+40
+00:02:23,920 --> 00:02:28,800
+ allowing you to run search queries against Wikipedia and get back results.
+
+41
+00:02:28,800 --> 00:02:33,680
+ Next, we're going to initialize an agent.
+
+42
+00:02:33,680 --> 00:02:38,640
+ We're going to initialize the agent with the tools, the language model, and then an agent type.
+
+43
+00:02:38,640 --> 00:02:42,720
+ Here, we're going to use ChatZeroShotReactDescription.
+
+44
+00:02:42,720 --> 00:02:46,720
+ The important things to note here are, first, chat.
+
+45
+00:02:46,720 --> 00:02:50,080
+ This is an agent that has been optimized to work with chat models.
+
+46
+00:02:50,640 --> 00:02:52,560
+ And second, react.
+
+47
+00:02:52,560 --> 00:02:58,560
+ This is a prompting technique designed to get the best reasoning performance out of language models.
+
+48
+00:02:58,560 --> 00:03:02,800
+ We're also going to pass in handleParsingErrors = true.
+
+49
+00:03:02,800 --> 00:03:08,640
+ This is useful when the language model might output something that is not able to be parsed
+
+50
+00:03:08,640 --> 00:03:13,600
+ into an action and action input, which is the desired output.
+
+51
+00:03:13,600 --> 00:03:18,480
+ When this happens, we'll actually pass the misformatted text back to the language model
+
+52
+00:03:18,480 --> 00:03:19,920
+ and ask it to correct itself.
+
+53
+00:03:19,920 --> 00:03:23,360
+ And finally, we're going to pass in verbose = true.
+
+54
+00:03:23,360 --> 00:03:28,880
+ This is going to print out a bunch of steps that makes it really clear to us in the Jupyter Notebook
+
+55
+00:03:28,880 --> 00:03:29,680
+ what's going on.
+
+56
+00:03:29,680 --> 00:03:34,800
+ We'll also set debug = true at the global level later on in the notebook,
+
+57
+00:03:34,800 --> 00:03:37,440
+ so we can see in more detail what exactly is happening.
+
+58
+00:03:38,560 --> 00:03:40,800
+ First, we're going to ask the agent a math question.
+
+59
+00:03:40,800 --> 00:03:43,200
+ What is 25% of 300?
+
+60
+00:03:43,200 --> 00:03:47,840
+ This is a pretty simple question, but it will be good to understand what exactly is going on.
+
+61
+00:03:47,840 --> 00:03:52,160
+ So we can see here that when it enters the agent executor chain,
+
+62
+00:03:52,160 --> 00:03:55,200
+ that it first thinks about what it needs to do.
+
+63
+00:03:55,840 --> 00:03:56,720
+ So it has a thought.
+
+64
+00:03:56,720 --> 00:03:59,360
+ It then has an action.
+
+65
+00:03:59,360 --> 00:04:05,600
+ And this action is actually a JSON blob corresponding to two things: an action and an action input.
+
+66
+00:04:05,600 --> 00:04:10,320
+ The action corresponds to the tool to use, so here it says calculator.
+
+67
+00:04:10,320 --> 00:04:13,280
+ The action input is the input to that tool.
+
+68
+00:04:13,280 --> 00:04:17,520
+ And here it's a string of 300 times 0.25.
+
+69
+00:04:17,520 --> 00:04:23,040
+ Next, we can see that there's observation with answer in a separate color.
+
+70
+00:04:23,040 --> 00:04:31,120
+ This observation, answer = 75.0, is actually coming from the calculator tool itself.
+
+71
+00:04:31,120 --> 00:04:36,400
+ Next, we go back to the language model when the text turns to green.
+
+72
+00:04:36,400 --> 00:04:38,880
+ We have the answer to the question.
+
+73
+00:04:38,880 --> 00:04:41,440
+ Final answer, 75.0.
+
+74
+00:04:42,080 --> 00:04:43,360
+ And that's the output that we get.
+
+75
+00:04:43,360 --> 00:04:50,480
+ This is a good time to pause and try out different math problems of your own.
+
+76
+00:04:50,480 --> 00:04:56,240
+ Next, we're going to go through an example using the Wikipedia API.
+
+77
+00:04:56,240 --> 00:04:59,680
+ Here, we're going to ask it a question about Tom Mitchell.
+
+78
+00:04:59,680 --> 00:05:02,640
+ And we can look at the intermediate steps to see what it does.
+
+79
+00:05:02,640 --> 00:05:07,680
+ We can see once again that it thinks and it correctly realizes that it should use Wikipedia.
+
+80
+00:05:10,240 --> 00:05:14,720
+ It says action equal to Wikipedia and action input equal to Tom M. Mitchell.
+
+81
+00:05:14,720 --> 00:05:26,480
+ The observation that comes back in yellow this time and we use different colors to denote different tools is the Wikipedia summary result for the Tom M. Mitchell page.
+
+82
+00:05:28,080 --> 00:05:33,360
+ The observation that comes back from Wikipedia is actually two results, two pages, as there's two different Tom M. Mitchells.
+
+83
+00:05:33,360 --> 00:05:41,360
+ We can see the first one covers the computer scientist and the second one, it looks like it's an Australian footballer.
+
+84
+00:05:41,360 --> 00:05:52,480
+ We can see that the information needed to answer this question, namely the name of the book that he wrote, Machine Learning, is present in the summary of the first Tom M. Mitchell.
+
+85
+00:05:54,880 --> 00:05:59,360
+ We can see next that the agent tries to look up more information about this book.
+
+86
+00:05:59,360 --> 00:06:02,080
+ So it looks up machine learning book in Wikipedia.
+
+87
+00:06:02,080 --> 00:06:08,800
+ This isn't strictly necessary and it's an interesting example to show how agents aren't perfectly reliable yet.
+
+88
+00:06:08,800 --> 00:06:17,440
+ We can see that after this lookup, the agent recognizes that it has all the information it needs to answer and responds with the correct answer, machine learning.
+
+89
+00:06:19,280 --> 00:06:21,840
+ The next example we're going to go through is a really cool one.
+
+90
+00:06:21,840 --> 00:06:27,920
+ If you've seen things like Copilot or even ChatGPT with the code interpreter plugin enabled,
+
+91
+00:06:27,920 --> 00:06:34,240
+ one of the things they're doing is they're using the language model to write code and then executing that code.
+
+92
+00:06:34,240 --> 00:06:36,000
+ And we can do the same exact thing here.
+
+93
+00:06:36,000 --> 00:06:42,480
+ So we're going to create a Python agent and we're going to use the same LLM as before.
+
+94
+00:06:42,480 --> 00:06:46,560
+ And we're going to give it a tool, the Python REPL tool.
+
+95
+00:06:46,560 --> 00:06:49,120
+ A REPL is basically a way to interact with code.
+
+96
+00:06:49,120 --> 00:06:51,120
+ You can think of it as a Jupyter notebook.
+
+97
+00:06:51,120 --> 00:06:55,360
+ So the agent can execute code with this REPL.
+
+98
+00:06:55,360 --> 00:06:58,560
+ It will then run and then we'll get back some results.
+
+99
+00:06:58,560 --> 00:07:04,160
+ And those results will be passed back into the agent so it can decide what to do next.
+
+100
+00:07:04,160 --> 00:07:10,160
+ The problem that we're going to have this agent solve is we're going to give it a list of names
+
+101
+00:07:10,160 --> 00:07:11,600
+ and then ask it to sort them.
+
+102
+00:07:12,400 --> 00:07:21,040
+ So you can see here we have a list of names, Harrison Chase, LangChain, LLM, Jeff Fusion, Transformer, GenAI.
+
+103
+00:07:21,040 --> 00:07:27,360
+ And we're going to ask the agent to first sort these names by last name and then first name
+
+104
+00:07:27,360 --> 00:07:28,960
+ and then print the output.
+
+105
+00:07:28,960 --> 00:07:33,760
+ Importantly, we're asking it to print the output so that it can actually see what the result is.
+
+106
+00:07:35,040 --> 00:07:40,240
+ These printed statements are what's going to be fed back into the language model later on so it can
+
+107
+00:07:40,240 --> 00:07:43,120
+ reason about the output of the code that it just ran.
+
+108
+00:07:44,960 --> 00:07:45,920
+ Let's give this a try.
+
+109
+00:07:45,920 --> 00:07:54,400
+ We can see that when we go into the agent executor chain, it first realizes that it can use the
+
+110
+00:07:54,400 --> 00:07:56,320
+ sorted function to list the customers.
+
+111
+00:07:56,320 --> 00:08:04,720
+ It's using a different agent type under the hood, which is why you can see that the action and action
+
+112
+00:08:04,720 --> 00:08:07,280
+ input is actually formatted slightly differently.
+
+113
+00:08:08,240 --> 00:08:14,240
+ Here, the action that it takes is to use the Python REPL and then the action input that you can see is
+
+114
+00:08:14,240 --> 00:08:18,080
+ code where it first writes out customers equals this list.
+
+115
+00:08:18,080 --> 00:08:21,280
+ It then sorts the customers and then it goes through this list and print it.
+
+116
+00:08:21,280 --> 00:08:26,880
+ You can see the agent thinks about what to do and realizes that it needs to write some code.
+
+117
+00:08:26,880 --> 00:08:33,280
+ The format that it's using of action and action input is actually slightly different than before.
+
+118
+00:08:33,280 --> 00:08:35,920
+ It's using a different agent type under the hood.
+
+119
+00:08:35,920 --> 00:08:41,760
+ For the action, it's going to use the Python REPL and for the action input, it's going to have a bunch
+
+120
+00:08:41,760 --> 00:08:46,640
+ of code. If we look at what this code is doing, it's first creating a variable to list out these
+
+121
+00:08:46,640 --> 00:08:52,560
+ customer names. It's then sorting that and creating a new variable and it's then iterating through that
+
+122
+00:08:52,560 --> 00:08:58,800
+ new variable and printing out each line, just like we asked it to. We can see that we get the observation
+
+123
+00:08:58,800 --> 00:09:04,880
+ back and this is a list of names and then the agent realizes that it's done and it returns these names.
+
+124
+00:09:04,880 --> 00:09:11,120
+ We can see from the stuff that's printed out the high level of what's going on,
+
+125
+00:09:11,120 --> 00:09:16,240
+ but let's dig a little bit deeper and run this with langchain debug set to true.
+
+126
+00:09:16,240 --> 00:09:24,560
+ As this prints out all the levels of all the different chains that are going on, let's go
+
+127
+00:09:24,560 --> 00:09:29,840
+ through them and see what exactly is happening. First, we start with the agent executor. This is
+
+128
+00:09:29,840 --> 00:09:34,880
+ the top level agent runner and we can see that we have here our input. Sort these customers by last
+
+129
+00:09:34,880 --> 00:09:41,920
+ name and then first name and print the output. From here, we call an LLM chain. This is the LLM chain
+
+130
+00:09:41,920 --> 00:09:49,520
+ that the agent is using. The LLM chain, remember, is a combination of prompt and an LLM. At this point,
+
+131
+00:09:49,520 --> 00:09:54,800
+ it's only got the input, an agent scratch pad, we'll get back to that later, and then some stop
+
+132
+00:09:54,800 --> 00:10:02,320
+ sequences to tell the language model when to stop doing its generations. At the next level, we see the
+
+133
+00:10:02,320 --> 00:10:08,560
+ exact call to the language model. So we can see the fully formatted prompt, which includes instructions
+
+134
+00:10:08,560 --> 00:10:16,720
+ about what tools it has access to, as well as how to format its output. From there, we can then see the
+
+135
+00:10:16,720 --> 00:10:23,440
+ exact output of the language model. So we can see the text key where it has the thought and the action
+
+136
+00:10:23,440 --> 00:10:31,360
+ and the action input all in one string. It then wraps up the LLM chain as it exits through there.
+
+137
+00:10:32,160 --> 00:10:37,360
+ And the next thing that it calls is a tool. And here we can see the exact input to the tool. We can
+
+138
+00:10:37,360 --> 00:10:41,600
+ also see the name of the tool, Python REPL, and then we can see the input, which is this code.
+
+139
+00:10:41,600 --> 00:10:47,200
+ We can then see the output of this tool, which is this printed out string. And again,
+
+140
+00:10:47,200 --> 00:10:52,000
+ this happens because we specifically ask the Python REPL to print out what is going on.
+
+141
+00:10:54,000 --> 00:10:59,520
+ We can then see the next input to the LLM chain, which again, the LLM chain here is the agent.
+
+142
+00:10:59,520 --> 00:11:06,080
+ So here, if you look at the variables, there's the input. This is unchanged. This is the high
+
+143
+00:11:06,080 --> 00:11:10,320
+ level objective that we're asking. But now there's some new values for agent scratchpad.
+
+144
+00:11:10,320 --> 00:11:19,280
+ You can see here that this is actually a combination of the previous generation plus the tool output.
+
+145
+00:11:19,280 --> 00:11:23,920
+ And so we're passing this back in so that the LLM can understand what happened previously
+
+146
+00:11:23,920 --> 00:11:30,160
+ and use that to reason about what to do next. The next few print statements are covering what
+
+147
+00:11:30,160 --> 00:11:36,000
+ happens as the LLM realizes that it is basically finished with its job. So we can see here the
+
+148
+00:11:36,000 --> 00:11:43,760
+ fully formatted prompt to the LLM, the response, where it realizes that it is done, and it says
+
+149
+00:11:43,760 --> 00:11:50,240
+ final answer, which here is the sequence that the agent uses to recognize that it's done with its job.
+
+150
+00:11:50,240 --> 00:11:53,760
+ We can then see it exiting the LLM chain and then exiting the agent executor.
+
+151
+00:11:53,760 --> 00:11:59,600
+ This should hopefully give you a pretty good idea of what's going on under the hood inside these agents.
+
+152
+00:11:59,600 --> 00:12:04,000
+ This should hopefully give you a pretty good idea of what's going on under the hood and is
+
+153
+00:12:04,000 --> 00:12:10,240
+ hopefully instructive as you pause and input your own objectives for this coding agent to try to
+
+154
+00:12:10,240 --> 00:12:15,760
+ accomplish. This debug mode can also be used to highlight what's going wrong. As shown above in
+
+155
+00:12:15,760 --> 00:12:20,880
+ the Wikipedia example, sometimes agents act a little funny. And so having all this information is really
+
+156
+00:12:20,880 --> 00:12:27,840
+ helpful for understanding what's going on. So far, we've used tools that come defined in LinkedIn already.
+
+157
+00:12:27,840 --> 00:12:34,080
+ But a big power of agents is that you can connect it to your own sources of information, your own APIs,
+
+158
+00:12:34,080 --> 00:12:38,560
+ your own data. So here we're going to go over how you can create a custom tool so that you can connect
+
+159
+00:12:38,560 --> 00:12:45,280
+ it to whatever you want. Let's make a tool that's going to tell us what the current date is. First,
+
+160
+00:12:45,280 --> 00:12:50,720
+ we're going to import this tool decorator. This can be applied to any function and it turns it into a
+
+161
+00:12:50,720 --> 00:12:58,000
+ tool that LinkedIn can use. Next, we're going to write a function called time, which takes in any text
+
+162
+00:12:58,000 --> 00:13:02,720
+ string. We're not really going to use that. And it's going to return today's date by calling date
+
+163
+00:13:02,720 --> 00:13:09,840
+ time. In addition to the name of the function, we're also going to write a really detailed doc
+
+164
+00:13:09,840 --> 00:13:15,600
+ string. That's because this is what the agent will use to know when it should call this tool and how it
+
+165
+00:13:15,600 --> 00:13:22,080
+ should call this tool. For example, here we say that the input should always be an empty string.
+
+166
+00:13:22,080 --> 00:13:27,520
+ That's because we don't use it. If we have more stringent requirements on what the input should be,
+
+167
+00:13:27,520 --> 00:13:31,440
+ for example, if we have a function that should always take in a search query
+
+168
+00:13:31,440 --> 00:13:34,640
+ or a SQL statement, you'll want to make sure to mention that here.
+
+169
+00:13:34,640 --> 00:13:41,120
+ We're now going to create another agent. This time we're adding the time tool
+
+170
+00:13:41,120 --> 00:13:42,720
+ to the list of existing tools.
+
+171
+00:13:42,720 --> 00:13:49,040
+ And finally, let's call the agent and ask it what the date today is.
+
+172
+00:13:52,080 --> 00:13:57,520
+ It recognizes that it needs to use the time tool, which it specifies here.
+
+173
+00:13:57,520 --> 00:14:02,080
+ It has the action input as an empty string. This is great. This is what we told it to do.
+
+174
+00:14:02,080 --> 00:14:07,360
+ And then it returns with an observation. And then finally, the language model takes that observation
+
+175
+00:14:07,360 --> 00:14:14,320
+ and responds to the user. Today's date is 2023-05-21. You should pause the video here
+
+176
+00:14:14,320 --> 00:14:21,040
+ and try putting in different inputs. This wraps up the lesson on agents. This is one of the newer and more
+
+177
+00:14:21,040 --> 00:14:27,440
+ exciting and more experimental pieces of Langchain. So I hope you enjoy using it. Hopefully it showed
+
+178
+00:14:27,440 --> 00:14:32,000
+ you how you can use a language model as a reasoning engine to take different actions
+
+179
+00:14:32,000 --> 00:14:34,480
+ and connect to other functions and data sources.
+

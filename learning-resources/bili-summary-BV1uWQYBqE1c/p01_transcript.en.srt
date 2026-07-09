@@ -1,0 +1,196 @@
+1
+00:00:00,000 --> 00:00:03,720
+ Welcome to Building a Gentic Rag with Llama Index.
+
+2
+00:00:03,720 --> 00:00:06,880
+ I'm joined by Jerry Liu, who is co-founder and CEO of
+
+3
+00:00:06,880 --> 00:00:09,280
+ Llama Index and the instructor for this course.
+
+4
+00:00:09,280 --> 00:00:11,760
+ Thanks, Andrew. I'm super excited to be here with you.
+
+5
+00:00:11,760 --> 00:00:14,360
+ In this course, you'll learn about a Gentic Rag,
+
+6
+00:00:14,360 --> 00:00:17,800
+ a framework to help you build research agents capable of
+
+7
+00:00:17,800 --> 00:00:19,560
+ advanced tool use, reasoning,
+
+8
+00:00:19,560 --> 00:00:21,880
+ and decision-making over your data.
+
+9
+00:00:21,880 --> 00:00:25,640
+ For example, what if you have a set of research papers on some topic,
+
+10
+00:00:25,640 --> 00:00:29,320
+ and you want to pull out the parts relevant to a question you want to ask,
+
+11
+00:00:29,320 --> 00:00:31,680
+ and you get a synthesis of what the papers say.
+
+12
+00:00:31,680 --> 00:00:35,760
+ This is a complex request that require multiple steps of processing.
+
+13
+00:00:35,760 --> 00:00:38,320
+ Further, earlier steps of processing,
+
+14
+00:00:38,320 --> 00:00:41,080
+ like maybe identifying a theme from one paper,
+
+15
+00:00:41,080 --> 00:00:43,520
+ might also change the later steps that are needed,
+
+16
+00:00:43,520 --> 00:00:47,360
+ like retrieving additional information from other papers about that theme.
+
+17
+00:00:47,360 --> 00:00:51,640
+ In comparison, the standard rag pipeline, which is very popular,
+
+18
+00:00:51,640 --> 00:00:55,720
+ is mostly good for simpler questions over a small set of documents,
+
+19
+00:00:55,720 --> 00:00:59,520
+ and works by retrieving some context, sticking that into an OM prompt,
+
+20
+00:00:59,520 --> 00:01:03,080
+ and then just calling the OM a single time to get a response.
+
+21
+00:01:03,080 --> 00:01:07,280
+ This course will take the idea of chatting over your data to the next level,
+
+22
+00:01:07,280 --> 00:01:11,120
+ and show you how to build an autonomous research agent.
+
+23
+00:01:11,120 --> 00:01:16,160
+ You'll learn a progression of reasoning ingredients to a building of four agents.
+
+24
+00:01:16,160 --> 00:01:21,680
+ First, routing, where you add decision-making to route requests to multiple tools.
+
+25
+00:01:21,680 --> 00:01:26,560
+ Next, tool use, where you create an interface for agents to select a tool,
+
+26
+00:01:26,560 --> 00:01:29,480
+ as well as generate the right arguments for that tool.
+
+27
+00:01:29,480 --> 00:01:32,800
+ And then finally, multi-step reasoning with tool use,
+
+28
+00:01:32,800 --> 00:01:37,080
+ where you use an OM to perform multi-step reasoning with a range of tools,
+
+29
+00:01:37,080 --> 00:01:40,120
+ while retaining memory throughout that process.
+
+30
+00:01:40,120 --> 00:01:42,760
+ You'll learn how to effectively interact with an agent,
+
+31
+00:01:42,760 --> 00:01:46,280
+ and use its capabilities for detailed control and oversight.
+
+32
+00:01:46,280 --> 00:01:49,760
+ This will allow you to not only create a higher-level research assistant
+
+33
+00:01:49,760 --> 00:01:54,680
+ over your RAG pipelines, but also give you more effective ways to guide its actions.
+
+34
+00:01:54,680 --> 00:01:58,760
+ Specifically, you'll learn how to ensure debuggability of the LLN.
+
+35
+00:01:58,760 --> 00:02:01,360
+ We'll look at how to step through what your agent is doing,
+
+36
+00:02:01,360 --> 00:02:04,080
+ and how to use that to improve your agent.
+
+37
+00:02:04,080 --> 00:02:06,760
+ One additional very powerful tool is to let the user
+
+38
+00:02:06,760 --> 00:02:09,960
+ optionally inject guidance at intermediate steps.
+
+39
+00:02:09,960 --> 00:02:13,160
+ For example, if you see it searching the wrong document,
+
+40
+00:02:13,160 --> 00:02:16,960
+ a little nudge to search a different document from human input,
+
+41
+00:02:16,960 --> 00:02:19,760
+ much like an experienced manager, that's you,
+
+42
+00:02:19,760 --> 00:02:23,960
+ giving a more junior employee a nudge to consider a new piece of information,
+
+43
+00:02:23,960 --> 00:02:25,760
+ can give much better performance.
+
+44
+00:02:25,760 --> 00:02:28,560
+ Many people have worked to create this course.
+
+45
+00:02:28,560 --> 00:02:34,160
+ I'd like to thank, from Llama Index, Logan Markowicz, and Andrea Fajardo.
+
+46
+00:02:34,160 --> 00:02:38,960
+ From dblm.ai, Dialla Ezzedine also contributed to this course.
+
+47
+00:02:38,960 --> 00:02:42,560
+ In the first lesson, you will build a router over a single document
+
+48
+00:02:42,560 --> 00:02:45,960
+ that can handle both question answering as well as summarization.
+
+49
+00:02:45,960 --> 00:02:49,560
+ That sounds great. Let's go on to the next video and get started.
+

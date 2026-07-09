@@ -1,0 +1,259 @@
+{
+  "title": "LlamaIndex 自主式 RAG：P3 工具调用",
+  "meta": {
+    "video_title": "【2026必学！】LlamaIndex自主式RAG，比传统RAG强10倍的检索方案【自主检索→推理循环→多文档代理】允许白嫖，拿走不谢！",
+    "up": "吴恩达AIAgent",
+    "duration": "10:12",
+    "bvid": "BV1uWQYBqE1c",
+    "page": 3,
+    "part": "3-工具调用",
+    "url": "https://www.bilibili.com/video/BV1uWQYBqE1c?p=3",
+    "type": "技术教程 / Agentic RAG 实操 / LlamaIndex 工具调用",
+    "source_video": "learning-resources/bili-summary-BV1uWQYBqE1c/p03.mp4"
+  },
+  "overview": "本 P 讲清了 LlamaIndex 中 tool calling 的核心机制：LLM 不再只是传统 RAG 末端的“答案合成器”，而是可以根据用户问题选择外部工具，并自动推断函数参数。本节先用 add/mystery 两个玩具函数说明 FunctionTool 如何把 Python 函数变成 LLM 可调用接口，再把这个思想迁移到向量检索：让 LLM 从自然语言问题中抽取 query 与 page_numbers，自动构造 metadata filters，最后与 summary_tool 组合成多工具选择系统。",
+  "core_points": [
+    "工具调用的本质是：让 LLM 同时决定“调用哪个函数”和“传入什么参数”。",
+    "FunctionTool 会利用 Python 函数签名、类型注解和 docstring 生成工具说明，因此这些信息会直接影响模型调用质量。",
+    "metadata filters 能让向量检索从“全库相似度搜索”变成“带结构化范围约束的精准检索”。",
+    "把 vector_query 封装成 FunctionTool 后，LLM 可以从“page 2 / page 8”这类自然语言中自动推断页码过滤条件。",
+    "当同时提供 vector_tool 与 summary_tool 时，LLM 能根据问题意图选择不同工具，形成自主式 RAG 的基础能力。"
+  ],
+  "author_logic": "作者采用“概念升级 → 极简示例 → RAG 场景迁移 → 多工具验证”的讲解路径：先说明 basic RAG 的局限和 router 的过渡意义；再用玩具计算函数降低理解成本，让观众看到 FunctionTool、predict_and_call、参数推断的最小闭环；随后回到真实 RAG，用 MetaGPT 论文节点的 page_label 元数据说明为什么需要 metadata filters；最后把向量检索封装成工具，并加入 summary_tool，验证 LLM 能在多工具场景下同时完成工具选择和参数推断。",
+  "sections": [
+    {
+      "id": "chapter-1",
+      "title": "一、从传统 RAG 到工具调用：让 LLM 从“合成器”变成“决策者”",
+      "time": "00:00 - 01:20",
+      "summary": "作者先对比 basic RAG 与上一课的 router：传统 RAG 中 LLM 只做 synthesis；router 已经让 LLM 选择不同查询管线，是工具调用的简化形态。本课进一步要求 LLM 不只选函数，还要自动推断函数参数。",
+      "points": [
+        "传统 RAG：检索流程固定，LLM 主要把检索结果组织成回答。",
+        "路由查询引擎：LLM 已开始参与决策，选择最适合的 query pipeline。",
+        "工具调用：LLM 需要同时决定“调用哪个能力”和“给这个能力传什么参数”。",
+        "价值：让用户能问更复杂的问题，并通过工具接口得到比标准 RAG 更精确的结果。"
+      ],
+      "shots": [
+        "s-intro",
+        "s-tool"
+      ]
+    },
+    {
+      "id": "chapter-2",
+      "title": "二、FunctionTool 入门：从 Python 函数生成 LLM 可调用工具",
+      "time": "01:20 - 03:28",
+      "summary": "作者先设置 OpenAI key 与 nest_asyncio，然后用两个玩具函数 add 与 mystery 演示工具调用。LlamaIndex 的核心抽象是 FunctionTool，它会包装 Python 函数，并把函数签名、类型注解、docstring 转成 LLM 可理解的工具说明。",
+      "points": [
+        "FunctionTool 可以包装任意 Python 函数。",
+        "函数参数类型注解与 docstring 不是装饰；它们会进入提示上下文，帮助 LLM 判断工具用途和参数含义。",
+        "OpenAI 等支持 function calling 的模型可以原生接收这些工具定义。",
+        "llm.predict_and_call 会接收工具集合和用户问题，执行“选工具 → 推断参数 → 调用工具 → 返回结果”。",
+        "示例中用户问“What is the output of the mystery function on 2 and 9”，模型选择 mystery，传入 x=2、y=9，输出 121。"
+      ],
+      "code": "from llama_index.core.tools import FunctionTool\n\ndef add(x: int, y: int) -> int:\n    \"\"\"Adds two integers together.\"\"\"\n    return x + y\n\ndef mystery(x: int, y: int) -> int:\n    \"\"\"Mystery function that operates on top of two numbers.\"\"\"\n    return (x + y) * (x + y)\n\nadd_tool = FunctionTool.from_defaults(fn=add)\nmystery_tool = FunctionTool.from_defaults(fn=mystery)",
+      "shots": [
+        "s-func",
+        "s-result"
+      ]
+    },
+    {
+      "id": "chapter-3",
+      "title": "三、关键跃迁：LLM 不只选工具，还要推断参数",
+      "time": "03:28 - 04:00",
+      "summary": "作者明确指出：上面的玩具例子本质上是 router 的扩展版。区别在于 router 主要是“选择路线”，而工具调用还要从自然语言中提取结构化参数。这个思想将被迁移到向量检索上。",
+      "points": [
+        "router 只解决“走哪条 pipeline”的问题。",
+        "tool calling 同时解决“调用哪个函数”和“函数参数是什么”。",
+        "下一步的目标：让 LLM 选择向量检索，并自动推断 metadata filters。",
+        "metadata filters 是结构化标签，用于缩小检索范围，返回更精准的搜索结果。"
+      ],
+      "shots": [
+        "s-meta"
+      ]
+    },
+    {
+      "id": "chapter-4",
+      "title": "四、准备向量检索对象：加载 MetaGPT 论文、切分节点并观察元数据",
+      "time": "04:00 - 05:40",
+      "summary": "为了让工具调用落到 RAG 场景，作者继续使用 MetaGPT 论文。首先用 SimpleDirectoryReader 读取 PDF 的解析结果，再用 SentenceSplitter 按 chunk_size=1024 切成 nodes。每个 node 不只有文本内容，还带有文件与页码等元数据。",
+      "points": [
+        "documents = SimpleDirectoryReader(input_files=[\"metagpt.pdf\"]).load_data() 读取论文。",
+        "SentenceSplitter(chunk_size=1024) 把文档拆成节点；每个 node 表示一个 chunk。",
+        "通过 nodes[0].get_content(metadata_mode=\"all\") 可以同时打印 chunk 文本与 metadata。",
+        "作者特别关注 page_label，因为它后续会成为元数据过滤参数。",
+        "元数据不局限于页码，也可以是 section_id、header、footer 或其他自定义标签。"
+      ],
+      "code": "from llama_index.core import SimpleDirectoryReader\n\ndocuments = SimpleDirectoryReader(input_files=[\"metagpt.pdf\"]).load_data()\n\nfrom llama_index.core.node_parser import SentenceSplitter\nsplitter = SentenceSplitter(chunk_size=1024)\nnodes = splitter.get_nodes_from_documents(documents)\n\nprint(nodes[0].get_content(metadata_mode=\"all\"))",
+      "shots": [
+        "s-load",
+        "s-node"
+      ]
+    },
+    {
+      "id": "chapter-5",
+      "title": "五、先手动做一次 metadata filter：验证页码过滤确实有效",
+      "time": "05:40 - 07:03",
+      "summary": "作者先建立 VectorStoreIndex，再手动构造 MetadataFilters：限制 page_label 等于 2，同时设置 similarity_top_k=2。运行查询后，除了看 response 字符串，还遍历 source_nodes 的 metadata，确认返回结果被限制在 page 2。",
+      "points": [
+        "VectorStoreIndex(nodes) 为每个 node 添加 embedding，并创建可查询的向量索引。",
+        "as_query_engine 可以传入 similarity_top_k 和 filters。",
+        "MetadataFilters.from_dicts 使用 {\"key\":\"page_label\", \"value\":\"2\"} 指定过滤条件。",
+        "验证重点不是只看回答，而是看 response.source_nodes 中每个节点的 metadata。",
+        "这一步证明：metadata filter 能把检索限定在特定页码集合。"
+      ],
+      "code": "from llama_index.core import VectorStoreIndex\nfrom llama_index.core.vector_stores import MetadataFilters\n\nvector_index = VectorStoreIndex(nodes)\nquery_engine = vector_index.as_query_engine(\n    similarity_top_k=2,\n    filters=MetadataFilters.from_dicts([\n        {\"key\": \"page_label\", \"value\": \"2\"}\n    ])\n)\n\nresponse = query_engine.query(\"What are some high-level results of MetaGPT?\")",
+      "shots": [
+        "s-filter",
+        "s-source"
+      ]
+    },
+    {
+      "id": "chapter-6",
+      "title": "六、把向量检索封装成工具：让 LLM 自动推断 query 与页码",
+      "time": "07:03 - 08:58",
+      "summary": "本节是视频核心：作者把向量检索包装进 vector_query 函数，该函数接收 query 和 page_numbers。函数内部把 page_numbers 转换为 FilterCondition.OR 的 metadata filters，再创建 query_engine 并执行 query。最后用 FunctionTool.from_defaults 把函数封装成 vector_query_tool。",
+      "points": [
+        "vector_query 的参数包含 query: str 与 page_numbers: List[str]。",
+        "如果用户没有指定页码，可让 page_numbers 为空；如果指定了页码，函数将其转换成 page_label 过滤条件。",
+        "FilterCondition.OR 表示多个页码条件之间是“或”关系。",
+        "LLM 通过函数签名和 docstring 理解：什么时候传 query，什么时候传 page_numbers。",
+        "测试问题“high-level results of MetaGPT as described on page 2”中，模型自动生成 query 并推断 page_numbers=[\"2\"]。"
+      ],
+      "code": "from typing import List\nfrom llama_index.core.vector_stores import FilterCondition\n\ndef vector_query(query: str, page_numbers: List[str]) -> str:\n    \"\"\"Perform a vector search over an index.\n\n    query (str): the string query to be embedded.\n    page_numbers (List[str]): Filter by set of pages. Leave BLANK if we want\n        to perform a vector search over all pages. Otherwise, filter by the set of specified pages.\n    \"\"\"\n    metadata_dicts = [\n        {\"key\": \"page_label\", \"value\": p} for p in page_numbers\n    ]\n\n    query_engine = vector_index.as_query_engine(\n        similarity_top_k=2,\n        filters=MetadataFilters.from_dicts(\n            metadata_dicts,\n            condition=FilterCondition.OR\n        )\n    )\n    response = query_engine.query(query)\n    return response\n\nvector_query_tool = FunctionTool.from_defaults(fn=vector_query)",
+      "shots": [
+        "s-vector-fn",
+        "s-page2"
+      ]
+    },
+    {
+      "id": "chapter-7",
+      "title": "七、合并 summary_tool 与 vector_tool：多工具选择 + 参数推断",
+      "time": "08:58 - 10:10",
+      "summary": "最后作者把前一课 router 示例中的 summary_tool 加回来，与 vector_query_tool 共同传给 LLM。此时任务更难：模型要先判断该用 summary_tool 还是 vector_tool，再从问题中抽取参数。结果显示，指定 page 8 的比较问题会调用 vector_tool 并传 page_numbers=8；泛化总结问题会调用 summary_tool。",
+      "points": [
+        "summary_tool 用于对论文做整体总结；vector_tool 用于针对具体查询做向量检索。",
+        "当问题包含 page 8 且要求比较 MetaGPT 与 ChatDev 时，LLM 选择 vector_tool，并传入页码 8。",
+        "作者通过打印 sources 验证向量检索结果的来源页。",
+        "当问题变成“What is the summary of the paper?”，LLM 能切换到 summary_tool。",
+        "这说明工具调用不是单个工具 demo，而是可扩展为多工具选择系统。"
+      ],
+      "shots": [
+        "s-summary-tool",
+        "s-page8",
+        "s-summary-q"
+      ]
+    }
+  ],
+  "shots": [
+    {
+      "id": "s-intro",
+      "time": "00:04",
+      "path": "frames_p03_key/001_intro_basic_rag_0004s.jpg",
+      "title": "开场：传统 RAG 中 LLM 只负责合成",
+      "caption": "作者从 basic RAG pipeline 开始：LLM 通常只消费检索结果并做最终 synthesis。"
+    },
+    {
+      "id": "s-tool",
+      "time": "00:30",
+      "path": "frames_p03_key/002_tool_calling_promise_0030s.jpg",
+      "title": "Tool Calling 的核心承诺",
+      "caption": "工具调用让 LLM 能采取行动，与外部环境交互，而不是只生成文字。"
+    },
+    {
+      "id": "s-func",
+      "time": "02:08",
+      "path": "frames_p03_key/005_function_tool_wrap_0128s.jpg",
+      "title": "FunctionTool 包装 Python 函数",
+      "caption": "add 与 mystery 两个 Python 函数通过 FunctionTool.from_defaults 包装成可供 LLM 调用的工具。"
+    },
+    {
+      "id": "s-result",
+      "time": "03:18",
+      "path": "frames_p03_key/007_mystery_tool_result_0198s.jpg",
+      "title": "LLM 选择 mystery 并推断参数",
+      "caption": "predict_and_call 的中间步骤显示：模型调用 mystery，并自动给出 x=2、y=9，返回 121。"
+    },
+    {
+      "id": "s-meta",
+      "time": "03:44",
+      "path": "frames_p03_key/008_metadata_filter_concept_0224s.jpg",
+      "title": "从玩具函数过渡到向量检索",
+      "caption": "作者把“选择工具 + 推断参数”的概念迁移到向量搜索：让 LLM 推断 metadata filters。"
+    },
+    {
+      "id": "s-load",
+      "time": "04:27",
+      "path": "frames_p03_key/009_load_and_split_nodes_0267s.jpg",
+      "title": "加载 MetaGPT PDF 并切分节点",
+      "caption": "使用 SimpleDirectoryReader 读取 metagpt.pdf，再用 SentenceSplitter 生成 chunk/node。"
+    },
+    {
+      "id": "s-node",
+      "time": "05:12",
+      "path": "frames_p03_key/010_node_metadata_page_label_0312s.jpg",
+      "title": "节点包含内容与元数据",
+      "caption": "打印节点时可以看到 page_label、file_name、file_type、file_size、created_at 等元数据。"
+    },
+    {
+      "id": "s-filter",
+      "time": "06:25",
+      "path": "frames_p03_key/021_metadata_filter_code_0385s.jpg",
+      "title": "手动指定 MetadataFilters",
+      "caption": "先手动用 MetadataFilters 指定 page_label=2，验证向量检索可以限制到特定页面。"
+    },
+    {
+      "id": "s-source",
+      "time": "06:54",
+      "path": "frames_p03_key/012_filtered_query_sources_0414s.jpg",
+      "title": "验证 source_nodes 的 page_label",
+      "caption": "遍历 source_nodes 的 metadata，确认返回片段的 page_label 确实为 2。"
+    },
+    {
+      "id": "s-vector-fn",
+      "time": "07:48",
+      "path": "frames_p03_key/013_vector_query_function_0468s.jpg",
+      "title": "定义 vector_query 函数",
+      "caption": "vector_query 同时接收 query 和 page_numbers，把页码转成 metadata filters 后创建 query_engine 并执行检索。"
+    },
+    {
+      "id": "s-page2",
+      "time": "08:37",
+      "path": "frames_p03_key/015_verify_page_label_2_0533s.jpg",
+      "title": "LLM 推断 page_numbers=2",
+      "caption": "模型从“as described on page 2”中自动抽取页码参数，工具返回的 source node 也指向 page_label=2。"
+    },
+    {
+      "id": "s-summary-tool",
+      "time": "09:15",
+      "path": "frames_p03_key/016_summary_tool_added_0555s.jpg",
+      "title": "加入 summary_tool",
+      "caption": "作者把前一课的 summary tool 与 vector query tool 合并，形成多工具选择系统。"
+    },
+    {
+      "id": "s-page8",
+      "time": "09:41",
+      "path": "frames_p03_key/017_tool_pick_vector_page8_0581s.jpg",
+      "title": "多工具场景下仍选择 vector_tool",
+      "caption": "当问题限定 page 8 且询问 ChatDev 对比时，LLM 选择 vector_tool，并把 page_numbers 设为 8。"
+    },
+    {
+      "id": "s-summary-q",
+      "time": "10:00",
+      "path": "frames_p03_key/018_summary_tool_question_0600s.jpg",
+      "title": "泛化总结问题选择 summary_tool",
+      "caption": "当用户问“what is the summary of the paper”时，模型改选 summary_tool，说明工具描述和问题意图匹配。"
+    }
+  ],
+  "takeaways": [
+    "LLM 在 Agentic RAG 中承担的是“决策 + 参数抽取 + 调用编排”的角色，而不只是生成回答。",
+    "Tool 的接口设计就是提示词工程的一部分：函数名、参数类型、docstring 都会影响模型理解。",
+    "metadata 是提升 RAG 精确度的重要结构化入口；页码只是示例，生产中可扩展为章节、标题、业务线、权限范围等。",
+    "验证工具调用不能只看最终回答，还要检查 intermediate steps、source_nodes 与 metadata。",
+    "多工具系统的关键不是工具越多越好，而是每个工具职责清晰、描述明确、边界可观测。"
+  ],
+  "landing_value": [
+    "如果要做企业知识库，可把不同部门、文档类型、权限范围设计成 metadata，让 LLM 自动推断过滤条件。",
+    "如果要做论文/报告助手，可以提供 summary_tool 与 vector_query_tool：前者处理全局概括，后者处理页码或局部事实问题。",
+    "上线前应记录每次 tool call 的工具名、参数、返回源节点，便于排查错误调用和幻觉。",
+    "工具描述要写得像面向模型的 API 文档：明确输入、适用场景、不要使用的场景和参数为空时的行为。"
+  ]
+}

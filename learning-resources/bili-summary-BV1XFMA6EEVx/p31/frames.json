@@ -1,0 +1,24 @@
+{
+  "frames": [
+    {
+      "file": "frames/scene_001.jpg",
+      "ts_seconds": 10.58,
+      "ts_display": "00:10"
+    },
+    {
+      "file": "frames/scene_002.jpg",
+      "ts_seconds": 18.65,
+      "ts_display": "00:18"
+    },
+    {
+      "file": "frames/scene_003.jpg",
+      "ts_seconds": 79.11,
+      "ts_display": "01:19"
+    },
+    {
+      "file": "frames/scene_004.jpg",
+      "ts_seconds": 121.42,
+      "ts_display": "02:01"
+    }
+  ]
+}

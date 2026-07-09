@@ -1,0 +1,1726 @@
+{
+	"systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "large",
+		"multilingual": true,
+		"vocab": 51866,
+		"audio": {
+			"ctx": 1500,
+			"state": 1280,
+			"head": 20,
+			"layer": 32
+		},
+		"text": {
+			"ctx": 448,
+			"state": 1280,
+			"head": 20,
+			"layer": 4
+		},
+		"mels": 128,
+		"ftype": 1
+	},
+	"params": {
+		"model": "/Users/bytedance/.cache/whisper-cpp/ggml-large-v3-turbo.bin",
+		"language": "zh",
+		"translate": false
+	},
+	"result": {
+		"language": "zh"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:10,020"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 10020
+			},
+			"text": " So far, our queries have been done in a single forward pass. Given the query, call the right tool with the right parameters and get back the response."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:10,020",
+				"to": "00:00:18,680"
+			},
+			"offsets": {
+				"from": 10020,
+				"to": 18680
+			},
+			"text": " But this is still quite limiting. What if the user asks a complex question consisting of multiple steps or a vague question that needs clarification?"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:18,680",
+				"to": "00:00:29,520"
+			},
+			"offsets": {
+				"from": 18680,
+				"to": 29520
+			},
+			"text": " In this lesson, you will learn how to define a complete agent reasoning loop. Instead of tool calling in a single shot setting, an agent is able to reason over tools in multiple steps."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:30,000",
+				"to": "00:00:37,560"
+			},
+			"offsets": {
+				"from": 30000,
+				"to": 37560
+			},
+			"text": " You will use the function calling agent implementation, which is an agent that natively integrates with the function calling capabilities of LLMs."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:37,560",
+				"to": "00:00:39,600"
+			},
+			"offsets": {
+				"from": 37560,
+				"to": 39600
+			},
+			"text": " All right, let's have some fun."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:39,600",
+				"to": "00:00:43,760"
+			},
+			"offsets": {
+				"from": 39600,
+				"to": 43760
+			},
+			"text": " To get started, we'll set up our opening IKey."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:43,760",
+				"to": "00:00:48,700"
+			},
+			"offsets": {
+				"from": 43760,
+				"to": 48700
+			},
+			"text": " And then we'll set up an import Nest AsyncIO."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:48,700",
+				"to": "00:00:54,200"
+			},
+			"offsets": {
+				"from": 48700,
+				"to": 54200
+			},
+			"text": " For now, we use the same meta-GPT paper as the previous two lessons."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:54,200",
+				"to": "00:00:57,260"
+			},
+			"offsets": {
+				"from": 54200,
+				"to": 57260
+			},
+			"text": " In the next lesson, we'll expand to the multi-doc setting."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:57,260",
+				"to": "00:01:02,660"
+			},
+			"offsets": {
+				"from": 57260,
+				"to": 62660
+			},
+			"text": " And we will also set up the auto-retrieval vector search tool and the summarization tool from the last lesson."
+		},
+		{
+			"timestamps": {
+				"from": "00:01:02,660",
+				"to": "00:01:08,860"
+			},
+			"offsets": {
+				"from": 62660,
+				"to": 68860
+			},
+			"text": " To make this more concise, we've packaged this into a single line of code that you can just import from the utils module."
+		},
+		{
+			"timestamps": {
+				"from": "00:01:08,860",
+				"to": "00:01:11,800"
+			},
+			"offsets": {
+				"from": 68860,
+				"to": 71800
+			},
+			"text": " We now set up our function calling agent."
+		},
+		{
+			"timestamps": {
+				"from": "00:01:11,800",
+				"to": "00:01:17,260"
+			},
+			"offsets": {
+				"from": 71800,
+				"to": 77260
+			},
+			"text": " As with the previous notebooks, we use GPT 3.5 Turbo as our LLM."
+		},
+		{
+			"timestamps": {
+				"from": "00:01:17,260",
+				"to": "00:01:19,740"
+			},
+			"offsets": {
+				"from": 77260,
+				"to": 79740
+			},
+			"text": " We will then define our agent."
+		},
+		{
+			"timestamps": {
+				"from": "00:01:20,860",
+				"to": "00:01:27,560"
+			},
+			"offsets": {
+				"from": 80860,
+				"to": 87560
+			},
+			"text": " In LLM index, an agent consists of two main components, an agent worker as well as an agent runner."
+		},
+		{
+			"timestamps": {
+				"from": "00:01:27,560",
+				"to": "00:01:33,640"
+			},
+			"offsets": {
+				"from": 87560,
+				"to": 93640
+			},
+			"text": " Think of an agent worker that's responsible for executing the next step of a given agent."
+		},
+		{
+			"timestamps": {
+				"from": "00:01:33,640",
+				"to": "00:01:46,520"
+			},
+			"offsets": {
+				"from": 93640,
+				"to": 106520
+			},
+			"text": " And an agent runner is the overall task dispatcher, which is responsible for creating a task, orchestrating runs of agent workers on top of a given task, and being able to return back the final response to the user."
+		},
+		{
+			"timestamps": {
+				"from": "00:01:48,860",
+				"to": "00:01:54,420"
+			},
+			"offsets": {
+				"from": 108860,
+				"to": 114420
+			},
+			"text": " So we import both function calling agent worker from LLM index and also the agent runner."
+		},
+		{
+			"timestamps": {
+				"from": "00:01:54,420",
+				"to": "00:02:01,940"
+			},
+			"offsets": {
+				"from": 114420,
+				"to": 121940
+			},
+			"text": " And for the function calling agent worker, we pass in the two set of tools, the vector tool as well as the summary tool."
+		},
+		{
+			"timestamps": {
+				"from": "00:02:03,760",
+				"to": "00:02:08,840"
+			},
+			"offsets": {
+				"from": 123760,
+				"to": 128840
+			},
+			"text": " We also pass in the LLM and set verbose equal to true to look at the intermediate outputs."
+		},
+		{
+			"timestamps": {
+				"from": "00:02:08,840",
+				"to": "00:02:21,320"
+			},
+			"offsets": {
+				"from": 128840,
+				"to": 141320
+			},
+			"text": " Think about the function calling agent worker's primary responsibility as given the existing conversation history, memory, and any past state, along with the current user input."
+		},
+		{
+			"timestamps": {
+				"from": "00:02:21,320",
+				"to": "00:02:28,880"
+			},
+			"offsets": {
+				"from": 141320,
+				"to": 148880
+			},
+			"text": " Use function calling to decide the next tool to call call, call that tool, and decide whether or not to return a final response."
+		},
+		{
+			"timestamps": {
+				"from": "00:02:28,880",
+				"to": "00:02:34,740"
+			},
+			"offsets": {
+				"from": 148880,
+				"to": 154740
+			},
+			"text": " The overall agent interface is behind the agent runner, and that's what we're going to use to query the agent."
+		},
+		{
+			"timestamps": {
+				"from": "00:02:34,740",
+				"to": "00:02:38,580"
+			},
+			"offsets": {
+				"from": 154740,
+				"to": 158580
+			},
+			"text": " We'll first ask this question."
+		},
+		{
+			"timestamps": {
+				"from": "00:02:38,580",
+				"to": "00:02:44,100"
+			},
+			"offsets": {
+				"from": 158580,
+				"to": 164100
+			},
+			"text": " Tell me about the agent roles in MetaGPT, and then how they communicate with each other."
+		},
+		{
+			"timestamps": {
+				"from": "00:02:44,100",
+				"to": "00:02:55,260"
+			},
+			"offsets": {
+				"from": 164100,
+				"to": 175260
+			},
+			"text": " So let's trace through the outputs of this agent."
+		},
+		{
+			"timestamps": {
+				"from": "00:02:55,260",
+				"to": "00:03:01,340"
+			},
+			"offsets": {
+				"from": 175260,
+				"to": 181340
+			},
+			"text": " We see that the agent is able to break down this overall question into steps."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:01,340",
+				"to": "00:03:08,240"
+			},
+			"offsets": {
+				"from": 181340,
+				"to": 188240
+			},
+			"text": " So the first part is asking about agent roles in MetaGPT, and it calls the summary tool to answer this question."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:08,240",
+				"to": "00:03:12,160"
+			},
+			"offsets": {
+				"from": 188240,
+				"to": 192160
+			},
+			"text": " Now, a quick note is that the summary tool isn't necessarily the most precise."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:12,160",
+				"to": "00:03:20,800"
+			},
+			"offsets": {
+				"from": 192160,
+				"to": 200800
+			},
+			"text": " You could argue that the vector tool will actually give you back a more concise set of context that better represents this relevant pieces of text that you're looking for."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:20,800",
+				"to": "00:03:23,700"
+			},
+			"offsets": {
+				"from": 200800,
+				"to": 203700
+			},
+			"text": " However, a summary tool is still a reasonable tool for the job."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:24,040",
+				"to": "00:03:33,100"
+			},
+			"offsets": {
+				"from": 204040,
+				"to": 213100
+			},
+			"text": " And, of course, more powerful models like 4Turbo or Claude3, Sonnet, or Opus might be able to pick the more precise vector tool to help answer this question."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:33,100",
+				"to": "00:03:36,240"
+			},
+			"offsets": {
+				"from": 213100,
+				"to": 216240
+			},
+			"text": " In any case, we see that we're able to get back the output."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:36,240",
+				"to": "00:03:42,720"
+			},
+			"offsets": {
+				"from": 216240,
+				"to": 222720
+			},
+			"text": " The agent roles in MetaGPT include product manager, architect, project manager, QA engineer, etc."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:42,720",
+				"to": "00:03:52,300"
+			},
+			"offsets": {
+				"from": 222720,
+				"to": 232300
+			},
+			"text": " And then it uses this to perform chain of thought to then trigger the next question, which is communication between agent roles in MetaGPT."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:53,800",
+				"to": "00:03:56,440"
+			},
+			"offsets": {
+				"from": 233800,
+				"to": 236440
+			},
+			"text": " We see we're able to get back an answer about that, too."
+		},
+		{
+			"timestamps": {
+				"from": "00:03:56,440",
+				"to": "00:04:00,160"
+			},
+			"offsets": {
+				"from": 236440,
+				"to": 240160
+			},
+			"text": " You know, communication between agent roles in MetaGPT is structured and efficient."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:00,160",
+				"to": "00:04:04,820"
+			},
+			"offsets": {
+				"from": 240160,
+				"to": 244820
+			},
+			"text": " And we're able to combine this entire conversation history to generate a final response."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:04,820",
+				"to": "00:04:10,140"
+			},
+			"offsets": {
+				"from": 244820,
+				"to": 250140
+			},
+			"text": " Communication in MetaGPT, the agent roles include these."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:10,140",
+				"to": "00:04:14,040"
+			},
+			"offsets": {
+				"from": 250140,
+				"to": 254040
+			},
+			"text": " They collaborate in a sequential manner to follow standard operating procedures."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:14,040",
+				"to": "00:04:18,540"
+			},
+			"offsets": {
+				"from": 254040,
+				"to": 258540
+			},
+			"text": " And they use a shared message role and subscription mechanism."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:20,240",
+				"to": "00:04:25,360"
+			},
+			"offsets": {
+				"from": 260240,
+				"to": 265360
+			},
+			"text": " When you run a multi-step query like this, you want to make sure that you're actually able to trace the sources."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:25,360",
+				"to": "00:04:33,080"
+			},
+			"offsets": {
+				"from": 265360,
+				"to": 273080
+			},
+			"text": " And so, luckily, similar to the previous lessons, you're able to look at response.source nodes to take a look at the content of these nodes."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:33,080",
+				"to": "00:04:41,020"
+			},
+			"offsets": {
+				"from": 273080,
+				"to": 281020
+			},
+			"text": " So, this allows you to, for instance, inspect the content of the first source node that's retrieved, which is just the first page of the paper."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:41,700",
+				"to": "00:04:47,080"
+			},
+			"offsets": {
+				"from": 281700,
+				"to": 287080
+			},
+			"text": " Calling agent.query allows you to query the agent in a one-off manner, but does not preserve state."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:47,080",
+				"to": "00:04:50,200"
+			},
+			"offsets": {
+				"from": 287080,
+				"to": 290200
+			},
+			"text": " So, now let's try maintaining conversation history over time."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:51,300",
+				"to": "00:04:55,160"
+			},
+			"offsets": {
+				"from": 291300,
+				"to": 295160
+			},
+			"text": " The agent is able to maintain chats in a conversational memory buffer."
+		},
+		{
+			"timestamps": {
+				"from": "00:04:55,160",
+				"to": "00:05:03,500"
+			},
+			"offsets": {
+				"from": 295160,
+				"to": 303500
+			},
+			"text": " The memory module can be customized, but by default, it's a flat list of items that's a rolling buffer, depending on the size of the context window of the LLN."
+		},
+		{
+			"timestamps": {
+				"from": "00:05:03,500",
+				"to": "00:05:13,980"
+			},
+			"offsets": {
+				"from": 303500,
+				"to": 313980
+			},
+			"text": " Therefore, when the agent decides to use a tool, it not only uses the current chat, but also the previous conversation history to take the next step or perform the next action."
+		},
+		{
+			"timestamps": {
+				"from": "00:05:15,980",
+				"to": "00:05:18,340"
+			},
+			"offsets": {
+				"from": 315980,
+				"to": 318340
+			},
+			"text": " So, instead of query, we'll do agent.chat."
+		},
+		{
+			"timestamps": {
+				"from": "00:05:18,340",
+				"to": "00:05:22,600"
+			},
+			"offsets": {
+				"from": 318340,
+				"to": 322600
+			},
+			"text": " The first thing we'll ask is, tell me about the evaluation data sets used."
+		},
+		{
+			"timestamps": {
+				"from": "00:05:22,600",
+				"to": "00:05:33,200"
+			},
+			"offsets": {
+				"from": 322600,
+				"to": 333200
+			},
+			"text": " Here, we see that it uses a summary tool to ask, what are the evaluation data sets used in MetaGPT?"
+		},
+		{
+			"timestamps": {
+				"from": "00:05:33,200",
+				"to": "00:05:39,520"
+			},
+			"offsets": {
+				"from": 333200,
+				"to": 339520
+			},
+			"text": " And we see the eval data sets used include human eval, mvpp, and software dev."
+		},
+		{
+			"timestamps": {
+				"from": "00:05:43,800",
+				"to": "00:05:49,120"
+			},
+			"offsets": {
+				"from": 343800,
+				"to": 349120
+			},
+			"text": " You'll see an example of this ability to maintain conversation history, because we'll ask a follow-up question."
+		},
+		{
+			"timestamps": {
+				"from": "00:05:49,120",
+				"to": "00:05:52,240"
+			},
+			"offsets": {
+				"from": 349120,
+				"to": 352240
+			},
+			"text": " Tell me the results over one of the above data sets."
+		},
+		{
+			"timestamps": {
+				"from": "00:05:52,240",
+				"to": "00:05:57,400"
+			},
+			"offsets": {
+				"from": 352240,
+				"to": 357400
+			},
+			"text": " Obviously, to know what the above data sets are, you have to have that stored in the conversation history somewhere."
+		},
+		{
+			"timestamps": {
+				"from": "00:05:57,400",
+				"to": "00:06:01,720"
+			},
+			"offsets": {
+				"from": 357400,
+				"to": 361720
+			},
+			"text": " So, let's run this."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:01,720",
+				"to": "00:06:08,520"
+			},
+			"offsets": {
+				"from": 361720,
+				"to": 368520
+			},
+			"text": " And it's able to translate this query, plus conversation history, into a query on the vector tool, actually."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:08,900",
+				"to": "00:06:13,920"
+			},
+			"offsets": {
+				"from": 368900,
+				"to": 373920
+			},
+			"text": " And it asks, results over the human eval data set, which is one of the eval data sets that are used."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:13,920",
+				"to": "00:06:16,860"
+			},
+			"offsets": {
+				"from": 373920,
+				"to": 376860
+			},
+			"text": " And it's able to give you back a final answer."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:16,860",
+				"to": "00:06:21,320"
+			},
+			"offsets": {
+				"from": 376860,
+				"to": 381320
+			},
+			"text": " So, we just provided a nice high-level interface for interacting with an agent."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:21,320",
+				"to": "00:06:28,280"
+			},
+			"offsets": {
+				"from": 381320,
+				"to": 388280
+			},
+			"text": " In this next section, we'll show you capabilities that let you step through and control the agent in a much more granular fashion."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:28,640",
+				"to": "00:06:34,440"
+			},
+			"offsets": {
+				"from": 388640,
+				"to": 394440
+			},
+			"text": " This allows you to not only create a higher-level research assistant over your RAG pipelines, but also debug and control it."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:34,440",
+				"to": "00:06:42,440"
+			},
+			"offsets": {
+				"from": 394440,
+				"to": 402440
+			},
+			"text": " Some of the benefits here include greater debuggability into the execution of each step, as well as steerability by allowing you to inject user feedback."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:42,440",
+				"to": "00:06:46,880"
+			},
+			"offsets": {
+				"from": 402440,
+				"to": 406880
+			},
+			"text": " Having this low-level agent interface is powerful for two main reasons."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:47,280",
+				"to": "00:06:49,100"
+			},
+			"offsets": {
+				"from": 407280,
+				"to": 409100
+			},
+			"text": " The first is debuggability."
+		},
+		{
+			"timestamps": {
+				"from": "00:06:49,100",
+				"to": "00:06:56,600"
+			},
+			"offsets": {
+				"from": 409100,
+				"to": 416600
+			},
+			"text": " If you're a developer building an agent, you might want to have greater transparency and visibility into what's actually going on under the hood,"
+		},
+		{
+			"timestamps": {
+				"from": "00:06:56,600",
+				"to": "00:07:00,020"
+			},
+			"offsets": {
+				"from": 416600,
+				"to": 420020
+			},
+			"text": " especially, say, if your agent isn't working the first time around."
+		},
+		{
+			"timestamps": {
+				"from": "00:07:00,020",
+				"to": "00:07:05,560"
+			},
+			"offsets": {
+				"from": 420020,
+				"to": 425560
+			},
+			"text": " Then you can actually go in, trace through the execution of the agent, see where it's failing,"
+		},
+		{
+			"timestamps": {
+				"from": "00:07:05,560",
+				"to": "00:07:11,720"
+			},
+			"offsets": {
+				"from": 425560,
+				"to": 431720
+			},
+			"text": " and actually try out different inputs to see if that actually modifies the agent execution into a correct response."
+		},
+		{
+			"timestamps": {
+				"from": "00:07:11,720",
+				"to": "00:07:16,520"
+			},
+			"offsets": {
+				"from": 431720,
+				"to": 436520
+			},
+			"text": " Another reason why this could be useful is to actually enable richer UXs,"
+		},
+		{
+			"timestamps": {
+				"from": "00:07:16,520",
+				"to": "00:07:20,000"
+			},
+			"offsets": {
+				"from": 436520,
+				"to": 440000
+			},
+			"text": " where you're building a product experience around this core agent capability."
+		},
+		{
+			"timestamps": {
+				"from": "00:07:20,000",
+				"to": "00:07:26,060"
+			},
+			"offsets": {
+				"from": 440000,
+				"to": 446060
+			},
+			"text": " For instance, let's say you want to listen to human feedback in the middle of agent execution,"
+		},
+		{
+			"timestamps": {
+				"from": "00:07:26,060",
+				"to": "00:07:29,980"
+			},
+			"offsets": {
+				"from": 446060,
+				"to": 449980
+			},
+			"text": " as opposed to only after the agent execution is complete for a given task."
+		},
+		{
+			"timestamps": {
+				"from": "00:07:30,460",
+				"to": "00:07:36,640"
+			},
+			"offsets": {
+				"from": 450460,
+				"to": 456640
+			},
+			"text": " Then you can imagine creating some sort of async queue where you're able to listen to input from humans"
+		},
+		{
+			"timestamps": {
+				"from": "00:07:36,640",
+				"to": "00:07:39,000"
+			},
+			"offsets": {
+				"from": 456640,
+				"to": 459000
+			},
+			"text": " throughout the middle of agent execution."
+		},
+		{
+			"timestamps": {
+				"from": "00:07:39,000",
+				"to": "00:07:45,420"
+			},
+			"offsets": {
+				"from": 459000,
+				"to": 465420
+			},
+			"text": " And if human input actually comes in, you can actually interrupt and modify the execution of an agent"
+		},
+		{
+			"timestamps": {
+				"from": "00:07:45,420",
+				"to": "00:07:51,140"
+			},
+			"offsets": {
+				"from": 465420,
+				"to": 471140
+			},
+			"text": " as it's going on through a larger task, as opposed to having to wait until the agent task is complete."
+		},
+		{
+			"timestamps": {
+				"from": "00:07:51,140",
+				"to": "00:07:56,000"
+			},
+			"offsets": {
+				"from": 471140,
+				"to": 476000
+			},
+			"text": " So we'll start by defining our agent again through the function calling agent worker,"
+		},
+		{
+			"timestamps": {
+				"from": "00:07:56,000",
+				"to": "00:07:57,440"
+			},
+			"offsets": {
+				"from": 476000,
+				"to": 477440
+			},
+			"text": " as well as the agent runner setup."
+		},
+		{
+			"timestamps": {
+				"from": "00:07:57,440",
+				"to": "00:07:59,860"
+			},
+			"offsets": {
+				"from": 477440,
+				"to": 479860
+			},
+			"text": " And then we start using the low-level API."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:00,460",
+				"to": "00:08:03,100"
+			},
+			"offsets": {
+				"from": 480460,
+				"to": 483100
+			},
+			"text": " We'll first create a task object from the user query."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:03,100",
+				"to": "00:08:07,060"
+			},
+			"offsets": {
+				"from": 483100,
+				"to": 487060
+			},
+			"text": " And then we'll start running through steps for even interjecting our own."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:07,060",
+				"to": "00:08:10,460"
+			},
+			"offsets": {
+				"from": 487060,
+				"to": 490460
+			},
+			"text": " Now let's try executing a single step of this task."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:10,460",
+				"to": "00:08:12,560"
+			},
+			"offsets": {
+				"from": 490460,
+				"to": 492560
+			},
+			"text": " So let's create a task for this agent,"
+		},
+		{
+			"timestamps": {
+				"from": "00:08:12,560",
+				"to": "00:08:15,800"
+			},
+			"offsets": {
+				"from": 492560,
+				"to": 495800
+			},
+			"text": " and we'll use the same question we used in the very first part of this lesson."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:15,800",
+				"to": "00:08:18,300"
+			},
+			"offsets": {
+				"from": 495800,
+				"to": 498300
+			},
+			"text": " Tell me about the agent roles in MetaGPT,"
+		},
+		{
+			"timestamps": {
+				"from": "00:08:18,300",
+				"to": "00:08:20,000"
+			},
+			"offsets": {
+				"from": 498300,
+				"to": 500000
+			},
+			"text": " and then how they communicate with each other."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:20,000",
+				"to": "00:08:23,340"
+			},
+			"offsets": {
+				"from": 500000,
+				"to": 503340
+			},
+			"text": " This will return a task object, which contains the input,"
+		},
+		{
+			"timestamps": {
+				"from": "00:08:23,340",
+				"to": "00:08:25,980"
+			},
+			"offsets": {
+				"from": 503340,
+				"to": 505980
+			},
+			"text": " as well as additional state in the task object."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:26,760",
+				"to": "00:08:29,920"
+			},
+			"offsets": {
+				"from": 506760,
+				"to": 509920
+			},
+			"text": " And now let's try executing a single step of this task."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:29,920",
+				"to": "00:08:34,280"
+			},
+			"offsets": {
+				"from": 509920,
+				"to": 514280
+			},
+			"text": " We'll call agent.run step task.taskid,"
+		},
+		{
+			"timestamps": {
+				"from": "00:08:34,280",
+				"to": "00:08:39,240"
+			},
+			"offsets": {
+				"from": 514280,
+				"to": 519240
+			},
+			"text": " and the agent will execute a step of that task through the task ID"
+		},
+		{
+			"timestamps": {
+				"from": "00:08:39,240",
+				"to": "00:08:40,600"
+			},
+			"offsets": {
+				"from": 519240,
+				"to": 520600
+			},
+			"text": " and give you back a step output."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:46,120",
+				"to": "00:08:50,840"
+			},
+			"offsets": {
+				"from": 526120,
+				"to": 530840
+			},
+			"text": " We'll see that it calls the summary tool with the input agent roles in MetaGPT,"
+		},
+		{
+			"timestamps": {
+				"from": "00:08:50,840",
+				"to": "00:08:52,720"
+			},
+			"offsets": {
+				"from": 530840,
+				"to": 532720
+			},
+			"text": " which is the very first part of this question,"
+		},
+		{
+			"timestamps": {
+				"from": "00:08:52,720",
+				"to": "00:08:54,440"
+			},
+			"offsets": {
+				"from": 532720,
+				"to": 534440
+			},
+			"text": " and then it stops there."
+		},
+		{
+			"timestamps": {
+				"from": "00:08:54,440",
+				"to": "00:09:01,580"
+			},
+			"offsets": {
+				"from": 534440,
+				"to": 541580
+			},
+			"text": " When we inspect the logs and the output of the agent,"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:01,580",
+				"to": "00:09:04,060"
+			},
+			"offsets": {
+				"from": 541580,
+				"to": 544060
+			},
+			"text": " we see that the first part was actually executed."
+		},
+		{
+			"timestamps": {
+				"from": "00:09:04,760",
+				"to": "00:09:08,520"
+			},
+			"offsets": {
+				"from": 544760,
+				"to": 548520
+			},
+			"text": " So we call agent.getCompleted steps on the task ID,"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:08,520",
+				"to": "00:09:11,740"
+			},
+			"offsets": {
+				"from": 548520,
+				"to": 551740
+			},
+			"text": " and we're able to look at numCompleted for the task."
+		},
+		{
+			"timestamps": {
+				"from": "00:09:11,740",
+				"to": "00:09:17,080"
+			},
+			"offsets": {
+				"from": 551740,
+				"to": 557080
+			},
+			"text": " We see that one step has been completed,"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:17,080",
+				"to": "00:09:18,880"
+			},
+			"offsets": {
+				"from": 557080,
+				"to": 558880
+			},
+			"text": " and this is the current output so far."
+		},
+		{
+			"timestamps": {
+				"from": "00:09:18,880",
+				"to": "00:09:24,340"
+			},
+			"offsets": {
+				"from": 558880,
+				"to": 564340
+			},
+			"text": " We can also take a look at any upcoming steps for the agent,"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:24,340",
+				"to": "00:09:27,500"
+			},
+			"offsets": {
+				"from": 564340,
+				"to": 567500
+			},
+			"text": " and we can do this through agent.getUpcomingSteps."
+		},
+		{
+			"timestamps": {
+				"from": "00:09:29,920",
+				"to": "00:09:33,100"
+			},
+			"offsets": {
+				"from": 569920,
+				"to": 573100
+			},
+			"text": " Again, we pass the task.taskID into the agent,"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:33,100",
+				"to": "00:09:36,680"
+			},
+			"offsets": {
+				"from": 573100,
+				"to": 576680
+			},
+			"text": " and we're able to print out the number of upcoming steps for the task."
+		},
+		{
+			"timestamps": {
+				"from": "00:09:36,680",
+				"to": "00:09:39,000"
+			},
+			"offsets": {
+				"from": 576680,
+				"to": 579000
+			},
+			"text": " We see that it's also one,"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:39,000",
+				"to": "00:09:41,300"
+			},
+			"offsets": {
+				"from": 579000,
+				"to": 581300
+			},
+			"text": " and we're able to look at a task step object"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:41,300",
+				"to": "00:09:44,280"
+			},
+			"offsets": {
+				"from": 581300,
+				"to": 584280
+			},
+			"text": " with a task ID as well as an existing input."
+		},
+		{
+			"timestamps": {
+				"from": "00:09:44,280",
+				"to": "00:09:46,200"
+			},
+			"offsets": {
+				"from": 584280,
+				"to": 586200
+			},
+			"text": " This input is currently none"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:46,200",
+				"to": "00:09:48,100"
+			},
+			"offsets": {
+				"from": 586200,
+				"to": 588100
+			},
+			"text": " because the way the agent works"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:48,100",
+				"to": "00:09:50,900"
+			},
+			"offsets": {
+				"from": 588100,
+				"to": 590900
+			},
+			"text": " is it actually just auto-generates action"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:50,900",
+				"to": "00:09:52,340"
+			},
+			"offsets": {
+				"from": 590900,
+				"to": 592340
+			},
+			"text": " from the conversation history"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:52,340",
+				"to": "00:09:55,100"
+			},
+			"offsets": {
+				"from": 592340,
+				"to": 595100
+			},
+			"text": " and doesn't need to generate an additional external input."
+		},
+		{
+			"timestamps": {
+				"from": "00:09:55,100",
+				"to": "00:09:57,240"
+			},
+			"offsets": {
+				"from": 595100,
+				"to": 597240
+			},
+			"text": " The nice thing about this debugging interface"
+		},
+		{
+			"timestamps": {
+				"from": "00:09:57,240",
+				"to": "00:10:00,160"
+			},
+			"offsets": {
+				"from": 597240,
+				"to": 600160
+			},
+			"text": " is that if you wanted to pause execution now, you can."
+		},
+		{
+			"timestamps": {
+				"from": "00:10:00,160",
+				"to": "00:10:02,280"
+			},
+			"offsets": {
+				"from": 600160,
+				"to": 602280
+			},
+			"text": " You can take the intermediate results"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:02,280",
+				"to": "00:10:03,780"
+			},
+			"offsets": {
+				"from": 602280,
+				"to": 603780
+			},
+			"text": " without completing the agent flow."
+		},
+		{
+			"timestamps": {
+				"from": "00:10:03,780",
+				"to": "00:10:05,660"
+			},
+			"offsets": {
+				"from": 603780,
+				"to": 605660
+			},
+			"text": " But let's keep going,"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:05,660",
+				"to": "00:10:07,920"
+			},
+			"offsets": {
+				"from": 605660,
+				"to": 607920
+			},
+			"text": " and let's run the next two steps"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:07,920",
+				"to": "00:10:10,060"
+			},
+			"offsets": {
+				"from": 607920,
+				"to": 610060
+			},
+			"text": " and actually try injecting user input."
+		},
+		{
+			"timestamps": {
+				"from": "00:10:10,060",
+				"to": "00:10:12,940"
+			},
+			"offsets": {
+				"from": 610060,
+				"to": 612940
+			},
+			"text": " So let's actually ask,"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:12,940",
+				"to": "00:10:17,120"
+			},
+			"offsets": {
+				"from": 612940,
+				"to": 617120
+			},
+			"text": " what about how agents share information as user input?"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:17,120",
+				"to": "00:10:19,980"
+			},
+			"offsets": {
+				"from": 617120,
+				"to": 619980
+			},
+			"text": " This was not part of the original task query,"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:19,980",
+				"to": "00:10:21,740"
+			},
+			"offsets": {
+				"from": 619980,
+				"to": 621740
+			},
+			"text": " but by injecting this,"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:21,740",
+				"to": "00:10:23,800"
+			},
+			"offsets": {
+				"from": 621740,
+				"to": 623800
+			},
+			"text": " this can actually modify agent execution"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:23,800",
+				"to": "00:10:25,480"
+			},
+			"offsets": {
+				"from": 623800,
+				"to": 625480
+			},
+			"text": " to give you back the result that you want."
+		},
+		{
+			"timestamps": {
+				"from": "00:10:25,920",
+				"to": "00:10:30,820"
+			},
+			"offsets": {
+				"from": 625920,
+				"to": 630820
+			},
+			"text": " We'll see that we added the user message to memory"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:30,820",
+				"to": "00:10:32,880"
+			},
+			"offsets": {
+				"from": 630820,
+				"to": 632880
+			},
+			"text": " and that the next call here"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:32,880",
+				"to": "00:10:35,840"
+			},
+			"offsets": {
+				"from": 632880,
+				"to": 635840
+			},
+			"text": " is how agents actually share information in meta-GPT."
+		},
+		{
+			"timestamps": {
+				"from": "00:10:35,840",
+				"to": "00:10:41,400"
+			},
+			"offsets": {
+				"from": 635840,
+				"to": 641400
+			},
+			"text": " And we see here that it's able to give back the response."
+		},
+		{
+			"timestamps": {
+				"from": "00:10:41,400",
+				"to": "00:10:45,240"
+			},
+			"offsets": {
+				"from": 641400,
+				"to": 645240
+			},
+			"text": " The overall task is roughly complete,"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:45,240",
+				"to": "00:10:47,020"
+			},
+			"offsets": {
+				"from": 645240,
+				"to": 647020
+			},
+			"text": " and we just need to run one final step"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:47,020",
+				"to": "00:10:48,000"
+			},
+			"offsets": {
+				"from": 647020,
+				"to": 648000
+			},
+			"text": " to synthesize the answer."
+		},
+		{
+			"timestamps": {
+				"from": "00:10:48,000",
+				"to": "00:10:50,860"
+			},
+			"offsets": {
+				"from": 648000,
+				"to": 650860
+			},
+			"text": " And to double-check that this output is the last step,"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:51,000",
+				"to": "00:10:53,140"
+			},
+			"offsets": {
+				"from": 651000,
+				"to": 653140
+			},
+			"text": " we just need to do step output dot is last."
+		},
+		{
+			"timestamps": {
+				"from": "00:10:53,140",
+				"to": "00:10:59,080"
+			},
+			"offsets": {
+				"from": 653140,
+				"to": 659080
+			},
+			"text": " So we see we're able to get back the answer"
+		},
+		{
+			"timestamps": {
+				"from": "00:10:59,080",
+				"to": "00:11:01,620"
+			},
+			"offsets": {
+				"from": 659080,
+				"to": 661620
+			},
+			"text": " about how agents in meta-GPT share information,"
+		},
+		{
+			"timestamps": {
+				"from": "00:11:01,620",
+				"to": "00:11:04,020"
+			},
+			"offsets": {
+				"from": 661620,
+				"to": 664020
+			},
+			"text": " and this is indeed the last step."
+		},
+		{
+			"timestamps": {
+				"from": "00:11:04,020",
+				"to": "00:11:07,920"
+			},
+			"offsets": {
+				"from": 664020,
+				"to": 667920
+			},
+			"text": " To translate this into an agent response,"
+		},
+		{
+			"timestamps": {
+				"from": "00:11:07,920",
+				"to": "00:11:09,300"
+			},
+			"offsets": {
+				"from": 667920,
+				"to": 669300
+			},
+			"text": " similar to what you've seen"
+		},
+		{
+			"timestamps": {
+				"from": "00:11:09,300",
+				"to": "00:11:11,320"
+			},
+			"offsets": {
+				"from": 669300,
+				"to": 671320
+			},
+			"text": " in some of the previous notebook cells,"
+		},
+		{
+			"timestamps": {
+				"from": "00:11:11,320",
+				"to": "00:11:12,980"
+			},
+			"offsets": {
+				"from": 671320,
+				"to": 672980
+			},
+			"text": " then all you have to do"
+		},
+		{
+			"timestamps": {
+				"from": "00:11:12,980",
+				"to": "00:11:15,980"
+			},
+			"offsets": {
+				"from": 672980,
+				"to": 675980
+			},
+			"text": " is call response equals agent dot finalized response."
+		},
+		{
+			"timestamps": {
+				"from": "00:11:15,980",
+				"to": "00:11:20,220"
+			},
+			"offsets": {
+				"from": 675980,
+				"to": 680220
+			},
+			"text": " And we're able to get back the final answer."
+		},
+		{
+			"timestamps": {
+				"from": "00:11:20,220",
+				"to": "00:11:26,960"
+			},
+			"offsets": {
+				"from": 680220,
+				"to": 686960
+			},
+			"text": " So that's it for lesson three."
+		},
+		{
+			"timestamps": {
+				"from": "00:11:26,960",
+				"to": "00:11:28,940"
+			},
+			"offsets": {
+				"from": 686960,
+				"to": 688940
+			},
+			"text": " You've learned both about the high-level interface"
+		},
+		{
+			"timestamps": {
+				"from": "00:11:28,940",
+				"to": "00:11:29,440"
+			},
+			"offsets": {
+				"from": 688940,
+				"to": 689440
+			},
+			"text": " for an agent,"
+		},
+		{
+			"timestamps": {
+				"from": "00:11:29,440",
+				"to": "00:11:31,520"
+			},
+			"offsets": {
+				"from": 689440,
+				"to": 691520
+			},
+			"text": " as well as a low-level debugging interface."
+		},
+		{
+			"timestamps": {
+				"from": "00:11:31,520",
+				"to": "00:11:33,280"
+			},
+			"offsets": {
+				"from": 691520,
+				"to": 693280
+			},
+			"text": " And in the next lesson,"
+		},
+		{
+			"timestamps": {
+				"from": "00:11:33,280",
+				"to": "00:11:34,780"
+			},
+			"offsets": {
+				"from": 693280,
+				"to": 694780
+			},
+			"text": " we'll show you how to build an agent"
+		},
+		{
+			"timestamps": {
+				"from": "00:11:34,780",
+				"to": "00:11:35,860"
+			},
+			"offsets": {
+				"from": 694780,
+				"to": 695860
+			},
+			"text": " over multiple documents."
+		},
+		{
+			"timestamps": {
+				"from": "00:11:35,980",
+				"to": "00:11:37,740"
+			},
+			"offsets": {
+				"from": 695980,
+				"to": 697740
+			},
+			"text": "未经许可,不得翻唱或使用"
+		}
+	]
+}

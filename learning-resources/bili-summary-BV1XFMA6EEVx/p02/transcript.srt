@@ -1,0 +1,604 @@
+1
+00:00:00,000 --> 00:00:08,300
+in lesson one we'll be covering models prompts and parsers so models refers to the language models
+
+2
+00:00:08,300 --> 00:00:14,580
+ underpinning a lot of it prompts refers to the the style of creating inputs to pass into the
+
+3
+00:00:14,580 --> 00:00:19,380
+ models and then parsers is on the opposite end it's it involves taking the output of these models
+
+4
+00:00:19,380 --> 00:00:23,600
+ and parsing it into a more structured format so that you can do things downstream with it
+
+5
+00:00:23,600 --> 00:00:29,920
+ yep so when you build a application using an lm they'll often be reusable models we have repeatedly
+
+6
+00:00:29,920 --> 00:00:35,560
+ prompted model parsers outputs and so launching gives an easy set of abstractions to do this type
+
+7
+00:00:35,560 --> 00:00:42,280
+ of operation so with that let's jump in and take a look at models prompts and parsers so to get
+
+8
+00:00:42,280 --> 00:00:48,700
+ started here's a little bit of starter code i'm going to import os import openai and load my openai
+
+9
+00:00:48,700 --> 00:00:54,920
+ secret key um the openai library is already installed in my jupyten notebook environment
+
+10
+00:00:54,920 --> 00:00:59,460
+ if you're running this locally and you don't have openai installed yet you might need to
+
+11
+00:00:59,460 --> 00:01:03,100
+ run that uh bank pip install openai but i'm not going to do that here
+
+12
+00:01:03,100 --> 00:01:09,860
+ and then here's a helper function this is actually um very similar to the helper function that you might
+
+13
+00:01:09,860 --> 00:01:15,320
+ have seen in the chat gpt prompt engineering for developers course that i offered together with
+
+14
+00:01:15,320 --> 00:01:23,080
+ openai's user forfeit and so with this helper function you can say get to completion on um what is one plus
+
+15
+00:01:23,080 --> 00:01:30,920
+ one and this will call chat gpt or technically the model gpt 3.5 turbo to give you an answer back like
+
+16
+00:01:30,920 --> 00:01:41,320
+ this now to motivate the line chain abstractions for model prompts and pauses um let's say you get an
+
+17
+00:01:41,320 --> 00:01:48,760
+ email from a customer in a language other than english um in order to make sure this is accessible the
+
+18
+00:01:48,760 --> 00:01:54,440
+ other language i'm going to use is the english pirate language when it comes to this are i'd be fuming
+
+19
+00:01:54,440 --> 00:02:00,200
+ that me blend the lid flew off and splattered my kitchen walls with smoothie and to make matters worse
+
+20
+00:02:00,200 --> 00:02:06,120
+ the warranty don't cover the cost of cleaning up me kitchen i need your help right now matey and so what we
+
+21
+00:02:06,120 --> 00:02:14,440
+ will do is ask this olm to translate the text to american english in a calm and respectful tone
+
+22
+00:02:14,440 --> 00:02:18,280
+ so i'm going to set style to american english in a calm and respectful tone
+
+23
+00:02:18,280 --> 00:02:25,240
+ and so in order to actually accomplish this if you've seen a little bit of prompting before
+
+24
+00:02:25,240 --> 00:02:31,560
+ i'm going to specify the prompt using an f string with the instructions translate the text that is delimited by
+
+25
+00:02:31,560 --> 00:02:37,800
+ by triple backticks into style that is style and then plug in these two styles and so this generates
+
+26
+00:02:37,800 --> 00:02:45,400
+ a prompt that says translate the text and so on i encourage you to pause the video and run the code
+
+27
+00:02:45,400 --> 00:02:49,960
+ and also try modifying the prompt to see if you can get a different output
+
+28
+00:02:51,240 --> 00:02:57,560
+ you can then um prompt the large language model to get a response
+
+29
+00:02:57,560 --> 00:03:04,600
+ let's see what the response is it says translated the english pirate's message into this very polite
+
+30
+00:03:04,600 --> 00:03:09,480
+ i'm really frustrated that my blender lid flew off and made a mess of my kitchen walls with smoothie and so
+
+31
+00:03:09,480 --> 00:03:16,760
+ on um i could really use your help right now my friend that sounds very nice so if you have different
+
+32
+00:03:16,760 --> 00:03:22,920
+ customers writing reviews in different languages not just english pirate but french german japanese and so
+
+33
+00:03:22,920 --> 00:03:29,960
+ on you can imagine having to generate a whole sequence of prompts to generate such translations
+
+34
+00:03:29,960 --> 00:03:34,920
+ let's look at how we can do this in a more convenient way using langchain
+
+35
+00:03:34,920 --> 00:03:43,720
+ i'm going to import chat openai this is language abstraction for the chat gpt
+
+36
+00:03:44,360 --> 00:03:51,560
+ api endpoint and so if i then set chat equals chat openai and look like chat is it creates this object
+
+37
+00:03:51,560 --> 00:03:58,360
+ as follows that uses the chat gpt model which is also called gpt 3.5 turbo
+
+38
+00:03:58,360 --> 00:04:05,560
+ when i'm building applications one thing i will often do is set the temperature parameter to be equal to
+
+39
+00:04:05,560 --> 00:04:12,040
+ zero so the default temperature is 0.7 but let me actually redo that with temperature
+
+40
+00:04:15,000 --> 00:04:20,840
+ equals 0.0 and now the temperature is set to zero to make this output a little bit less random
+
+41
+00:04:20,840 --> 00:04:29,160
+ and now let me define the template string as follows translate the text delimited by
+
+42
+00:04:29,160 --> 00:04:36,440
+ triple tactics into style that is style and then here's the text and to repeatedly reuse this template
+
+43
+00:04:37,240 --> 00:04:48,200
+ let's import langchain's chat prompt template and then let me create the prompt template using that
+
+44
+00:04:48,200 --> 00:04:50,440
+ template string that we just wrote above
+
+45
+00:04:50,440 --> 00:05:03,240
+ from the prompt template you can actually extract the original prompt and it realizes that this prompt
+
+46
+00:05:03,240 --> 00:05:11,560
+ the prompt has two input variables the style and the text which were shown here with the curly braces
+
+47
+00:05:11,560 --> 00:05:16,280
+ and here is the original template as well that we had specified
+
+48
+00:05:17,160 --> 00:05:32,280
+ and in fact to print this out it realizes it has two input variables style and text now let's specify the style this is a style that i want the customer message to be translated to so i'm going to call this customer style
+
+49
+00:05:33,480 --> 00:05:41,960
+ and here's my same customer email as before and now
+
+50
+00:05:41,960 --> 00:05:50,200
+ if i create customer messages this will generate
+
+51
+00:05:50,200 --> 00:05:56,840
+ the prompt and will pass this a large language more than a minute to get a response so if you want to
+
+52
+00:05:57,640 --> 00:06:03,480
+ look at the types the custom message is actually a list and if you look at
+
+53
+00:06:03,480 --> 00:06:12,600
+ the first element of the list this is more or less that prompts that you would expect this to be creating
+
+54
+00:06:12,600 --> 00:06:20,840
+ lastly let's pass this prompt to the lm so i'm going to call chat which we had said earlier
+
+55
+00:06:21,640 --> 00:06:25,960
+ as a reference to the open ai chat gpd endpoint and
+
+56
+00:06:25,960 --> 00:06:35,640
+ if we print out the customer responses content then it gives you back um this
+
+57
+00:06:35,640 --> 00:06:43,800
+ text translated from english pirate to polite american english and of course you can imagine other use
+
+58
+00:06:43,800 --> 00:06:51,160
+ cases where the customer emails are in other languages and this tool can be used to translate the messages
+
+59
+00:06:51,160 --> 00:06:57,880
+ for an english speaking to understand and reply to i encourage you to pause the video and run the code
+
+60
+00:06:57,880 --> 00:07:02,440
+ and also try modifying the prompt to see if you can get a different output
+
+61
+00:07:03,240 --> 00:07:08,920
+ now let's hope our customer service agent reply to the customer in their original language so let's say
+
+62
+00:07:08,920 --> 00:07:14,840
+ english speaking customer service agent writes this is a hey there customer warranty does not cover
+
+63
+00:07:14,840 --> 00:07:19,400
+ cleaning expenses for a kitchen because it's your fault that you misuse your blender by forgetting to put on
+
+64
+00:07:19,400 --> 00:07:27,000
+ the lid tough luck see ya not a very polite message but um let's say this is what a customer service agent wants
+
+65
+00:07:29,240 --> 00:07:36,440
+ we are going to specify that the service message is going to be translated to this pirate style so we
+
+66
+00:07:36,440 --> 00:07:44,200
+ want it to be in a polite tone that speaks in english pirate and because we previously created that prompt
+
+67
+00:07:44,200 --> 00:07:50,200
+ template the cool thing is we can now reuse that prompt template and specify that the output style we want
+
+68
+00:07:50,200 --> 00:07:56,520
+ is this service style pirate and the text is this service reply and if we do that
+
+69
+00:07:56,520 --> 00:08:00,520
+ that's the prompt
+
+70
+00:08:00,520 --> 00:08:08,600
+ and if we prompt um chat gpt this is the response it gives us back
+
+71
+00:08:08,600 --> 00:08:16,120
+ ahoy there matey i must kindly inform you that the warranty be not covering the expenses or cleaning your
+
+72
+00:08:16,120 --> 00:08:23,160
+ galley and so on i tough luck farewell me hearty so you might be wondering why are we using prompt
+
+73
+00:08:23,160 --> 00:08:29,080
+ templates instead of you know just an f-string the answer is that as you build sophisticated applications
+
+74
+00:08:29,080 --> 00:08:36,280
+ prompts can be quite long and detailed and so prompt templates are a useful abstraction to help you
+
+75
+00:08:36,280 --> 00:08:44,680
+ reuse good prompts when you can um this is an example of a relatively long prompt to grade a student's
+
+76
+00:08:44,680 --> 00:08:52,440
+ submission for online learning application and a problem like this can be quite long in which you can ask
+
+77
+00:08:52,440 --> 00:08:58,360
+ the lm to first solve the problem and then have the output in a certain format and output in a certain
+
+78
+00:08:58,360 --> 00:09:06,520
+ format and wrapping this in a lang chain prompt makes it easier to reuse a prompt like this also you see
+
+79
+00:09:06,520 --> 00:09:13,480
+ later that lang chain provides prompts for some common operations such as summarization or
+
+80
+00:09:14,200 --> 00:09:20,280
+ question answering or connecting to sql databases or connecting to different apis and so by using some
+
+81
+00:09:20,280 --> 00:09:25,880
+ of lang chain's built-in prompts you can quickly get an application working without needing to
+
+82
+00:09:25,880 --> 00:09:36,200
+ engineer your own prompts one other aspect of lang chain's prompt libraries is that it also supports
+
+83
+00:09:36,200 --> 00:09:43,080
+ output parsing which we'll get to in a minute but when you're building a complex application using an lm
+
+84
+00:09:43,720 --> 00:09:51,480
+ you often instruct the lm to generate its output in a certain format such as using specific keywords
+
+85
+00:09:51,480 --> 00:09:58,200
+ this example on the left illustrates using an lm to carry out something called chain of thought
+
+86
+00:09:58,200 --> 00:10:06,200
+ reasoning using a framework called the react framework but don't worry about the technical details but the
+
+87
+00:10:06,200 --> 00:10:14,840
+ one of the keys of that is that the thought is what the lm is thinking because by giving an lm space to think
+
+88
+00:10:14,840 --> 00:10:21,720
+ it can often get to more accurate conclusions then action as a keyword to carry the specific action
+
+89
+00:10:21,720 --> 00:10:31,640
+ and then observation to show what it learned from that action and so on and if you have a prompt that instructs
+
+90
+00:10:31,640 --> 00:10:38,520
+ the lm to use these specific keywords thought action and observation then this prompt can be coupled with
+
+91
+00:10:38,520 --> 00:10:46,120
+ a parser to extract out the text that has been tagged with these specific keywords and so that together
+
+92
+00:10:46,120 --> 00:10:54,520
+ gives a very nice abstraction to specify the input to an lm and then also have a parser correctly
+
+93
+00:10:54,520 --> 00:11:02,920
+ interpret the output that the lm gives and so with that let's return to see an example of an output
+
+94
+00:11:02,920 --> 00:11:11,640
+ parser using langchain in this example let's take a look at how you can have an lm output json and use
+
+95
+00:11:11,640 --> 00:11:20,280
+ langchain to pause that output and the running example that i'll use will be to extract information from a
+
+96
+00:11:20,280 --> 00:11:28,120
+ product review and format that output in a json format so here's an example of how you would like
+
+97
+00:11:28,120 --> 00:11:35,160
+ the output to be formatted um technically this is a python dictionary where whether or not the product is
+
+98
+00:11:35,160 --> 00:11:39,720
+ as a gift maps the falls the number of days it took deliverer was five and the price value was pretty
+
+99
+00:11:39,720 --> 00:11:50,600
+ affordable so this is one example of a desired output here is an example of um customer review as well as
+
+100
+00:11:50,600 --> 00:11:56,520
+ a template to try to get to that json output so here's a customer review it says this leaf blower is
+
+101
+00:11:56,520 --> 00:12:02,280
+ pretty amazing it has four settings candle blower gender breeze windy city and tornado it arrived in
+
+102
+00:12:02,280 --> 00:12:06,840
+ two days just in time for my wife's anniversary present i think my wife liked it so much she was
+
+103
+00:12:06,840 --> 00:12:12,360
+ speechless so far i've been the only one using it and so on um and here's a review template for the
+
+104
+00:12:12,360 --> 00:12:18,200
+ following text extract the following information specify was this a gift so in this case it would be yes
+
+105
+00:12:18,200 --> 00:12:24,360
+ because this is a gift um and also delivery days how long did it take to deliver it looks like in this
+
+106
+00:12:24,360 --> 00:12:31,080
+ case it arrived in two days and um what's the price value you know slightly more expensive other leaf blowers
+
+107
+00:12:31,080 --> 00:12:40,440
+ and so on so the review template asks the lom to take as input a customer review and extract
+
+108
+00:12:40,440 --> 00:12:47,400
+ these three fields and then format the output as json um with the following keys
+
+109
+00:12:47,400 --> 00:12:59,880
+ all right so here's how you can wrap this in line chain let's import the chat prompt template we'd actually
+
+110
+00:12:59,880 --> 00:13:05,080
+ import to this already earlier so technically this line is redundant but i'll just import it again and
+
+111
+00:13:05,080 --> 00:13:09,800
+ then have the prompt template um created from the review template
+
+112
+00:13:09,800 --> 00:13:15,000
+ up on top and so here's the prompt template
+
+113
+00:13:15,000 --> 00:13:21,480
+ and now similar to our earlier usage of a prompt template let's create the
+
+114
+00:13:23,160 --> 00:13:34,360
+ messages to pass to the openai endpoint create the openai endpoint call that endpoint and then let's print out
+
+115
+00:13:34,360 --> 00:13:38,440
+ the response i encourage you to pause the video and run the code
+
+116
+00:13:42,040 --> 00:13:49,080
+ and there are this it says gif is true delivery days is two and the price value also looks pretty accurate
+
+117
+00:13:49,080 --> 00:13:54,600
+ um but note that if we check the type
+
+118
+00:13:57,720 --> 00:14:04,680
+ of the response this is actually a string so it looks like json and looks like his key value pairs but
+
+119
+00:14:04,680 --> 00:14:10,360
+ it's actually not a dictionary this is just one long string so what i really like to do is go to the
+
+120
+00:14:10,360 --> 00:14:15,240
+ response content and get the value from the gift key which should be true but i run this this should
+
+121
+00:14:15,240 --> 00:14:19,960
+ actually generate an error because well this is actually a string this is not a python dictionary
+
+122
+00:14:19,960 --> 00:14:29,720
+ so let's see how we would use langchain's um parser in order to do this i'm going to import
+
+123
+00:14:31,800 --> 00:14:39,560
+ response schema and structured output parser from langchain and um i'm going to tell it what i wanted
+
+124
+00:14:39,560 --> 00:14:46,760
+ to pause by specifying these response schemas so the gift schema is named gift and here's the description
+
+125
+00:14:46,760 --> 00:14:53,000
+ was the item purchase a gift for someone else uh answer true of yes false if not to unknown and so on
+
+126
+00:14:53,000 --> 00:14:59,320
+ so have a gift schema delivery day schema price value schema and then let's put all three of them
+
+127
+00:14:59,320 --> 00:15:06,840
+ into a list as follows now that i've specified the schema for these um langchain could actually give
+
+128
+00:15:06,840 --> 00:15:14,440
+ you the prompt itself uh by having the output parser tell you what instructions it wants you
+
+129
+00:15:14,440 --> 00:15:19,720
+ to send to the lm so if i were to print format instructions
+
+130
+00:15:19,720 --> 00:15:26,200
+ she has a pretty precise set of instructions for the lm that will cause it to generate an
+
+131
+00:15:26,200 --> 00:15:33,480
+ output that the output parser can process so here's a new review template
+
+132
+00:15:33,480 --> 00:15:40,520
+ and the review template includes the format instructions that langchain generated
+
+133
+00:15:40,520 --> 00:15:51,400
+ and so we can create a prompt from the review template too and then create the messages that will pass
+
+134
+00:15:52,200 --> 00:15:57,720
+ to the open ai endpoint if you want you can take a look at the actual prompt
+
+135
+00:15:57,720 --> 00:16:01,800
+ which gives the instructions to extract
+
+136
+00:16:01,800 --> 00:16:10,760
+ the fields gif delivery days price value here's the text and then here are the formatting instructions
+
+137
+00:16:14,760 --> 00:16:24,520
+ finally if we call the open ai endpoint let's take a look at what response we got
+
+138
+00:16:24,520 --> 00:16:27,800
+ it is now this
+
+139
+00:16:27,800 --> 00:16:34,200
+ and now if we use the output parser that we created
+
+140
+00:16:36,840 --> 00:16:45,240
+ earlier you can then pause this into an output dictionary which if i print looks like this
+
+141
+00:16:45,240 --> 00:16:57,560
+ and notice that this is um of type dictionary not a string which is why i can now extract the value
+
+142
+00:16:57,560 --> 00:17:06,040
+ associated with the key gift and get true or the value associated with delivery days and get two or you
+
+143
+00:17:06,040 --> 00:17:15,080
+ can also um extract the value associated with price value so this is a nifty way to take your lm output and
+
+144
+00:17:15,080 --> 00:17:24,280
+ parse it into a python dictionary to make the output easier to use in downstream processing i encourage you to pause the video and run the code
+
+145
+00:17:24,280 --> 00:17:31,240
+ and so that's it for models prompt and parsers with these tools hopefully you'll be able to
+
+146
+00:17:31,240 --> 00:17:36,840
+ reuse your own prompt templates easily share prompt templates with others that you're collaborating with
+
+147
+00:17:36,840 --> 00:17:44,200
+ even use linechain's built-in prompt templates which as you just saw can often be coupled with an output parser
+
+148
+00:17:44,760 --> 00:17:58,200
+ so that the input prompt to output in a specific format and then the parser pauses that output to store the data in a python dictionary or some other data structure that makes it easy for downstream processing
+
+149
+00:17:58,200 --> 00:18:05,080
+ i hope you find this useful in many of your applications and with that let's go into the next video where
+
+150
+00:18:05,720 --> 00:18:12,600
+ we'll see how lanking can help you build better chat bots or have an lm have more effective chats
+
+151
+00:18:12,600 --> 00:18:18,280
+ by better managing what it remembers from the conversation you've had so far
+

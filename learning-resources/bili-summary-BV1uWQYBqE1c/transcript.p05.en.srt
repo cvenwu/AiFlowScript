@@ -1,0 +1,524 @@
+1
+00:00:00,000 --> 00:00:06,700
+ In the previous lesson, we built an agent that can reason over a single document and
+
+2
+00:00:06,700 --> 00:00:10,640
+ answer complex questions over it while maintaining memory.
+
+3
+00:00:10,640 --> 00:00:15,040
+ In this lesson, you will learn how to extend that agent to handle multiple documents in
+
+4
+00:00:15,040 --> 00:00:17,480
+ increasing degrees of complexity.
+
+5
+00:00:17,480 --> 00:00:20,240
+ Let's get coding.
+
+6
+00:00:20,240 --> 00:00:24,520
+ We'll start with a three-document use case, and then we'll expand to an 11-document use
+
+7
+00:00:24,520 --> 00:00:25,520
+ case.
+
+8
+00:00:25,520 --> 00:00:35,600
+ We'll set up our OpenAI key as well as import NASDAQ sync I/O.
+
+9
+00:00:35,600 --> 00:00:40,500
+ And then the first task is to set up our function calling agent over three papers.
+
+10
+00:00:40,500 --> 00:00:46,480
+ So we do this by combining the vector summary tools for each document into a list and passing
+
+11
+00:00:46,480 --> 00:00:51,140
+ it to the agent so that the agent actually has six tools in total.
+
+12
+00:00:51,140 --> 00:00:55,000
+ So we'll download three papers from ICLR 2024.
+
+13
+00:00:55,000 --> 00:01:00,560
+ This includes MetaGPT from last time, but this also includes LongLora, as well as SelfRag.
+
+14
+00:01:00,560 --> 00:01:06,400
+ Next, we'll convert each paper into a tool.
+
+15
+00:01:06,400 --> 00:01:11,280
+ So if you remember from lesson three, we have a helper function called getDocTools, which
+
+16
+00:01:11,280 --> 00:01:17,160
+ automatically builds both a vector index tool as well as summary index tool over a given
+
+17
+00:01:17,160 --> 00:01:18,220
+ paper.
+
+18
+00:01:18,220 --> 00:01:23,040
+ And so the vector tool performs vector search and the summary tool performs summarization
+
+19
+00:01:23,040 --> 00:01:25,400
+ over the entire document.
+
+20
+00:01:25,400 --> 00:01:29,600
+ So for each paper, we get back both the vector tool and summary tool, and we put it into
+
+21
+00:01:29,600 --> 00:01:36,160
+ this overall dictionary, mapping each paper name to the vector tool and summary tool.
+
+22
+00:01:36,160 --> 00:01:46,120
+ Next, we'll simply get these tools in a flat list.
+
+23
+00:01:46,120 --> 00:01:52,300
+ We'll define 3.5 turbo from OpenAI as our LLM of choice.
+
+24
+00:01:52,300 --> 00:01:56,520
+ If we quickly take a look at the number of tools that are going to be passed to the agent,
+
+25
+00:01:56,520 --> 00:01:58,160
+ we'll see that the number is six.
+
+26
+00:01:58,160 --> 00:02:02,280
+ That's because we have three papers and we have two tools for each paper, a vector and
+
+27
+00:02:02,280 --> 00:02:04,560
+ a summary tool.
+
+28
+00:02:04,560 --> 00:02:10,700
+ The next step is to construct our overall agent worker.
+
+29
+00:02:10,700 --> 00:02:17,700
+ And this agent worker includes the six tools as well as the LLM that we pass through.
+
+30
+00:02:17,700 --> 00:02:22,760
+ And now we're able to ask questions across these three documents or within a single document.
+
+31
+00:02:22,760 --> 00:02:26,280
+ For now, let's quickly ask a question about Long Laura.
+
+32
+00:02:26,280 --> 00:02:42,280
+ Tell me about the eval dataset used on Long Laura and then tell me about the eval results.
+
+33
+00:02:42,280 --> 00:02:48,080
+ We get back the answer that one of the eval datasets used is a Pg19 test split.
+
+34
+00:02:48,080 --> 00:02:51,960
+ And then we're able to look at the eval results for Long Laura models.
+
+35
+00:02:51,960 --> 00:02:57,480
+ The next question we can ask is give me a summary of both self-rag and Long Laura.
+
+36
+00:02:57,480 --> 00:03:01,800
+ So this will actually allow us to do summarization across two papers.
+
+37
+00:03:01,800 --> 00:03:07,520
+ So first, we call the summary tool for self-rag with the input of its name, and we're able
+
+38
+00:03:07,520 --> 00:03:13,240
+ to get back the output describing what the paper is about.
+
+39
+00:03:13,240 --> 00:03:18,000
+ We see that the agent then calls the Long Laura summary tool with the input Long Laura and
+
+40
+00:03:18,000 --> 00:03:22,560
+ then we get back an overall summary of Long Laura.
+
+41
+00:03:22,560 --> 00:03:27,360
+ The final response is that we're able to get back both a summary of self-rag as well as
+
+42
+00:03:27,360 --> 00:03:29,880
+ Long Laura.
+
+43
+00:03:29,880 --> 00:03:34,360
+ If you want to try out some queries on your own, you can try out any combination of these
+
+44
+00:03:34,360 --> 00:03:39,760
+ two papers or even three papers and ask for both summaries as well as specific information
+
+45
+00:03:39,760 --> 00:03:44,080
+ within the papers to see whether or not the agent is able to reason about the summary
+
+46
+00:03:44,080 --> 00:03:47,360
+ and vector tools for each document.
+
+47
+00:03:47,360 --> 00:03:51,840
+ Now let's expand into a more advanced use case.
+
+48
+00:03:51,840 --> 00:03:57,400
+ Here we'll actually have 11 iClear papers, and so we'll download 11 research papers
+
+49
+00:03:57,400 --> 00:04:02,440
+ from iClear 2024.
+
+50
+00:04:02,440 --> 00:04:08,600
+ This includes papers like MetaJPT, Long Laura, LoftQ, Sweetbench, Self-rag, as well as a
+
+51
+00:04:08,600 --> 00:04:11,880
+ few others.
+
+52
+00:04:11,880 --> 00:04:17,960
+ Similar to the previous section, we will now build a dictionary mapping each paper to its
+
+53
+00:04:17,960 --> 00:04:20,420
+ vector and summary tool.
+
+54
+00:04:20,420 --> 00:04:24,920
+ This section can also take a little bit of time since we need to process, index, and
+
+55
+00:04:24,920 --> 00:04:30,180
+ embed 11 documents.
+
+56
+00:04:30,180 --> 00:04:34,440
+ Now let's collapse these tools into a flat list.
+
+57
+00:04:34,440 --> 00:04:39,720
+ This is the point at which we need a slightly more advanced agent and tool architecture.
+
+58
+00:04:39,720 --> 00:04:46,540
+ The issue is that let's say we try to index all 11 papers, which now includes 20 tools,
+
+59
+00:04:46,540 --> 00:04:51,540
+ or let's say we try to index 100 papers or 1,000 papers or more.
+
+60
+00:04:51,540 --> 00:04:56,640
+ Even though LLM context windows are getting longer, stuffing too many tool selections into
+
+61
+00:04:56,640 --> 00:04:59,880
+ the LLM prompt leads to the following issues.
+
+62
+00:04:59,880 --> 00:05:03,880
+ One is the tools may not all fit in the prompt, especially if your number of documents are
+
+63
+00:05:03,880 --> 00:05:08,240
+ big and you're modeling each document as a separate tool or set of tools.
+
+64
+00:05:08,240 --> 00:05:13,360
+ Cost and latency will spike because you're increasing the number of tokens in your prompt,
+
+65
+00:05:13,360 --> 00:05:16,040
+ and also the LLM can actually get confused.
+
+66
+00:05:16,040 --> 00:05:20,980
+ The LLM may fail to pick the right tool when the number of choices is too large.
+
+67
+00:05:20,980 --> 00:05:27,840
+ A solution here is that when the user asks a query, we actually perform retrieval augmentation,
+
+68
+00:05:27,840 --> 00:05:31,780
+ but not on the level of text, but actually on the level of tools.
+
+69
+00:05:31,780 --> 00:05:36,120
+ We first retrieve a small set of relevant tools and then feed the relevant tools to
+
+70
+00:05:36,120 --> 00:05:39,680
+ the agent reasoning prompt instead of all the tools.
+
+71
+00:05:39,680 --> 00:05:44,000
+ This retrieval process is similar to the retrieval process used in RAG.
+
+72
+00:05:44,000 --> 00:05:48,200
+ Add its simplest, it can just be top-k vector search, but of course you can add all the
+
+73
+00:05:48,200 --> 00:05:52,440
+ advanced retrieval techniques you want to filter out the relevant set of results.
+
+74
+00:05:52,440 --> 00:05:58,000
+ Our agents let you plug in a tool retriever that allows you to accomplish exactly this.
+
+75
+00:05:58,000 --> 00:06:01,360
+ So let's show you how to actually get this done.
+
+76
+00:06:01,360 --> 00:06:03,420
+ First we'll want to index the tools.
+
+77
+00:06:03,420 --> 00:06:08,680
+ Llama Index already has extensive indexing capabilities over general text documents.
+
+78
+00:06:08,680 --> 00:06:12,920
+ But since these tools are actually Python objects, we need a way to convert and serialize
+
+79
+00:06:12,920 --> 00:06:15,520
+ these objects to a string representation in back.
+
+80
+00:06:15,520 --> 00:06:22,180
+ This is solved through the object index abstraction in Llama Index.
+
+81
+00:06:22,180 --> 00:06:26,020
+ So we'll define an object index and retriever over these tools.
+
+82
+00:06:26,020 --> 00:06:30,040
+ We see that we import a vector sort index, which is our standard interface for indexing
+
+83
+00:06:30,040 --> 00:06:34,120
+ text, but then we wrap this with the object index.
+
+84
+00:06:34,120 --> 00:06:39,680
+ And to construct an object index, we see we directly plug in these Python tools as input
+
+85
+00:06:39,680 --> 00:06:42,640
+ into the index.
+
+86
+00:06:42,640 --> 00:06:47,120
+ You can retrieve from an object index through an object retriever.
+
+87
+00:06:47,120 --> 00:06:51,400
+ This will call the underlying retriever from the index and return the output directly as
+
+88
+00:06:51,400 --> 00:06:53,120
+ index.
+
+89
+00:06:53,120 --> 00:06:59,240
+ In this case, it will be tools.
+
+90
+00:06:59,240 --> 00:07:04,400
+ Now that we've defined the object retriever, let's walk through a very simple example.
+
+91
+00:07:04,400 --> 00:07:09,920
+ Let's ask, tell me about the eval data set used in meta GPT and also sweet bench.
+
+92
+00:07:09,920 --> 00:07:19,200
+ Now let's take a look at the first tool in this list.
+
+93
+00:07:19,200 --> 00:07:24,120
+ We see that we actually directly retrieved a set of tools and that the first tool is
+
+94
+00:07:24,120 --> 00:07:26,600
+ the summary tool for meta GPT.
+
+95
+00:07:26,600 --> 00:07:30,880
+ If we take a look at the second tool, we see that this is a summary tool for an unrelated
+
+96
+00:07:30,880 --> 00:07:32,760
+ paper to meta GPT and sweet bench.
+
+97
+00:07:32,760 --> 00:07:36,360
+ So of course the quality of retrieval is still dependent on your embedding model.
+
+98
+00:07:36,360 --> 00:07:41,240
+ However, we see that the last tool that's retrieved is indeed the summary tool for a
+
+99
+00:07:41,240 --> 00:07:42,640
+ sweet bench.
+
+100
+00:07:42,640 --> 00:07:45,840
+ Now we are ready to set up our function calling agent.
+
+101
+00:07:45,840 --> 00:07:49,720
+ We note that the setup is pretty similar to the setup in the last lesson.
+
+102
+00:07:49,720 --> 00:07:54,320
+ However, just as an additional feature, we show that you can actually add a system prompt
+
+103
+00:07:54,320 --> 00:07:56,280
+ to the agent if you want.
+
+104
+00:07:56,280 --> 00:07:57,280
+ This is optional.
+
+105
+00:07:57,280 --> 00:08:01,240
+ You don't need to specify this, but you can if you want just additional guidance, if you
+
+106
+00:08:01,240 --> 00:08:06,280
+ want to prompt the agent to output things in a certain way, if you want it to take into
+
+107
+00:08:06,280 --> 00:08:09,840
+ account certain factors when it reasons over these tools.
+
+108
+00:08:09,840 --> 00:08:12,720
+ And so this is an example of that.
+
+109
+00:08:12,720 --> 00:08:18,040
+ Now let's try asking some comparison queries.
+
+110
+00:08:18,040 --> 00:08:34,480
+ We ask, tell me about the eval dataset using meta GPT and compare it against sweet bench.
+
+111
+00:08:34,480 --> 00:08:39,640
+ We see that it calls both the summary tool for meta GPT as well as the summary tool for
+
+112
+00:08:39,640 --> 00:08:40,640
+ sweet bench.
+
+113
+00:08:40,640 --> 00:08:44,920
+ It's able to get back results for both.
+
+114
+00:08:44,920 --> 00:08:53,960
+ And then it generates a final response here.
+
+115
+00:08:53,960 --> 00:08:59,080
+ Now as a final example, let's compare and contrast the two Laura papers, long Laura
+
+116
+00:08:59,080 --> 00:09:09,040
+ as well as loft Q and analyze the approach in each paper first.
+
+117
+00:09:09,040 --> 00:09:13,000
+ We see that the agent is executing this query and the first step it takes is it takes this
+
+118
+00:09:13,000 --> 00:09:17,900
+ input task and actually retrieves a set of input tools to help it fulfill this task.
+
+119
+00:09:17,900 --> 00:09:22,320
+ And so through the object retriever, the hope is that it actually retrieves long Laura and
+
+120
+00:09:22,320 --> 00:09:29,240
+ loft Q query tools in order to help it fulfill its response.
+
+121
+00:09:29,240 --> 00:09:34,040
+ So if we take a look at the intermediate outputs of the agent, we see that it is able to have
+
+122
+00:09:34,040 --> 00:09:38,640
+ access to relevant tools from long Laura and also loft Q.
+
+123
+00:09:38,640 --> 00:09:43,000
+ We see that first calls summary tool, long Laura with arguments approach and long Laura
+
+124
+00:09:43,000 --> 00:09:46,400
+ and you're able to get back a summary of the approach.
+
+125
+00:09:46,400 --> 00:09:54,340
+ Similarly, you're able to get back the approach and loft Q by calling summary tool loft Q.
+
+126
+00:09:54,340 --> 00:09:59,760
+ The final LLM response is able to compare these two approaches by comparing the responses
+
+127
+00:09:59,760 --> 00:10:05,440
+ from these two tools and combining it to synthesize an answer that satisfies the user query.
+
+128
+00:10:05,440 --> 00:10:07,400
+ So that concludes our lesson.
+
+129
+00:10:07,400 --> 00:10:11,720
+ So now you should be equipped with the right tools to build agents not only over a single
+
+130
+00:10:11,720 --> 00:10:17,400
+ document but also over multiple documents enabling you to build more general complex
+
+131
+00:10:17,400 --> 00:10:21,120
+ context augmented research assistance that can answer complex questions.
+

@@ -1,0 +1,56 @@
+1
+00:00:00,000 --> 00:00:01,000
+中文字幕:YK
+
+2
+00:00:01,000 --> 00:00:04,000
+ And that brings this course to a close.
+
+3
+00:00:04,000 --> 00:00:06,000
+ It's a really exciting time in AI,
+
+4
+00:00:06,000 --> 00:00:08,000
+ and there's lots of advancements happening.
+
+5
+00:00:08,000 --> 00:00:10,000
+ In this course, we covered two of them:
+
+6
+00:00:10,000 --> 00:00:13,000
+ OpenAI Function Calling and Langchain Expression Language.
+
+7
+00:00:13,000 --> 00:00:16,000
+ We then showed how you could use those
+
+8
+00:00:16,000 --> 00:00:18,000
+ to do structured data extraction
+
+9
+00:00:18,000 --> 00:00:20,000
+ and then also tool usage and tool selection.
+
+10
+00:00:20,000 --> 00:00:22,000
+ And we put that all together
+
+11
+00:00:22,000 --> 00:00:25,000
+ by building a conversational agent at the end.
+
+12
+00:00:25,000 --> 00:00:27,000
+ With all these learnings under your belt,
+
+13
+00:00:27,000 --> 00:00:30,000
+ the only thing left to do is go out into the real world
+
+14
+00:00:30,000 --> 00:00:31,840
+and apply them to your use cases.
+
