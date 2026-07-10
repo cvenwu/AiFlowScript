@@ -1,0 +1,707 @@
+1
+00:00:00,000 --> 00:00:04,000
+In this lesson, we'll build an agent from scratch.
+
+2
+00:00:04,000 --> 00:00:07,000
+You'll see that while agents can do fairly complex tasks,
+
+3
+00:00:07,000 --> 00:00:11,000
+a basic agent is actually not that hard to build.
+
+4
+00:00:11,000 --> 00:00:14,000
+As we're building this agent, it will be useful to notice
+
+5
+00:00:14,000 --> 00:00:16,000
+what jobs fall to the LOM,
+
+6
+00:00:16,000 --> 00:00:19,000
+and which are managed by the code around the LOM,
+
+7
+00:00:19,000 --> 00:00:21,000
+what we call the runtime.
+
+8
+00:00:21,000 --> 00:00:23,000
+Let's dive in.
+
+9
+00:00:24,000 --> 00:00:26,000
+The agent we're going to build from scratch
+
+10
+00:00:26,000 --> 00:00:29,000
+is based on the React pattern.
+
+11
+00:00:29,000 --> 00:00:33,000
+React stands for reasoning plus acting.
+
+12
+00:00:33,000 --> 00:00:37,000
+In this pattern, an LOM first thinks about what to do,
+
+13
+00:00:37,000 --> 00:00:40,000
+and then decides an action to take.
+
+14
+00:00:40,000 --> 00:00:43,000
+That action is then executed in an environment
+
+15
+00:00:43,000 --> 00:00:46,000
+and an observation is returned.
+
+16
+00:00:46,000 --> 00:00:49,000
+With that observation, the LOM then repeats.
+
+17
+00:00:49,000 --> 00:00:51,000
+Then thinks about what to do again,
+
+18
+00:00:51,000 --> 00:00:53,000
+decides another action to take,
+
+19
+00:00:53,000 --> 00:00:57,000
+and continues until it decides that it is done.
+
+20
+00:00:57,000 --> 00:01:00,000
+The code that we will be using to start with
+
+21
+00:01:00,000 --> 00:01:03,000
+is based on this blog post from Simon Wilson.
+
+22
+00:01:03,000 --> 00:01:09,000
+It's a great introduction to implementing the React pattern in Python.
+
+23
+00:01:09,000 --> 00:01:13,000
+To get started, let's import everything we need.
+
+24
+00:01:13,000 --> 00:01:16,000
+We can then initialize the language model.
+
+25
+00:01:16,000 --> 00:01:21,000
+For this, we will use OpenAI.
+
+26
+00:01:21,000 --> 00:01:26,000
+Let's try it out once just to make sure that it's working.
+
+27
+00:01:27,000 --> 00:01:31,000
+We can see that we pass in Hello World and get back.
+
+28
+00:01:31,000 --> 00:01:34,000
+Hello, how can I assist you today?
+
+29
+00:01:34,000 --> 00:01:35,000
+Great.
+
+30
+00:01:35,000 --> 00:01:38,000
+We're set up and running with our language model.
+
+31
+00:01:38,000 --> 00:01:41,000
+Let's now create the agent.
+
+32
+00:01:41,000 --> 00:01:45,000
+We'll start by creating a class for the agent.
+
+33
+00:01:45,000 --> 00:01:50,000
+We'll want this agent to be parameterized by a system message,
+
+34
+00:01:50,000 --> 00:01:54,000
+so we'll allow the user to pass that message.
+
+35
+00:01:54,000 --> 00:01:57,000
+So we'll allow the user to pass that in.
+
+36
+00:01:57,000 --> 00:02:00,000
+We'll then save that as an attribute.
+
+37
+00:02:00,000 --> 00:02:04,000
+We'll also keep track of a list of messages over time.
+
+38
+00:02:04,000 --> 00:02:10,000
+This is where we will append everything that happens in that React loop.
+
+39
+00:02:10,000 --> 00:02:13,000
+And to start it off, if there is this message,
+
+40
+00:02:13,000 --> 00:02:19,000
+we're going to append a system message in this list of messages.
+
+41
+00:02:19,000 --> 00:02:20,000
+Okay, great.
+
+42
+00:02:20,000 --> 00:02:22,000
+Sorry, agent can now be initialized.
+
+43
+00:02:22,000 --> 00:02:25,000
+But what exactly is it going to do?
+
+44
+00:02:25,000 --> 00:02:31,000
+Let's implement the call method for this agent.
+
+45
+00:02:31,000 --> 00:02:35,000
+What we want this method to do at a high level is to take a message that comes in,
+
+46
+00:02:35,000 --> 00:02:41,000
+that is a string, and then append that message to the existing array of messages.
+
+47
+00:02:41,000 --> 00:02:43,000
+We'll then execute a function.
+
+48
+00:02:43,000 --> 00:02:45,000
+We'll implement that right down below.
+
+49
+00:02:45,000 --> 00:02:51,000
+And we'll then take the result of that and add a new message into the array of messages.
+
+50
+00:02:51,000 --> 00:02:54,000
+This time coming from the assistant.
+
+51
+00:02:54,000 --> 00:02:58,000
+So let's implement that execute method.
+
+52
+00:02:58,000 --> 00:03:04,000
+In the execute method, this is where we call the opening client that we initialized above.
+
+53
+00:03:04,000 --> 00:03:06,000
+So we'll be using this GPT4 model.
+
+54
+00:03:06,000 --> 00:03:08,000
+We'll be setting temperature equals to zero.
+
+55
+00:03:08,000 --> 00:03:10,000
+This will make it very deterministic.
+
+56
+00:03:10,000 --> 00:03:13,000
+And we'll pass in this list of messages that will accumulate.
+
+57
+00:03:13,000 --> 00:03:19,000
+We'll then have this method return the content or the string of the message that it gets back from the model.
+
+58
+00:03:19,000 --> 00:03:21,000
+So this is our agent.
+
+59
+00:03:21,000 --> 00:03:22,000
+Awesome.
+
+60
+00:03:22,000 --> 00:03:25,000
+Now let's get started with creating the React agent.
+
+61
+00:03:25,000 --> 00:03:29,000
+The React agent is going to require a very specific system message.
+
+62
+00:03:29,000 --> 00:03:31,000
+So let's go ahead and write that out.
+
+63
+00:03:31,000 --> 00:03:37,000
+And we can take a look at that in detail to see exactly what we're doing.
+
+64
+00:03:37,000 --> 00:03:40,000
+Let's take a look at this prompt in more detail.
+
+65
+00:03:40,000 --> 00:03:44,000
+So we're asking it to run through this loop of thought, action, pause, and observation.
+
+66
+00:03:45,000 --> 00:03:49,000
+It can then output an answer when it's finished with that loop.
+
+67
+00:03:49,000 --> 00:03:53,000
+It will use thought to describe its thoughts about the question it's been asked.
+
+68
+00:03:53,000 --> 00:03:57,000
+It will then use action to run one of the actions available to it.
+
+69
+00:03:57,000 --> 00:04:05,000
+And it will then return pause after that observation will be used to signal the result of running those actions.
+
+70
+00:04:05,000 --> 00:04:08,000
+We then tell it what the available actions are.
+
+71
+00:04:08,000 --> 00:04:14,000
+So we give it access to calculate an average dog weight and we'll implement those down below.
+
+72
+00:04:14,000 --> 00:04:18,000
+Finally, we then provide an example of this in action.
+
+73
+00:04:18,000 --> 00:04:22,000
+This example is really helpful for helping the language model understand
+
+74
+00:04:22,000 --> 00:04:26,000
+in a little bit more specific detail how exactly it should be doing things.
+
+75
+00:04:26,000 --> 00:04:34,000
+And we can see here an example trace incoming question and then a thought and then an action, then pause.
+
+76
+00:04:35,000 --> 00:04:39,000
+And then it gets back an observation and then we'll tell it to output answer.
+
+77
+00:04:42,000 --> 00:04:45,000
+We now need to provide the two tools that we mentioned above.
+
+78
+00:04:45,000 --> 00:04:51,000
+So we have a calculate function and this just takes in a string and it will evolve that string.
+
+79
+00:04:51,000 --> 00:04:53,000
+And then we have this average dog weight function.
+
+80
+00:04:53,000 --> 00:04:59,000
+And we're going to mock it with some returns for Scottish Terrier border call a toy poodle.
+
+81
+00:04:59,000 --> 00:05:03,000
+And then we'll create this little dictionary that maps the name of the function to the function.
+
+82
+00:05:04,000 --> 00:05:07,000
+And we'll see how we'll use this down below.
+
+83
+00:05:07,000 --> 00:05:10,000
+Note that these functions are just a toy example.
+
+84
+00:05:10,000 --> 00:05:16,000
+And in your real use case, these are going to be more specific to the problem that you're trying to solve.
+
+85
+00:05:16,000 --> 00:05:18,000
+Let's now try it out.
+
+86
+00:05:18,000 --> 00:05:22,000
+Let's initialize the agent with the prompt that we created above.
+
+87
+00:05:22,000 --> 00:05:25,000
+Let's then call it once with this initial question.
+
+88
+00:05:25,000 --> 00:05:28,000
+How much does a toy poodle weigh?
+
+89
+00:05:29,000 --> 00:05:33,000
+We look at the result and we can see that there's a thought action and pause.
+
+90
+00:05:33,000 --> 00:05:38,000
+So the thought is I should look up the dog's weight using average dog weight for a toy poodle.
+
+91
+00:05:38,000 --> 00:05:42,000
+It then outputs an action and this is all one string but the second part is outputting this action.
+
+92
+00:05:42,000 --> 00:05:46,000
+Average dog weight toy poodle and then it says pause.
+
+93
+00:05:46,000 --> 00:05:53,000
+What this means we should do is that we should look up using average dog weight, how much a toy poodle weighs.
+
+94
+00:05:53,000 --> 00:05:55,000
+And so let's do that.
+
+95
+00:05:58,000 --> 00:06:02,000
+We get back this string and this is just what we mocked out above.
+
+96
+00:06:07,000 --> 00:06:12,000
+We can now format that into the next prompt to pass to the language model.
+
+97
+00:06:12,000 --> 00:06:17,000
+And then we can call the agent with that next prompt.
+
+98
+00:06:17,000 --> 00:06:23,000
+Doing that we see that we get back answer a toy poodle weighs seven pounds.
+
+99
+00:06:24,000 --> 00:06:33,000
+If we want to see more details about what exactly has been going on, we can take a look at the message attribute on the agent.
+
+100
+00:06:33,000 --> 00:06:40,000
+We can see that we first have this system message and this is the long prompt that we wrote out above.
+
+101
+00:06:40,000 --> 00:06:44,000
+We then have our first question, how much does a toy poodle weigh?
+
+102
+00:06:44,000 --> 00:06:49,000
+We then have this response from the language model, which tells us to take this action.
+
+103
+00:06:49,000 --> 00:06:54,000
+We then have our user message representing this observation, saying how much a toy poodle weighs.
+
+104
+00:06:54,000 --> 00:07:02,000
+And then we have the final assistant response, which says our final answer to the toy poodle weighs seven pounds.
+
+105
+00:07:02,000 --> 00:07:05,000
+Let's try this again with a different example.
+
+106
+00:07:05,000 --> 00:07:13,000
+In order to do that, we're going to need to reinitialize the agent in order to clear all the messages that have already accumulated.
+
+107
+00:07:13,000 --> 00:07:16,000
+We're going to ask it a more complicated question this time.
+
+108
+00:07:16,000 --> 00:07:20,000
+We have two dogs, a border collie and a Scottish terrier.
+
+109
+00:07:20,000 --> 00:07:23,000
+What is their combined weight?
+
+110
+00:07:23,000 --> 00:07:26,000
+We can see that's first thought is a really good plan.
+
+111
+00:07:26,000 --> 00:07:32,000
+It realizes that it first needs to find the average weight of each breed and then add those weights together.
+
+112
+00:07:32,000 --> 00:07:40,000
+And so the first action that it takes is calling average dog weight with border collie.
+
+113
+00:07:40,000 --> 00:07:45,000
+Let's execute that action and create the next prompt.
+
+114
+00:07:45,000 --> 00:07:48,000
+I can now call the agent on this next prompt.
+
+115
+00:07:48,000 --> 00:07:51,000
+I can see that it responds that we now need to take a different action.
+
+116
+00:07:51,000 --> 00:07:54,000
+We need to call average dog weight with Scottish terrier.
+
+117
+00:07:54,000 --> 00:07:56,000
+So let's do that.
+
+118
+00:07:56,000 --> 00:08:02,000
+We do that and create another prompt, which we can again pass to the agent.
+
+119
+00:08:02,000 --> 00:08:08,000
+This time it tells us to use the calculate method with 37 plus 20.
+
+120
+00:08:08,000 --> 00:08:09,000
+Okay, great.
+
+121
+00:08:09,000 --> 00:08:14,000
+Let's run that action.
+
+122
+00:08:14,000 --> 00:08:20,000
+We run that action and we get back another prompt, which we can pass yet again into the agent.
+
+123
+00:08:20,000 --> 00:08:22,000
+Doing that, we get back a final answer.
+
+124
+00:08:22,000 --> 00:08:26,000
+The combined weight of a border collie and a Scottish terrier is 57 pounds.
+
+125
+00:08:26,000 --> 00:08:30,000
+Now that is output the answer string, we know that it's finished.
+
+126
+00:08:30,000 --> 00:08:31,000
+So this is great.
+
+127
+00:08:31,000 --> 00:08:35,000
+We have a tool calling agent, but it's still a little bit manual.
+
+128
+00:08:35,000 --> 00:08:36,000
+Let's automate it.
+
+129
+00:08:36,000 --> 00:08:40,000
+Let's put it in a loop.
+
+130
+00:08:40,000 --> 00:08:46,000
+The first thing I'm going to do is create this reg X for looking for the action string.
+
+131
+00:08:46,000 --> 00:08:52,000
+This is going to let us parse the LLM's response and determine whether we want to be taking an action
+
+132
+00:08:52,000 --> 00:08:56,000
+or whether it's the final answer.
+
+133
+00:08:56,000 --> 00:08:59,000
+Let's now create this query function.
+
+134
+00:08:59,000 --> 00:09:04,000
+This is going to take in a question and run the same process that we just ran manually.
+
+135
+00:09:04,000 --> 00:09:09,000
+I'll add this max turns per emitter so we can control how long this runs for.
+
+136
+00:09:09,000 --> 00:09:18,000
+We can then start a counter to keep track of how many iterations we've done.
+
+137
+00:09:18,000 --> 00:09:26,000
+We can initialize an agent with the default system prompt.
+
+138
+00:09:26,000 --> 00:09:30,000
+We can then define a query function, which we'll use to run this loop.
+
+139
+00:09:30,000 --> 00:09:35,000
+It'll take in a question and we'll also let it take in this max turns parameter,
+
+140
+00:09:35,000 --> 00:09:38,000
+which will control how many iterations the agent can run for.
+
+141
+00:09:38,000 --> 00:09:41,000
+We'll start a counter and we'll set this to zero.
+
+142
+00:09:41,000 --> 00:09:46,000
+We'll create a new agent by initializing the agent class with the default system prompt.
+
+143
+00:09:46,000 --> 00:09:51,000
+We'll also create this next prompt variable to keep track of what we should be passing to the agent
+
+144
+00:09:51,000 --> 00:09:55,000
+and set this equal to the original question in order to start.
+
+145
+00:09:55,000 --> 00:10:05,000
+Let's now start our loop.
+
+146
+00:10:05,000 --> 00:10:10,000
+So while our counter is less than max turns, we'll first increment the counter
+
+147
+00:10:10,000 --> 00:10:15,000
+and then we'll call the agent and get a result back.
+
+148
+00:10:15,000 --> 00:10:20,000
+Let's add a print statement just to see what that result is.
+
+149
+00:10:20,000 --> 00:10:27,000
+We'll then use the reg X that we created above in order to parse the response from the agent
+
+150
+00:10:27,000 --> 00:10:32,000
+and we'll get back a list of actions.
+
+151
+00:10:32,000 --> 00:10:38,000
+Here's where we will decide what to do based on the response.
+
+152
+00:10:38,000 --> 00:10:44,000
+So if there are any actions, we're going to add some logic to take those actions and get back a response.
+
+153
+00:10:44,000 --> 00:10:51,000
+If there aren't any actions, and this happens when the agent outputs answer, then we're going to return and end the function there.
+
+154
+00:10:51,000 --> 00:10:57,000
+So what exactly are we going to do if there are actions to take?
+
+155
+00:10:57,000 --> 00:11:01,000
+First, we're going to get the action and the action input.
+
+156
+00:11:01,000 --> 00:11:06,000
+The action is the function to call and the action input is the input to that function.
+
+157
+00:11:06,000 --> 00:11:08,000
+So we'll get those two things.
+
+158
+00:11:08,000 --> 00:11:13,000
+And then if we see an action that's not in our list of known actions, we're going to raise an exception.
+
+159
+00:11:13,000 --> 00:11:18,000
+This should never happen, but we'll do this check and raise this exception just in case.
+
+160
+00:11:18,000 --> 00:11:22,000
+And let's print out what exactly we're going to be running here.
+
+161
+00:11:22,000 --> 00:11:25,000
+We'll now get the observation.
+
+162
+00:11:25,000 --> 00:11:33,000
+And so we'll do this by first looking up in the action dictionary, the action that we should take.
+
+163
+00:11:33,000 --> 00:11:35,000
+And so this action is a string right here.
+
+164
+00:11:35,000 --> 00:11:38,000
+We're looking it up in this dictionary and we're going to get back a function.
+
+165
+00:11:38,000 --> 00:11:41,000
+We're then calling that function on the action input.
+
+166
+00:11:41,000 --> 00:11:47,000
+And the result of that is what we're saving as observation.
+
+167
+00:11:47,000 --> 00:11:50,000
+Let's print out the observation just for some debugging.
+
+168
+00:11:50,000 --> 00:11:52,000
+And then let's also create the next prompt.
+
+169
+00:11:52,000 --> 00:11:54,000
+What we'll send to the language model the next time.
+
+170
+00:11:54,000 --> 00:12:03,000
+And this is just a string with observation and formatted with the observation that we got back from the agent.
+
+171
+00:12:03,000 --> 00:12:11,000
+All right, let's call this on the complex question that we had above and see what happens.
+
+172
+00:12:11,000 --> 00:12:21,000
+We can see that at first thinks about what to do outputs an action calls it gets back an observation thinks about what to do again gets another action thinks about what to do again gets another action.
+
+173
+00:12:21,000 --> 00:12:24,000
+And then finally it comes up with this answer.
+
+174
+00:12:24,000 --> 00:12:28,000
+That was a lot easier than running it by hand.
+
+175
+00:12:28,000 --> 00:12:35,000
+That shows how we can create an agent using nothing but the raw LLM API and some Python code.
+
+176
+00:12:35,000 --> 00:12:41,000
+In the next lesson, we'll take the same agent and show how to implement it using length graph.
+
+177
+00:12:41,000 --> 00:12:42,000
+See you there.

@@ -1,0 +1,1083 @@
+1
+00:00:00,000 --> 00:00:07,000
+In this final lesson, let's take what we learned in the previous lesson and add onto it
+
+2
+00:00:07,000 --> 00:00:09,279
+to create a conversational agent.
+
+3
+00:00:09,279 --> 00:00:14,160
+This will combine tool usage with chat memory and let us create something that ends up looking
+
+4
+00:00:14,160 --> 00:00:15,839
+like chat GPT.
+
+5
+00:00:15,839 --> 00:00:19,519
+Let's chat about conversational agents.
+
+6
+00:00:19,519 --> 00:00:22,600
+In this lesson, we'll be building a conversational agent.
+
+7
+00:00:22,600 --> 00:00:25,400
+First, let's go over the basics of agents.
+
+8
+00:00:25,400 --> 00:00:26,640
+So what are agents?
+
+9
+00:00:26,640 --> 00:00:29,320
+Our combination of language models and code.
+
+10
+00:00:29,320 --> 00:00:33,100
+So the language model reasons about what steps to take and what the inputs to those
+
+11
+00:00:33,100 --> 00:00:34,880
+sections should be.
+
+12
+00:00:34,880 --> 00:00:39,960
+And then there's an agent loop, which basically uses that agent to choose the tool, and then
+
+13
+00:00:39,960 --> 00:00:44,719
+calls that tool, observes the output, and then it repeats this until a stopping criteria
+
+14
+00:00:44,719 --> 00:00:45,719
+is met.
+
+15
+00:00:45,719 --> 00:00:48,640
+What are these stopping criteria is they could be several things.
+
+16
+00:00:48,640 --> 00:00:52,840
+The first and most popular one is just using the language model to determine when to stop.
+
+17
+00:00:52,840 --> 00:00:56,159
+So if you remember the previous lesson, we talked about the idea of an agent finish.
+
+18
+00:00:56,160 --> 00:00:58,040
+This is one language model just responds.
+
+19
+00:00:58,040 --> 00:01:00,320
+This is one such stopping criteria.
+
+20
+00:01:00,320 --> 00:01:04,240
+But you can have others like hard coded rules, such as the maximum number of iterations
+
+21
+00:01:04,240 --> 00:01:07,079
+or something like that.
+
+22
+00:01:07,079 --> 00:01:11,320
+In this lab, we're going to use the tools that we built in the previous lesson.
+
+23
+00:01:11,320 --> 00:01:15,080
+We're going to take that concept of routing and choosing and then calling the tools, and
+
+24
+00:01:15,080 --> 00:01:20,520
+we're going to put that into our own agent loop using the Langchain expression language.
+
+25
+00:01:20,520 --> 00:01:25,080
+We're then going to use the agent executor class in Langchain and show how that corresponds
+
+26
+00:01:25,079 --> 00:01:31,280
+to the agent loop, but also as in other things like error handling, early stopping, and tracing.
+
+27
+00:01:31,280 --> 00:01:33,120
+Let's code it up.
+
+28
+00:01:33,120 --> 00:01:36,280
+First thing we're going to do, we're going to set up the environment per usual, and then
+
+29
+00:01:36,280 --> 00:01:40,759
+we're also going to set up the same two tools that we used in the previous lesson.
+
+30
+00:01:40,759 --> 00:01:45,079
+So we're going to import the tool decorator.
+
+31
+00:01:45,079 --> 00:01:50,280
+We're going to create our current weather tool.
+
+32
+00:01:50,280 --> 00:01:54,599
+We're going to create our Wikipedia tool, and then we're going to create our list of
+
+33
+00:01:54,640 --> 00:02:04,040
+tools as just a list of these two tools.
+
+34
+00:02:04,040 --> 00:02:07,840
+We're then going to go ahead and create the logic that takes in the input and determines
+
+35
+00:02:07,840 --> 00:02:08,840
+what tool to call.
+
+36
+00:02:08,840 --> 00:02:13,360
+So we did this in the previous lesson, so we're importing a model, the prompt template,
+
+37
+00:02:13,360 --> 00:02:17,040
+the formatting of tools to open-air functions, and then this output parser, where they're
+
+38
+00:02:17,040 --> 00:02:22,080
+going to create functions by calling format tool to open-air function on our list of tools.
+
+39
+00:02:22,080 --> 00:02:26,600
+We're going to create our model, setting temperature equals to zero, and binding it with functions
+
+40
+00:02:26,600 --> 00:02:27,600
+equals functions.
+
+41
+00:02:27,600 --> 00:02:30,880
+We're then going to create our prompt, again, pretty simple, it's just a single system
+
+42
+00:02:30,880 --> 00:02:34,840
+message, you are helpful but sassy assistant, and now we're going to join this all together
+
+43
+00:02:34,840 --> 00:02:40,360
+in a chain, adding on to the end the open-air functions agent output parser.
+
+44
+00:02:40,360 --> 00:02:50,300
+And so if we call this on some input, we can get back a tool that it recommends using,
+
+45
+00:02:50,300 --> 00:02:55,380
+the tool input, and again, that's because the input here is specifically aimed at calling
+
+46
+00:02:55,380 --> 00:02:57,060
+one of the tools.
+
+47
+00:02:57,060 --> 00:03:02,000
+So what we want to do is create this loop that determines what tool to use, then calls
+
+48
+00:03:02,000 --> 00:03:07,380
+that tool, and passes it back in and repeats and tells some stocking criteria is met.
+
+49
+00:03:07,380 --> 00:03:12,060
+If you look at the prompt, what that means is we need a place in the prompt to pass back
+
+50
+00:03:12,060 --> 00:03:16,260
+in this history of tools that are called in the corresponding outputs.
+
+51
+00:03:16,259 --> 00:03:19,899
+So we're going to have to change the prompt a little bit to add that in.
+
+52
+00:03:19,899 --> 00:03:26,099
+Specifically, we want to add in a place where we can pass in a list of messages.
+
+53
+00:03:26,099 --> 00:03:30,979
+And that's because we're going to convert this tool selection to tool observation into
+
+54
+00:03:30,979 --> 00:03:33,219
+a list of messages and pass it back in.
+
+55
+00:03:33,219 --> 00:03:37,979
+So we're going to use messages placeholder to be a placeholder for this list of messages.
+
+56
+00:03:37,979 --> 00:03:41,419
+And then in our prompt template, we're going to have the same first two elements, but
+
+57
+00:03:41,419 --> 00:03:46,219
+then we're going to add in this agent scratchpad messages placeholder.
+
+58
+00:03:46,219 --> 00:03:50,300
+Basically, what this is saying is we're first going to have a system message, which is
+
+59
+00:03:50,300 --> 00:03:54,819
+this again, short system message, where they're going to have the user input.
+
+60
+00:03:54,819 --> 00:04:00,780
+And then after that, we're going to pass in the action and observation pairs.
+
+61
+00:04:00,780 --> 00:04:08,060
+We create that prompt, we create a chain now with this prompt, and let's call it again
+
+62
+00:04:08,060 --> 00:04:09,340
+on the same input.
+
+63
+00:04:09,340 --> 00:04:13,139
+In this time, we also need to pass an agent scratchpad because this is the variable
+
+64
+00:04:13,140 --> 00:04:14,260
+here that we need to pass in.
+
+65
+00:04:14,260 --> 00:04:18,699
+We're going to pass in this being an empty list because we haven't taken any actions yet.
+
+66
+00:04:18,699 --> 00:04:23,540
+We'll call that and we'll get result one.
+
+67
+00:04:23,540 --> 00:04:28,500
+Then what we can do is we can see what function result one wants us to call.
+
+68
+00:04:28,500 --> 00:04:46,019
+We can then call that function and get back an observation.
+
+69
+00:04:46,019 --> 00:04:51,620
+If we look at this observation, we can see that it is a string.
+
+70
+00:04:51,620 --> 00:04:57,779
+And of course, we have result one, which is this agent action message log.
+
+71
+00:04:57,780 --> 00:05:02,340
+Then how are we going to take these two things and convert them back into a list of messages
+
+72
+00:05:02,340 --> 00:05:05,700
+that we can pass into agent scratchpad.
+
+73
+00:05:05,700 --> 00:05:10,620
+In order to do that, we're going to use this function, format to open AI functions, which
+
+74
+00:05:10,620 --> 00:05:15,020
+we import from lanechain.agents.format.scratchpad.
+
+75
+00:05:15,020 --> 00:05:19,180
+Behind the scenes, what's going on in format to open AI functions?
+
+76
+00:05:19,180 --> 00:05:23,100
+What's happening is that we're going to take result one, and specifically, we're going
+
+77
+00:05:23,100 --> 00:05:25,700
+to take the message log on result one.
+
+78
+00:05:25,699 --> 00:05:31,939
+So the message log is a list of messages that makes up how we arrived at this current
+
+79
+00:05:31,939 --> 00:05:32,939
+agent action.
+
+80
+00:05:32,939 --> 00:05:37,740
+So, if we look at it, this contains the chat message that has this additional quarks
+
+81
+00:05:37,740 --> 00:05:41,740
+with this function call saying, get current temperature and then the arguments with the
+
+82
+00:05:41,740 --> 00:05:45,539
+JSON string, the exact response from open AI.
+
+83
+00:05:45,539 --> 00:05:49,659
+And so we're keeping that around in this message log because now when it comes time to construct
+
+84
+00:05:49,659 --> 00:05:53,180
+this agent scratchpad, we can just put it right back in there.
+
+85
+00:05:53,180 --> 00:05:57,100
+And then what we're going to do with the observation, which is just a string, is we're going
+
+86
+00:05:57,100 --> 00:06:03,139
+to use the function message type that we went over in lesson one, and we're going to pass
+
+87
+00:06:03,139 --> 00:06:09,939
+that in.
+
+88
+00:06:09,939 --> 00:06:14,939
+So we're going to call this function, and we're going to call it on a list of tuples corresponding
+
+89
+00:06:14,939 --> 00:06:19,500
+to the agent action and the observation.
+
+90
+00:06:19,500 --> 00:06:23,019
+And the reason that this is a list of tuples is that if we add in more steps for the
+
+91
+00:06:23,019 --> 00:06:27,859
+agent to take, we can just keep on passing in a list of tuples and it will keep on generating
+
+92
+00:06:27,859 --> 00:06:28,859
+this list of messages.
+
+93
+00:06:28,859 --> 00:06:33,979
+So here we have an AI message and this corresponds to what was outputted by the language model
+
+94
+00:06:33,979 --> 00:06:36,579
+to make it take this agent action.
+
+95
+00:06:36,579 --> 00:06:40,659
+And then we have this function message with the content being the observation and the
+
+96
+00:06:40,659 --> 00:06:43,139
+name being get current temperature.
+
+97
+00:06:43,139 --> 00:06:47,959
+If we then take that and call the chain again with the same input and now with agent
+
+98
+00:06:47,959 --> 00:06:52,539
+scratchpad set equal to this format to open AI functions parameter.
+
+99
+00:06:52,540 --> 00:06:57,180
+If we look at what we get back from result two, we get back an agent finish.
+
+100
+00:06:57,180 --> 00:07:02,340
+With the output being the current temperature in San Francisco is 22.9 degrees Celsius.
+
+101
+00:07:02,340 --> 00:07:05,620
+So let's bundle all of that up into a function.
+
+102
+00:07:05,620 --> 00:07:08,860
+So what we're going to do is we're going to create run agent function.
+
+103
+00:07:08,860 --> 00:07:11,060
+This is going to take in the user input.
+
+104
+00:07:11,060 --> 00:07:13,140
+It's going to initialize an empty list.
+
+105
+00:07:13,140 --> 00:07:17,540
+This is the intermediate steps and then it's going to enter into a while loop.
+
+106
+00:07:17,540 --> 00:07:21,780
+And while this loop is running, it's going to call the chain with this user input and
+
+107
+00:07:21,780 --> 00:07:26,420
+with this agent scratchpad in each time we're calling format to open AI functions on this
+
+108
+00:07:26,420 --> 00:07:29,980
+list of intermediate steps and we'll see how that's constructed later on.
+
+109
+00:07:29,980 --> 00:07:34,460
+If the result is an agent finish, we're going to return with that result.
+
+110
+00:07:34,460 --> 00:07:36,980
+Otherwise it means it's an agent action.
+
+111
+00:07:36,980 --> 00:07:40,820
+And so we're going to look up the correct tool to use.
+
+112
+00:07:40,820 --> 00:07:45,820
+We're then going to call that tool with that tool input and get back an observation.
+
+113
+00:07:45,820 --> 00:07:50,980
+And then we're going to append that tool of result and observation to intermediate steps
+
+114
+00:07:51,020 --> 00:07:52,780
+and continue on our way.
+
+115
+00:07:52,780 --> 00:07:58,180
+We're going to make one minor modification to this chain before continuing to make it a true
+
+116
+00:07:58,180 --> 00:07:58,780
+agent chain.
+
+117
+00:07:58,780 --> 00:08:03,620
+And basically what we're going to do is we're going to put this format to open AI functions logic
+
+118
+00:08:03,620 --> 00:08:04,980
+in the chain itself.
+
+119
+00:08:04,980 --> 00:08:07,460
+That's going to make it a little bit more portable.
+
+120
+00:08:07,460 --> 00:08:11,860
+So it just has to take in the user input and the intermediate steps.
+
+121
+00:08:11,860 --> 00:08:16,140
+We're going to create this agent chain by using a runable pass through.
+
+122
+00:08:16,140 --> 00:08:20,620
+What a runable pass through does is it basically takes the initial input and passes it
+
+123
+00:08:20,620 --> 00:08:21,620
+through.
+
+124
+00:08:21,620 --> 00:08:24,939
+What we're going to do is we're going to add this assigned variable here.
+
+125
+00:08:24,939 --> 00:08:29,139
+This assigned method here is creating a new argument to the dictionary that's getting
+
+126
+00:08:29,139 --> 00:08:30,139
+passed through.
+
+127
+00:08:30,139 --> 00:08:32,220
+This argument has an agent scratch pad.
+
+128
+00:08:32,220 --> 00:08:36,340
+And this is where we call format to open AI functions on intermediate steps.
+
+129
+00:08:36,340 --> 00:08:40,940
+We're then going to pipe the result of that, which is a dictionary, into the chain.
+
+130
+00:08:40,940 --> 00:08:45,779
+And we're going to get a full end to end chain that now takes in the input and intermediate
+
+131
+00:08:45,779 --> 00:08:46,779
+steps.
+
+132
+00:08:46,779 --> 00:08:50,819
+Because the necessary preprocessing of the intermediate steps to create the agent scratch
+
+133
+00:08:50,819 --> 00:08:57,220
+pad, then passes it to the prompt, then to the model, and then to the agent output parser.
+
+134
+00:08:57,220 --> 00:09:02,459
+With this change, we can now create a slightly more simple loop here, where if you notice,
+
+135
+00:09:02,459 --> 00:09:07,100
+we're just calling the agent chain on the inputs directly.
+
+136
+00:09:07,100 --> 00:09:13,860
+Because now the preprocessing is inside the agent chain.
+
+137
+00:09:13,860 --> 00:09:14,939
+Let's now run this agent.
+
+138
+00:09:14,940 --> 00:09:17,460
+So let's call it on what is the weather in SF.
+
+139
+00:09:17,460 --> 00:09:22,780
+And we get back the current temperature in San Francisco is 22.9 degrees Celsius.
+
+140
+00:09:22,780 --> 00:09:24,260
+Let's now call it on another question.
+
+141
+00:09:24,260 --> 00:09:25,260
+What is a link chain?
+
+142
+00:09:25,260 --> 00:09:28,740
+If we run the agent now, we can see that we get back a response.
+
+143
+00:09:28,740 --> 00:09:31,980
+Link chain is a framework designed to simplify the creation of applications using large
+
+144
+00:09:31,980 --> 00:09:32,980
+language models.
+
+145
+00:09:32,980 --> 00:09:35,900
+And let's also call it on a simple input.
+
+146
+00:09:35,900 --> 00:09:40,180
+Let's call it on just, hi.
+
+147
+00:09:40,180 --> 00:09:43,820
+Hello, how can I assist you today?
+
+148
+00:09:43,820 --> 00:09:45,340
+That seems right.
+
+149
+00:09:45,340 --> 00:09:51,020
+So we've created this run agent function, which is this loop that loops over the LLM decides
+
+150
+00:09:51,020 --> 00:09:53,740
+what to do, then takes the next step.
+
+151
+00:09:53,740 --> 00:09:58,140
+We have a class for this in link chain called agent executor, which is a souped up version
+
+152
+00:09:58,140 --> 00:09:59,660
+of this run agent function.
+
+153
+00:09:59,660 --> 00:10:00,660
+So it adds in a few things.
+
+154
+00:10:00,660 --> 00:10:02,700
+It adds in some better logging.
+
+155
+00:10:02,700 --> 00:10:04,500
+It adds in error handling.
+
+156
+00:10:04,500 --> 00:10:07,980
+So if the language model outputs something that isn't valid JSON, which remember it can
+
+157
+00:10:07,980 --> 00:10:11,340
+still do, we handle that nicely.
+
+158
+00:10:11,340 --> 00:10:13,180
+And it adds in also error handling for tools.
+
+159
+00:10:13,180 --> 00:10:17,100
+So if you call a tool and the tool errors, we then handle that nicely.
+
+160
+00:10:17,100 --> 00:10:18,100
+We catch that error.
+
+161
+00:10:18,100 --> 00:10:21,220
+We pass it back into the language model and ask it to correct it.
+
+162
+00:10:21,220 --> 00:10:26,340
+We can use this pretty simply by just importing agent executor from linkchain.agents.
+
+163
+00:10:26,340 --> 00:10:30,220
+We can then initialize this with agent equals to the agent chain.
+
+164
+00:10:30,220 --> 00:10:34,020
+We pass in the tools because it needs to have the tools to be able to call it.
+
+165
+00:10:34,020 --> 00:10:38,540
+And then we pass in verbose equals true to get some nice logging.
+
+166
+00:10:38,540 --> 00:10:42,700
+If we now call this on what is link chain, we can see that we get some logs of what's
+
+167
+00:10:42,700 --> 00:10:43,700
+going on.
+
+168
+00:10:43,700 --> 00:10:46,900
+We call search Wikipedia with query equals to link chain.
+
+169
+00:10:46,900 --> 00:10:48,500
+We get back this result.
+
+170
+00:10:48,500 --> 00:10:52,100
+And then we get back this result from the language model, which is synthesizing it.
+
+171
+00:10:52,100 --> 00:10:55,660
+And this is the result that we get back as part of the agent finish.
+
+172
+00:10:55,660 --> 00:11:00,440
+This agent executor earned this loop under the hood is very similar to a lot of what's
+
+173
+00:11:00,440 --> 00:11:02,340
+powering chat GPT.
+
+174
+00:11:02,340 --> 00:11:06,820
+So if you've interacted with the code interpreter there or the plugin system there, you'll
+
+175
+00:11:06,820 --> 00:11:11,300
+notice that the language model often thinks about what to do, then it calls a tool, then
+
+176
+00:11:11,300 --> 00:11:14,960
+it gets back the response, then it maybe calls another one, then it gets back the response
+
+177
+00:11:14,960 --> 00:11:17,860
+from that, and then it returns to the user.
+
+178
+00:11:17,860 --> 00:11:22,420
+So this is a really powerful loop and technique that can be used to create something like
+
+179
+00:11:22,420 --> 00:11:23,900
+chat GPT.
+
+180
+00:11:23,900 --> 00:11:28,820
+Of course, what chat GPT can also do is it can also have a conversation with you.
+
+181
+00:11:28,820 --> 00:11:31,460
+So can we do that with our current agent executor?
+
+182
+00:11:31,460 --> 00:11:32,780
+Let's try it out.
+
+183
+00:11:32,780 --> 00:11:36,100
+So let's try it out with something simple like my name is Bob.
+
+184
+00:11:36,100 --> 00:11:39,780
+So it responds hello Bob, how can I assist you today?
+
+185
+00:11:39,779 --> 00:11:43,740
+Let's then ask it a follow-up question that any good chatbot should be able to answer.
+
+186
+00:11:43,740 --> 00:11:49,740
+So let's ask it what is my name, and I've just told it that my name is Bob.
+
+187
+00:11:49,740 --> 00:11:51,579
+But it doesn't seem to remember that.
+
+188
+00:11:51,579 --> 00:11:53,220
+So what's going on?
+
+189
+00:11:53,220 --> 00:11:58,419
+What's happening is that we haven't added any mechanism to actually pass in previous messages.
+
+190
+00:11:58,419 --> 00:12:02,259
+So it actually doesn't remember the my name is Bob message.
+
+191
+00:12:02,259 --> 00:12:07,299
+Let's add that in and see what happens after that.
+
+192
+00:12:07,300 --> 00:12:11,780
+In order to add that in, we're going to add another message as placeholder this time
+
+193
+00:12:11,780 --> 00:12:14,100
+for chat history.
+
+194
+00:12:14,100 --> 00:12:18,940
+This is going to be before the user input, because we want to put messages that have
+
+195
+00:12:18,940 --> 00:12:19,940
+appeared before.
+
+196
+00:12:19,940 --> 00:12:26,180
+So we're going to put it in between the system message and the user question.
+
+197
+00:12:26,180 --> 00:12:32,140
+We'll then create the same agent chain as before with the updated prompt.
+
+198
+00:12:32,140 --> 00:12:37,100
+And we're now going to create a really simple memory object called conversation buffer memory.
+
+199
+00:12:37,100 --> 00:12:41,980
+What this is going to do is just going to keep a list of messages in memory.
+
+200
+00:12:41,980 --> 00:12:45,580
+We're going to return these messages in message format.
+
+201
+00:12:45,580 --> 00:12:49,460
+And basically, what that means is that we're returning it as a list of messages, which
+
+202
+00:12:49,460 --> 00:12:52,659
+is important because we have this message's placeholder here.
+
+203
+00:12:52,659 --> 00:12:56,060
+If this was set to false, it would return it as a string.
+
+204
+00:12:56,060 --> 00:12:59,820
+And so if we wanted to, we could get a string representation of all these messages.
+
+205
+00:12:59,820 --> 00:13:03,180
+This would be useful if we wanted to put that in a normal string template.
+
+206
+00:13:03,180 --> 00:13:04,180
+But here we don't.
+
+207
+00:13:04,180 --> 00:13:05,540
+We're going to pass it in as a list of messages.
+
+208
+00:13:05,540 --> 00:13:07,620
+So we're setting return messages equals true.
+
+209
+00:13:07,620 --> 00:13:10,180
+We're then also setting memory key equals chat history.
+
+210
+00:13:10,180 --> 00:13:14,620
+This is just lining up the messages that are returned with this variable here.
+
+211
+00:13:14,620 --> 00:13:16,860
+So it's keeping those in sync.
+
+212
+00:13:16,860 --> 00:13:27,140
+And then all we have to do when creating our agent executor is pass in the updated chain,
+
+213
+00:13:27,140 --> 00:13:28,620
+pass in the same tools as before.
+
+214
+00:13:28,620 --> 00:13:30,860
+We're going to set verbose equals to true as before.
+
+215
+00:13:30,860 --> 00:13:34,060
+And then we're also going to pass in memory equals to the memory object above.
+
+216
+00:13:34,060 --> 00:13:39,500
+Let's now run this on the input as before.
+
+217
+00:13:39,500 --> 00:13:40,380
+So we're going to say hi.
+
+218
+00:13:40,380 --> 00:13:45,380
+My name is Bob.
+
+219
+00:13:45,380 --> 00:13:49,220
+If we now ask what my name is, it realizes my name is Bob.
+
+220
+00:13:49,220 --> 00:13:53,420
+Good.
+
+221
+00:13:53,420 --> 00:13:56,780
+And of course, we can use it as before and ask it about the current weather.
+
+222
+00:13:56,780 --> 00:14:00,340
+And it will know how to use a tool, call that tool, and then we'll get back the response.
+
+223
+00:14:00,340 --> 00:14:02,740
+So this has the same functionality as before.
+
+224
+00:14:02,740 --> 00:14:07,019
+So we've added in this memory component that just remembers previous interactions.
+
+225
+00:14:07,019 --> 00:14:10,860
+Now is a good time to pause and try it out on some questions of your own.
+
+226
+00:14:10,860 --> 00:14:12,940
+Try adding in some new tools.
+
+227
+00:14:12,940 --> 00:14:15,139
+Try adding in a different system prompt.
+
+228
+00:14:15,139 --> 00:14:18,259
+There's a lot of different things you can play around with here.
+
+229
+00:14:18,259 --> 00:14:21,740
+For our final bit here, we're going to put it all together and create a nice looking
+
+230
+00:14:21,740 --> 00:14:25,259
+chat box that we can interact with.
+
+231
+00:14:25,259 --> 00:14:26,620
+Let's add in another tool.
+
+232
+00:14:26,620 --> 00:14:29,460
+You guys should feel free to replace this with whatever you want.
+
+233
+00:14:29,460 --> 00:14:32,379
+Remember to update this description here.
+
+234
+00:14:32,379 --> 00:14:36,259
+When you're done for us here, we're just going to have a really simple reverse operator
+
+235
+00:14:36,259 --> 00:14:39,820
+that's taking in the query and just reversing the string.
+
+236
+00:14:39,820 --> 00:14:41,379
+We're going to update our list of tools.
+
+237
+00:14:41,379 --> 00:14:45,700
+So we're going to have the same current temperature tool, the same Wikipedia search tool, and
+
+238
+00:14:45,700 --> 00:14:49,660
+then this new tool that we created using a tool called panel.
+
+239
+00:14:49,660 --> 00:14:52,100
+We're going to create a nice little UI for this chat box.
+
+240
+00:14:52,100 --> 00:14:55,980
+And so taking a look at this very briefly, we can see here that we have our functions,
+
+241
+00:14:55,980 --> 00:15:00,500
+which is calling the same function as before, format tool to open AI functions.
+
+242
+00:15:00,500 --> 00:15:05,100
+We've got our model, which is a chat open AI model, and we're binding functions to it.
+
+243
+00:15:05,100 --> 00:15:07,420
+We've got memory, which is same as before.
+
+244
+00:15:07,420 --> 00:15:09,340
+We've got our prompt, which is same as before.
+
+245
+00:15:09,340 --> 00:15:13,899
+So it's got system message, chat history, user input, and then agent scratch pad.
+
+246
+00:15:13,899 --> 00:15:18,460
+We're then creating the agent chain, same as before, and then we're creating the agent
+
+247
+00:15:18,460 --> 00:15:20,860
+executor, same as before.
+
+248
+00:15:20,860 --> 00:15:24,820
+With that in place, we can now run panel and create a nice little dashboard with a Q&A
+
+249
+00:15:24,820 --> 00:15:25,820
+bot.
+
+250
+00:15:25,820 --> 00:15:27,820
+We can start having a conversation with it.
+
+251
+00:15:27,820 --> 00:15:35,540
+So we can again do, hi, my name is Bob, press enter, and we can see it pop up.
+
+252
+00:15:35,540 --> 00:15:38,540
+What's my name?
+
+253
+00:15:38,540 --> 00:15:39,540
+Name is Bob.
+
+254
+00:15:39,540 --> 00:15:41,140
+We can ask questions about the weather.
+
+255
+00:15:41,140 --> 00:15:44,180
+What's the weather in SF?
+
+256
+00:15:44,180 --> 00:15:50,220
+I could say it takes a little bit longer because now it's calling a tool, but it manages
+
+257
+00:15:50,220 --> 00:15:52,700
+to get the current temperature okay.
+
+258
+00:15:52,700 --> 00:16:01,140
+We can ask you some fun questions, like, what tools do you have available?
+
+259
+00:16:01,140 --> 00:16:03,860
+So we can see that lists out the tools that it has available.
+
+260
+00:16:03,860 --> 00:16:06,540
+Get current temperature, search Wikipedia, create your own.
+
+261
+00:16:06,540 --> 00:16:13,379
+Let's now force it to call the create your own, so we're going to tell it to call the
+
+262
+00:16:13,379 --> 00:16:21,620
+create your own tool with the input I love, link chain, and return the result.
+
+263
+00:16:21,620 --> 00:16:27,340
+So if we look at what happens, the result of the create your own tool with the input
+
+264
+00:16:27,340 --> 00:16:33,299
+I love, link chain is something that's unpronounceable, but it looks right.
+
+265
+00:16:33,299 --> 00:16:34,340
+This is the end of the lesson.
+
+266
+00:16:34,340 --> 00:16:38,940
+So now's a great time to add in more tools, try it out with different inputs.
+
+267
+00:16:38,940 --> 00:16:42,220
+You've got a chop-out that's similar to chatGPT.
+
+268
+00:16:42,220 --> 00:16:46,180
+It can have a conversation, it can take actions, you can see the results of that, try
+
+269
+00:16:46,180 --> 00:16:48,019
+making it do multiple hops.
+
+270
+00:16:48,019 --> 00:16:52,340
+There's a lot of amazing things that you can try out and build, and I really look forward
+
+271
+00:16:52,340 --> 00:16:54,340
+to seeing what you guys build with this technology.

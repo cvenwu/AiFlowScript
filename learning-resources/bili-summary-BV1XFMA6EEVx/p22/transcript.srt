@@ -1,0 +1,931 @@
+1
+00:00:00,000 --> 00:00:06,879
+In the last lesson, we added an episodic memory in the form of few shot examples.
+
+2
+00:00:06,879 --> 00:00:12,919
+In this lesson, we're going to add in the third and final type of memory, procedural memory.
+
+3
+00:00:12,919 --> 00:00:17,440
+This will be in the form of the system prompts that exist in the main agent and also in the
+
+4
+00:00:17,440 --> 00:00:19,679
+triage agent.
+
+5
+00:00:19,679 --> 00:00:25,120
+So as a reminder, procedural memories are instructions about how to do things.
+
+6
+00:00:25,120 --> 00:00:30,400
+And the representation that that takes in agents is typically in the form of prompt instructions.
+
+7
+00:00:30,400 --> 00:00:34,480
+We've been using hard-coded values for these throughout the lesson so far.
+
+8
+00:00:34,480 --> 00:00:39,679
+In this lesson, we're going to make it possible to update those prompts automatically.
+
+9
+00:00:39,679 --> 00:00:41,600
+Let's dive in.
+
+10
+00:00:41,600 --> 00:00:44,079
+The start should look pretty similar to before.
+
+11
+00:00:44,079 --> 00:00:45,880
+We're going to load some environment variables.
+
+12
+00:00:45,880 --> 00:00:47,760
+We're going to define our profile.
+
+13
+00:00:47,760 --> 00:00:50,480
+And we're going to define our prompt instructions here.
+
+14
+00:00:50,480 --> 00:00:53,359
+This is what we're going to be updating over time.
+
+15
+00:00:53,359 --> 00:00:58,000
+So these are specific instructions for when to ignore, when to notify, when to respond,
+
+16
+00:00:58,000 --> 00:01:00,399
+and how the overall agent should behave.
+
+17
+00:01:00,399 --> 00:01:03,679
+And so these are hard-coded here and have been hard-coded here.
+
+18
+00:01:03,679 --> 00:01:07,480
+And we're still going to run the cell to keep them here.
+
+19
+00:01:07,480 --> 00:01:14,079
+But we're going to use them in a slightly different way and we'll dive into that later.
+
+20
+00:01:14,079 --> 00:01:16,079
+This email is an example email.
+
+21
+00:01:16,079 --> 00:01:19,960
+Here we're going to load the in-memory store, the long-term memory store, which we're
+
+22
+00:01:19,960 --> 00:01:21,840
+going to use for everything.
+
+23
+00:01:21,840 --> 00:01:26,720
+We are going to define our helpers for the triage step.
+
+24
+00:01:26,720 --> 00:01:28,480
+And now we get down here.
+
+25
+00:01:28,480 --> 00:01:34,240
+And here we can see these are where our updated memories for the procedural steps are going
+
+26
+00:01:34,240 --> 00:01:35,240
+to go.
+
+27
+00:01:35,240 --> 00:01:37,040
+And so this is our template.
+
+28
+00:01:37,040 --> 00:01:40,280
+This is the same as before, but I'm just pointing out that this is where they're going
+
+29
+00:01:40,280 --> 00:01:41,280
+to go.
+
+30
+00:01:41,280 --> 00:01:46,280
+We're going to define a bunch of stuff for this triage step.
+
+31
+00:01:46,560 --> 00:01:50,480
+We've got our LLM router, we've got our user prompt, we're defining the state of the
+
+32
+00:01:50,480 --> 00:01:52,920
+graph, we're defining some things.
+
+33
+00:01:52,920 --> 00:01:55,280
+And then this is our triage router node.
+
+34
+00:01:55,280 --> 00:01:57,960
+And this is what we're eventually going to modify.
+
+35
+00:01:57,960 --> 00:02:02,040
+So right now you can see that we're passing in the prompt instructions here.
+
+36
+00:02:02,040 --> 00:02:07,319
+What we're going to do is we're going to modify it so that we are retrieving these
+
+37
+00:02:07,319 --> 00:02:11,319
+from the long-term memory store and then passing them in.
+
+38
+00:02:11,319 --> 00:02:13,120
+Why are we doing this?
+
+39
+00:02:13,159 --> 00:02:18,360
+We're going to do this so that we can update them from outside the agent.
+
+40
+00:02:18,360 --> 00:02:22,640
+And then that way, if we update them, they're automatically pulled in to future runs.
+
+41
+00:02:29,439 --> 00:02:32,560
+Okay, so how are we going to modify this?
+
+42
+00:02:32,560 --> 00:02:36,439
+First, let's get our LLM graph user ID.
+
+43
+00:02:36,439 --> 00:02:40,759
+And we're going to use this as the name space for the procedural memories.
+
+44
+00:02:40,759 --> 00:02:44,840
+So we're getting our LLM graph user ID from the config and we're creating this name space
+
+45
+00:02:44,840 --> 00:02:46,599
+which is a tuple.
+
+46
+00:02:46,599 --> 00:02:52,159
+So make sure that you've got this comma here.
+
+47
+00:02:52,159 --> 00:02:56,399
+We're now going to try to fetch from the store instructions for when to ignore emails
+
+48
+00:02:56,399 --> 00:02:57,840
+in the triage step.
+
+49
+00:02:57,840 --> 00:03:02,560
+And so we're going to get from the store with this given name space, this key triage
+
+50
+00:03:02,560 --> 00:03:05,039
+ignore.
+
+51
+00:03:05,039 --> 00:03:08,039
+Now this may not always exist in the store.
+
+52
+00:03:08,039 --> 00:03:11,599
+And so what we're going to do is we're going to check to see if it exists.
+
+53
+00:03:11,599 --> 00:03:14,079
+If it does, we're going to use the value there.
+
+54
+00:03:14,079 --> 00:03:17,039
+If it doesn't, we're going to add a default.
+
+55
+00:03:17,039 --> 00:03:21,919
+This will make sure that when we run this agent with a new user ID, even if we haven't
+
+56
+00:03:21,919 --> 00:03:26,079
+already set up the store, it will add the default there.
+
+57
+00:03:26,079 --> 00:03:27,479
+So here we have the logic.
+
+58
+00:03:27,479 --> 00:03:33,280
+If the result is none, so if nothing exists in the store for these ignore triage instructions,
+
+59
+00:03:33,280 --> 00:03:34,280
+we are going to put something there.
+
+60
+00:03:34,280 --> 00:03:36,959
+We're going to put something in that name space with that key.
+
+61
+00:03:36,960 --> 00:03:40,080
+And it's going to be a dictionary with one key prompt.
+
+62
+00:03:40,080 --> 00:03:44,920
+And the values are going to be those default prompt instructions that we had for ignore.
+
+63
+00:03:44,920 --> 00:03:50,560
+And then we're going to set ignore prompt, which we're going to use later on to that default
+
+64
+00:03:50,560 --> 00:03:51,560
+value.
+
+65
+00:03:51,560 --> 00:03:54,879
+If the result does exist, we're going to get the value from prompt.
+
+66
+00:03:54,879 --> 00:03:56,600
+And that's what we're going to use.
+
+67
+00:03:56,600 --> 00:04:00,560
+And so then we're going to pass it in down here.
+
+68
+00:04:00,560 --> 00:04:05,719
+So let's update this to be ignore prompt.
+
+69
+00:04:05,719 --> 00:04:08,319
+We now want to do the same for notify.
+
+70
+00:04:08,319 --> 00:04:13,400
+So we are going to now use the same name space, but with a different key triage notify.
+
+71
+00:04:13,400 --> 00:04:15,680
+And we're going to get notify prompt.
+
+72
+00:04:15,680 --> 00:04:21,680
+Similarly, we're going to update the formatting down below to use this value.
+
+73
+00:04:21,680 --> 00:04:25,360
+And finally, we're going to do the same for the respond to prompt.
+
+74
+00:04:25,360 --> 00:04:30,800
+So now it's triage respond is the key and respond prompt is the new variable we get.
+
+75
+00:04:30,800 --> 00:04:35,879
+And we're going to insert that here.
+
+76
+00:04:35,879 --> 00:04:41,720
+So we've just updated our agent to use prompts that are stored in long term memory.
+
+77
+00:04:41,720 --> 00:04:44,040
+Note that there's nothing that updates them yet.
+
+78
+00:04:44,040 --> 00:04:49,000
+We're going to go over that later on, but this just updated.
+
+79
+00:04:49,000 --> 00:04:53,759
+This triage router to use stuff in long term memory.
+
+80
+00:04:53,759 --> 00:04:56,360
+And this is step number one.
+
+81
+00:04:56,360 --> 00:04:58,840
+After that, we're going to go on to the rest of the agent.
+
+82
+00:04:58,840 --> 00:05:00,280
+So we're going to import the tool.
+
+83
+00:05:00,280 --> 00:05:03,000
+We're going to create the three different tools we have.
+
+84
+00:05:03,000 --> 00:05:07,040
+We are going to import the memory tools and use those.
+
+85
+00:05:07,040 --> 00:05:10,600
+We are going to have the system message for the agent.
+
+86
+00:05:10,600 --> 00:05:13,640
+And now we get down to create prompt.
+
+87
+00:05:13,640 --> 00:05:16,600
+So create prompt is where we are also going to update.
+
+88
+00:05:16,600 --> 00:05:20,400
+So right now, we're passing in the prompt instructions with agent instructions.
+
+89
+00:05:20,400 --> 00:05:22,760
+And we're going to do the same thing as above.
+
+90
+00:05:22,759 --> 00:05:31,759
+We're going to update it so it looks for these in the long term memory store first.
+
+91
+00:05:31,759 --> 00:05:40,319
+All right, so now we've modified it in a few ways.
+
+92
+00:05:40,319 --> 00:05:42,920
+We've passed in the config and the store.
+
+93
+00:05:42,920 --> 00:05:45,839
+We're going to use the config to get the link graph user ID.
+
+94
+00:05:45,839 --> 00:05:48,639
+And that's going to create the name space that we look in.
+
+95
+00:05:48,639 --> 00:05:51,560
+The key that we're going to use is agent instructions.
+
+96
+00:05:51,560 --> 00:05:53,879
+We're going to do similar logic as before.
+
+97
+00:05:53,879 --> 00:05:57,639
+We're going to first try to get this result from the store.
+
+98
+00:05:57,639 --> 00:06:01,519
+If it does not exist, we're going to put a default one in there using prompt instructions
+
+99
+00:06:01,519 --> 00:06:02,759
+as the default.
+
+100
+00:06:02,759 --> 00:06:05,879
+If it does, we're actually just going to use the value that's there.
+
+101
+00:06:05,879 --> 00:06:08,840
+And then what we're going to do is we're going to update the system message.
+
+102
+00:06:08,840 --> 00:06:14,879
+And rather than using the prompt instructions here, we are going to use the prompt value that
+
+103
+00:06:14,879 --> 00:06:18,199
+we get from above.
+
+104
+00:06:18,199 --> 00:06:21,240
+With that now done, we can create our main agent.
+
+105
+00:06:21,240 --> 00:06:25,800
+So we can import create react agent, we define a bunch of tools, and then we create the
+
+106
+00:06:25,800 --> 00:06:27,639
+email agent.
+
+107
+00:06:27,639 --> 00:06:30,360
+So now this agent is all set up.
+
+108
+00:06:30,360 --> 00:06:36,720
+It's pulling its instructions from long term memory rather than from those hard coded values.
+
+109
+00:06:36,720 --> 00:06:38,000
+Why does this matter?
+
+110
+00:06:38,000 --> 00:06:42,920
+This matters because now we can update those values outside the agent and automatically
+
+111
+00:06:42,920 --> 00:06:46,000
+update the agent's instructions.
+
+112
+00:06:46,000 --> 00:06:49,079
+So now let's see how to do that.
+
+113
+00:06:49,079 --> 00:06:56,000
+Let's work with this example email, Hi John, urgent issue, your service is down.
+
+114
+00:06:56,000 --> 00:06:57,919
+Let's define the config that we're going to use.
+
+115
+00:06:57,919 --> 00:07:03,439
+In this case, it has the link graph user ID of Lance.
+
+116
+00:07:03,439 --> 00:07:11,799
+Let's now run this email agent over this email, and we can see that we get a response.
+
+117
+00:07:11,799 --> 00:07:16,240
+If we look through the messages, we can see that we have a human message, then the AI
+
+118
+00:07:16,240 --> 00:07:21,480
+message that is calling the right email tool, and it's writing this email, and then the
+
+119
+00:07:21,480 --> 00:07:25,439
+response from the tool message saying that we sent this email, and then a final response
+
+120
+00:07:25,439 --> 00:07:27,639
+from the agent.
+
+121
+00:07:27,639 --> 00:07:33,759
+Let's take a look at the existing long term memory for these instructions.
+
+122
+00:07:33,759 --> 00:07:40,000
+If we look at the Lance namespace with the key agent instructions, we can see these default
+
+123
+00:07:40,000 --> 00:07:41,000
+instructions.
+
+124
+00:07:41,319 --> 00:07:46,519
+These are the same as we're in the prompt instructions at the top of the notebook.
+
+125
+00:07:46,519 --> 00:07:57,360
+Let's look and we should see that the triage respond is also populated, as is triage ignore,
+
+126
+00:07:57,360 --> 00:08:00,639
+and as is triage notify.
+
+127
+00:08:00,639 --> 00:08:07,319
+If we wanted to, we could update these instructions manually and pass in new instructions.
+
+128
+00:08:07,319 --> 00:08:08,600
+But that's kind of a manual update.
+
+129
+00:08:08,600 --> 00:08:12,520
+That's not really memory in terms of how we think about it in terms of agents.
+
+130
+00:08:12,520 --> 00:08:19,040
+With agents, we think about an LLM updating these based on some user feedback.
+
+131
+00:08:19,040 --> 00:08:22,240
+So that's exactly what we're going to do.
+
+132
+00:08:22,240 --> 00:08:27,840
+So we're going to import from Langmem, this function called create multi prompt optimizer.
+
+133
+00:08:27,840 --> 00:08:34,320
+As the name suggests, this is going to create an optimizer that optimizes multiple prompts.
+
+134
+00:08:34,320 --> 00:08:39,260
+The reason we want to optimize multiple prompts is that in this assistant, there are actually
+
+135
+00:08:39,260 --> 00:08:43,700
+four different prompt instructions that we have, and we might want to update any number
+
+136
+00:08:43,700 --> 00:08:45,400
+of them.
+
+137
+00:08:45,400 --> 00:08:50,580
+But we don't get feedback for each instruction, rather we get feedback for the whole
+
+138
+00:08:50,580 --> 00:08:53,320
+overall agent.
+
+139
+00:08:53,320 --> 00:08:58,120
+So we're going to take this overall feedback and first determine which prompts if any
+
+140
+00:08:58,120 --> 00:09:03,600
+should be updated based on this feedback and then update them.
+
+141
+00:09:04,080 --> 00:09:08,360
+We need a list of the conversations that we're going to use to update the prompts.
+
+142
+00:09:08,360 --> 00:09:10,879
+For this, we're going to take the response messages.
+
+143
+00:09:10,879 --> 00:09:13,840
+So this is the trajectory that we have above.
+
+144
+00:09:13,840 --> 00:09:16,120
+And then we're going to add in some feedback.
+
+145
+00:09:16,120 --> 00:09:20,480
+This can be in a few different formats, but the simplest format is just a string.
+
+146
+00:09:20,480 --> 00:09:27,600
+So here we're going to take in this feedback, always sign your emails, John Doe.
+
+147
+00:09:27,600 --> 00:09:33,560
+We now need to define the prompts that we want to potentially update.
+
+148
+00:09:33,600 --> 00:09:36,840
+Each entry in this list should have four keys.
+
+149
+00:09:36,840 --> 00:09:39,160
+First is the name of the prompt.
+
+150
+00:09:39,160 --> 00:09:41,760
+Next is the value of the prompt.
+
+151
+00:09:41,760 --> 00:09:43,200
+Next is update instructions.
+
+152
+00:09:43,200 --> 00:09:46,080
+These are instructions for how you should update the prompt.
+
+153
+00:09:46,080 --> 00:09:49,360
+And then finally, we have the when to update key.
+
+154
+00:09:49,360 --> 00:09:52,240
+These are instructions for when you should update the prompt.
+
+155
+00:09:52,240 --> 00:09:56,880
+So under the hood what's going to happen is we're first going to use the when to update
+
+156
+00:09:56,880 --> 00:10:00,680
+value to determine which prompts if any to update.
+
+157
+00:10:00,680 --> 00:10:05,080
+If we determine that it's worth updating, we're then going to use the update instructions
+
+158
+00:10:05,080 --> 00:10:10,560
+and apply that to the original prompt to get a new updated prompt.
+
+159
+00:10:10,560 --> 00:10:14,800
+Here we filled these in for the four prompts that we want to potentially update.
+
+160
+00:10:14,800 --> 00:10:19,080
+So we have the main agent prompt which we're going to get the most current values from
+
+161
+00:10:19,080 --> 00:10:22,680
+this agent instructions key.
+
+162
+00:10:22,680 --> 00:10:26,200
+The update instructions are just going to be keep the instruction short into the point
+
+163
+00:10:26,200 --> 00:10:28,880
+and we're actually going to use that for all of them.
+
+164
+00:10:28,879 --> 00:10:32,600
+And then when to update, update this prompt whenever there's feedback on how the agent
+
+165
+00:10:32,600 --> 00:10:36,639
+should write emails or schedule events.
+
+166
+00:10:36,639 --> 00:10:38,919
+What about triage ignore?
+
+167
+00:10:38,919 --> 00:10:40,759
+Similarly we're going to name it that.
+
+168
+00:10:40,759 --> 00:10:44,159
+We're going to fetch the most recent value from long-term memory, updating instructions
+
+169
+00:10:44,159 --> 00:10:48,519
+are the same, and then update this prompt whenever there's feedback on which emails should
+
+170
+00:10:48,519 --> 00:10:50,519
+be ignored.
+
+171
+00:10:50,519 --> 00:10:55,519
+Triage notify and triage respond are pretty similar except rather than updating it when
+
+172
+00:10:55,519 --> 00:10:58,080
+there is information about when the emails should be ignored.
+
+173
+00:10:58,080 --> 00:11:01,639
+We're going to update it when there's information about when the user should be notified
+
+174
+00:11:01,639 --> 00:11:04,000
+or responded.
+
+175
+00:11:04,000 --> 00:11:07,560
+After we do this, we're going to create the multi-promped optimizer.
+
+176
+00:11:07,560 --> 00:11:11,759
+We're going to use Anthropics Cloud3Sonic model to optimize the prompt.
+
+177
+00:11:11,759 --> 00:11:17,000
+We've found that it's currently the best for this type of prompt optimization.
+
+178
+00:11:17,000 --> 00:11:21,759
+Kind equals prompt memory is the algorithm that we're going to use to update the prompt.
+
+179
+00:11:21,759 --> 00:11:26,520
+This is the simplest one and you should look at the API reference of Langmem for more complicated
+
+180
+00:11:26,519 --> 00:11:28,600
+examples.
+
+181
+00:11:28,600 --> 00:11:35,240
+This optimizer itself is a graph, so we're going to invoke it by passing in these trajectories
+
+182
+00:11:35,240 --> 00:11:40,519
+and then these prompts, and we're going to get back this updated variable.
+
+183
+00:11:40,519 --> 00:11:43,600
+Let's take a look at what this returns.
+
+184
+00:11:43,600 --> 00:11:48,039
+We can see that it returns a list of prompts.
+
+185
+00:11:48,039 --> 00:11:53,079
+These have all the same keys as before, so the name prompt update instructions and went
+
+186
+00:11:53,079 --> 00:11:54,079
+to update.
+
+187
+00:11:54,480 --> 00:11:59,040
+Now some of these prompts may be different than before, and we can actually see that
+
+188
+00:11:59,040 --> 00:12:04,120
+here, the first main agent prompt, it's prompt is now different.
+
+189
+00:12:04,120 --> 00:12:07,120
+When sending emails, always sign them as John Doe.
+
+190
+00:12:07,120 --> 00:12:10,320
+This is the feedback that we passed in.
+
+191
+00:12:10,320 --> 00:12:15,400
+Once we have these updated prompts, we can loop through them and update the long-term
+
+192
+00:12:15,400 --> 00:12:17,920
+memory if appropriate.
+
+193
+00:12:17,920 --> 00:12:21,640
+So here you can see that we're comparing the updated prompt to the old prompt and we're
+
+194
+00:12:21,720 --> 00:12:24,360
+comparing the prompt values.
+
+195
+00:12:24,360 --> 00:12:29,039
+If they're not the same, we're going to update the store with their instructions.
+
+196
+00:12:29,039 --> 00:12:33,360
+Here I've only added logic to handle what would have happened if the name of the prompt
+
+197
+00:12:33,360 --> 00:12:37,279
+that's been updated as main agent, but remember, there's three other prompts that could
+
+198
+00:12:37,279 --> 00:12:38,960
+potentially be updated.
+
+199
+00:12:38,960 --> 00:12:43,080
+They shouldn't, so they shouldn't throw an error, but for completeness you'll probably
+
+200
+00:12:43,080 --> 00:12:47,480
+want to implement all three conditions.
+
+201
+00:12:47,480 --> 00:12:51,439
+And we can see that we print out updated main agent prompt as we went along and we didn't
+
+202
+00:12:51,440 --> 00:12:58,040
+raise any value error, so no other prompts got updated.
+
+203
+00:12:58,040 --> 00:13:01,960
+If we now check the long-term memory for these agent instructions, we can see that it now
+
+204
+00:13:01,960 --> 00:13:06,960
+has this sentence when sending emails, always sign them as John Doe.
+
+205
+00:13:06,960 --> 00:13:12,480
+We can now rerun the email agent and see what happens.
+
+206
+00:13:12,480 --> 00:13:17,800
+If we take a look at the messages, we can see that when we write the email, we now sign
+
+207
+00:13:17,880 --> 00:13:24,080
+it John Doe, so it's remembering and using these instructions.
+
+208
+00:13:24,080 --> 00:13:26,840
+Let's look at another example.
+
+209
+00:13:26,840 --> 00:13:34,480
+We now have this email and we invoke the email agent and a response to this email above.
+
+210
+00:13:34,480 --> 00:13:37,960
+What if we didn't want it to respond to this?
+
+211
+00:13:37,960 --> 00:13:42,760
+We could then create a list of conversations with the response messages as the conversation
+
+212
+00:13:42,759 --> 00:13:48,679
+and we could give the feedback, ignore any emails from Alice Jones.
+
+213
+00:13:48,679 --> 00:13:52,480
+We then define the list of prompts, and we're running this again because the old list
+
+214
+00:13:52,480 --> 00:13:57,360
+of prompts that we defined before has the outdated instructions for the main agent,
+
+215
+00:13:57,360 --> 00:14:00,759
+and so we're just running it again to get the most updated instructions for the agent
+
+216
+00:14:00,759 --> 00:14:03,439
+at this point in time.
+
+217
+00:14:03,439 --> 00:14:08,159
+After that, we can invoke this optimizer agent with the conversations we have above and
+
+218
+00:14:08,159 --> 00:14:10,600
+the prompts.
+
+219
+00:14:10,600 --> 00:14:15,159
+We can now run this code snippet to update the prompts in long-term memory.
+
+220
+00:14:15,159 --> 00:14:19,800
+Notice that we've added this new section which handles how to deal with the fact if the
+
+221
+00:14:19,800 --> 00:14:24,200
+updated name of the prompt that we're updating is the ignore step.
+
+222
+00:14:24,200 --> 00:14:32,080
+And here we can see that this was the only prompt of the four that we decided to update.
+
+223
+00:14:32,080 --> 00:14:36,759
+And if we rerun the email agent from here, we can see that it actually now ignores it
+
+224
+00:14:36,759 --> 00:14:41,200
+because it's using the same email from Alice Jones, and it now has the instructions to
+
+225
+00:14:41,200 --> 00:14:45,559
+ignore emails from there.
+
+226
+00:14:45,559 --> 00:14:50,720
+To see what exactly these instructions are, we can look into the long-term memory itself
+
+227
+00:14:50,720 --> 00:14:55,360
+in the triage ignore key, and we can see that this is now updated to contain ignore all
+
+228
+00:14:55,360 --> 00:14:59,600
+emails from Alice Jones.
+
+229
+00:14:59,600 --> 00:15:02,399
+This is the end of this lesson.
+
+230
+00:15:02,399 --> 00:15:07,759
+This puts together all the types of memory into this email agent.
+
+231
+00:15:07,759 --> 00:15:09,639
+Now is a good time to try this out.
+
+232
+00:15:09,639 --> 00:15:15,439
+Try passing in other conversations with other feedback and see which parts of memory get
+
+233
+00:15:15,440 --> 00:15:17,680
+updated and what they get updated to.

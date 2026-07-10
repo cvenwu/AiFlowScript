@@ -1,0 +1,723 @@
+1
+00:00:00,000 --> 00:00:06,179
+In this lesson, we're going to start with the email agent that we created previously.
+
+2
+00:00:06,179 --> 00:00:10,820
+And we're going to add in tools to allow to operate on semantic memory.
+
+3
+00:00:10,820 --> 00:00:15,580
+Now as a reminder, semantic memory normally stores facts about a user.
+
+4
+00:00:15,580 --> 00:00:19,660
+So we're going to use these tools to learn facts about users.
+
+5
+00:00:19,660 --> 00:00:22,480
+We're then going to store them in a long-term memory store.
+
+6
+00:00:22,480 --> 00:00:26,179
+And then we're going to add a separate tool to search over these facts.
+
+7
+00:00:26,179 --> 00:00:27,980
+Let's see it in code.
+
+8
+00:00:27,980 --> 00:00:30,920
+So here we have a lot of setup from the previous lesson.
+
+9
+00:00:30,920 --> 00:00:32,280
+And this should look all the same.
+
+10
+00:00:32,280 --> 00:00:34,200
+We're going to load some environment variables.
+
+11
+00:00:34,200 --> 00:00:35,799
+We're going to define our profile.
+
+12
+00:00:35,799 --> 00:00:38,159
+We're going to define our prompt instructions.
+
+13
+00:00:38,159 --> 00:00:43,159
+In example, email, we're going to set up the router, nothing's changed here.
+
+14
+00:00:43,159 --> 00:00:44,760
+We're going to import some prompts.
+
+15
+00:00:44,760 --> 00:00:50,400
+We're going to define our three tools that we had before.
+
+16
+00:00:50,400 --> 00:00:54,240
+Now we're going to start to define our tools for managing memory.
+
+17
+00:00:54,240 --> 00:00:59,660
+The first thing we're going to want to do is properly set up our long-term memory store.
+
+18
+00:00:59,660 --> 00:01:03,020
+And so for this lesson, we're just going to use an in-memory store, a store that will
+
+19
+00:01:03,020 --> 00:01:04,620
+store everything in memory.
+
+20
+00:01:04,620 --> 00:01:11,020
+And so we're going to import that from LaneGraph.
+
+21
+00:01:11,020 --> 00:01:15,460
+When we initialize it, we're going to want to make sure that we pass in this index
+
+22
+00:01:15,460 --> 00:01:16,980
+program.
+
+23
+00:01:16,980 --> 00:01:23,099
+Here we're passing in an embedding model to use to index the memories that we store.
+
+24
+00:01:23,100 --> 00:01:30,620
+So we're going to use the OpenAI Text Embedding 3 small model.
+
+25
+00:01:30,620 --> 00:01:34,380
+Afterwards, we're going to import two functions from LaneMem.
+
+26
+00:01:34,380 --> 00:01:39,140
+LaneMem is a wrapper on top of LaneGraph for working with memory.
+
+27
+00:01:39,140 --> 00:01:43,560
+These two functions are going to be called Create Manage Memory Tool and Create Search
+
+28
+00:01:43,560 --> 00:01:45,000
+Memory Tool.
+
+29
+00:01:45,000 --> 00:01:50,380
+And these will be tools from managing and searching over memories.
+
+30
+00:01:50,380 --> 00:01:52,660
+To create them, it's pretty simple.
+
+31
+00:01:52,659 --> 00:01:59,780
+We're just going to define the namespace that we want these tools to operate on.
+
+32
+00:01:59,780 --> 00:02:05,379
+So the namespace that we're going to use for both is email assistant as the first value.
+
+33
+00:02:05,379 --> 00:02:10,379
+Then this templated LaneGraph user ID, and I'll come back to that as a second value, and
+
+34
+00:02:10,379 --> 00:02:13,259
+then collection as the third value.
+
+35
+00:02:13,259 --> 00:02:15,539
+So what exactly is this?
+
+36
+00:02:15,539 --> 00:02:20,419
+When we invoke the agent now, we're going to pass in a LaneGraph user ID as part of the
+
+37
+00:02:20,420 --> 00:02:22,500
+runtime configuration.
+
+38
+00:02:22,500 --> 00:02:26,900
+And that's going to be used to namespace this memory.
+
+39
+00:02:26,900 --> 00:02:32,780
+That way, if we're dealing with emails from multiple users, we can pretty easily just
+
+40
+00:02:32,780 --> 00:02:36,220
+have different collections of memories for different users.
+
+41
+00:02:36,220 --> 00:02:38,100
+We wouldn't want them to be the same.
+
+42
+00:02:38,100 --> 00:02:42,220
+And so here's where we define that we store them separately.
+
+43
+00:02:42,220 --> 00:02:46,540
+Because these are just LaneChain tools, we can inspect them and see what attributes
+
+44
+00:02:46,540 --> 00:02:47,980
+they have.
+
+45
+00:02:47,979 --> 00:02:52,419
+So they should have a name, so we can see that managed memory tools name is called
+
+46
+00:02:52,419 --> 00:02:54,259
+managed memory.
+
+47
+00:02:54,259 --> 00:02:56,939
+They should also probably have a description.
+
+48
+00:02:56,939 --> 00:03:00,939
+So we can see that this is the description of how to use the tool.
+
+49
+00:03:00,939 --> 00:03:04,819
+Let's print it out to make it a little bit more legible.
+
+50
+00:03:04,819 --> 00:03:10,339
+Here we can see that it contains instructions for creating, updating, or deleting persistent
+
+51
+00:03:10,339 --> 00:03:15,060
+memories.
+
+52
+00:03:15,060 --> 00:03:18,259
+We can also take a look at the arguments to this tool.
+
+53
+00:03:18,259 --> 00:03:24,819
+We can see that it takes in content, then an action, so the action can be create, update,
+
+54
+00:03:24,819 --> 00:03:27,659
+or delete, and then an ID.
+
+55
+00:03:27,659 --> 00:03:32,460
+And so basically what's happening is these memories are managed by IDs.
+
+56
+00:03:32,460 --> 00:03:39,259
+And so when we call to this tool, we can pass in the ID of a memory, the action we want
+
+57
+00:03:39,259 --> 00:03:43,860
+to take on it, whether we should update it or create it or delete it.
+
+58
+00:03:43,860 --> 00:03:48,900
+And then the content of that memory as well.
+
+59
+00:03:48,900 --> 00:03:52,980
+If we look at the search memory tool, we can see that it's called search memory.
+
+60
+00:03:52,980 --> 00:03:56,340
+The description is pretty simple, just search your long-term memories for information
+
+61
+00:03:56,340 --> 00:04:00,340
+relevant to your current context.
+
+62
+00:04:00,340 --> 00:04:05,180
+And the arguments are also pretty simple, it's just to query a limit for the number of
+
+63
+00:04:05,180 --> 00:04:13,300
+memories that we want to return, some offset, and then some filter if we want.
+
+64
+00:04:13,300 --> 00:04:15,460
+Let's now go on to define the agent.
+
+65
+00:04:15,460 --> 00:04:19,939
+Here we're going to take the agent system prompt, and we're actually going to modify it
+
+66
+00:04:19,939 --> 00:04:24,660
+a little bit, because now we need to add in these two extra tools.
+
+67
+00:04:24,660 --> 00:04:30,180
+So this is slightly modified from the previous lesson.
+
+68
+00:04:30,180 --> 00:04:34,860
+We're still going to have the similar create prompt function, which basically creates this
+
+69
+00:04:34,860 --> 00:04:40,939
+some message and appends it before the list of messages in the state.
+
+70
+00:04:40,939 --> 00:04:43,980
+After that, we can build our agent as normal.
+
+71
+00:04:43,980 --> 00:04:47,579
+We'll import this create react agent function.
+
+72
+00:04:47,579 --> 00:04:51,980
+We'll create our list of tools, which now contains this manage memory tool and the search
+
+73
+00:04:51,980 --> 00:04:53,579
+memory tool.
+
+74
+00:04:53,579 --> 00:04:58,180
+And then we'll create our react agent, which we'll now call response agent, and notice
+
+75
+00:04:58,180 --> 00:05:04,579
+that we're also passing in the store to ensure that this is passed to the agent.
+
+76
+00:05:04,579 --> 00:05:06,740
+Let's now test the agent.
+
+77
+00:05:06,740 --> 00:05:11,500
+The first thing we're going to want to do is actually define a config that we're going
+
+78
+00:05:11,500 --> 00:05:16,180
+to pass to the agent with some runtime configuration, and it's going to have to have this
+
+79
+00:05:16,180 --> 00:05:18,819
+Langrath user ID.
+
+80
+00:05:18,819 --> 00:05:20,139
+So let's create that first.
+
+81
+00:05:20,139 --> 00:05:27,460
+You can change this value, which I'm calling Lance, to be anything you want.
+
+82
+00:05:27,460 --> 00:05:30,900
+Let's now call it with a message that has some information that we should probably
+
+83
+00:05:30,900 --> 00:05:33,620
+remember, like Jim is my friend.
+
+84
+00:05:33,620 --> 00:05:38,420
+And notice here, I'm passing in the config as a second parameter.
+
+85
+00:05:38,420 --> 00:05:43,060
+Let's take a look at the response.
+
+86
+00:05:43,060 --> 00:05:46,340
+If we print out the list of messages, we can see that we have the human message, which
+
+87
+00:05:46,340 --> 00:05:47,660
+we pass in.
+
+88
+00:05:47,660 --> 00:05:49,459
+And then we have the say I message.
+
+89
+00:05:49,459 --> 00:05:57,300
+It calls the manage memory tool with the arguments content, Jim is John Doe's friend.
+
+90
+00:05:57,300 --> 00:06:01,620
+Notice that we're not specifying in action because the default is to create, and we're
+
+91
+00:06:01,620 --> 00:06:07,100
+not specifying an ID, because it will create one by default.
+
+92
+00:06:07,100 --> 00:06:11,899
+We get back a message that we created this memory with this user ID, and then the final
+
+93
+00:06:11,899 --> 00:06:18,459
+message is that it's just recorded this information about Jim.
+
+94
+00:06:18,459 --> 00:06:20,340
+Let's try this with another input.
+
+95
+00:06:20,340 --> 00:06:30,019
+Let's ask now who is Jim, and notice that we're passing in the same config as before.
+
+96
+00:06:30,019 --> 00:06:34,180
+Let's take a look at the list of messages that we get back as a response.
+
+97
+00:06:34,180 --> 00:06:36,579
+Who is Jim, this is our user message.
+
+98
+00:06:36,579 --> 00:06:42,060
+We then get a message from the AI, which calls a tool, it calls a search memory tool, with
+
+99
+00:06:42,060 --> 00:06:44,659
+a query parameter of Jim.
+
+100
+00:06:44,659 --> 00:06:47,419
+We get back this list of messages.
+
+101
+00:06:47,419 --> 00:06:54,139
+In this case, we only have one message, which is this namespace memory at this value.
+
+102
+00:06:54,139 --> 00:07:00,379
+This key is the ID, and then the content is Jim is John Doe's friend.
+
+103
+00:07:00,379 --> 00:07:04,740
+Then we get back a response from the AI message that summarizes the above interaction.
+
+104
+00:07:04,740 --> 00:07:13,699
+So it says, based on my memory search, I can see that Jim is John Doe's friend.
+
+105
+00:07:13,699 --> 00:07:17,579
+If we want to inspect the stored directly, we can.
+
+106
+00:07:17,579 --> 00:07:21,539
+We can call list namespaces, and we can see that this one namespace exists.
+
+107
+00:07:22,340 --> 00:07:25,860
+And remember, this is the template that we defined above, where this is the link
+
+108
+00:07:25,860 --> 00:07:31,780
+graph user ID, and we passed in lance for that value.
+
+109
+00:07:31,780 --> 00:07:37,580
+If we now call search on this namespace, we can see the different items that exist there.
+
+110
+00:07:37,580 --> 00:07:42,100
+So we can see that we only have one item, because we've only remembered one piece of information,
+
+111
+00:07:42,100 --> 00:07:48,180
+and its value has this content Jim is John Doe's friend.
+
+112
+00:07:48,180 --> 00:07:50,900
+Notice the score here is none.
+
+113
+00:07:50,900 --> 00:07:54,300
+That's because we haven't passed in a query parameter.
+
+114
+00:07:54,300 --> 00:08:01,340
+Let's pass one in, and let's see what the score is.
+
+115
+00:08:01,340 --> 00:08:08,260
+If we pass in a query of Jim, we can now see that the score is 0.5 something.
+
+116
+00:08:08,260 --> 00:08:13,180
+The score is calculated as cosine similarity using the embedding model that we passed
+
+117
+00:08:13,180 --> 00:08:17,660
+in when we created the store in the first place.
+
+118
+00:08:17,660 --> 00:08:23,540
+That was a good time to pause, use this response agent directly, try querying it with different
+
+119
+00:08:23,540 --> 00:08:30,260
+things after to see if it remembers, and you can also inspect the store itself.
+
+120
+00:08:30,260 --> 00:08:34,340
+Now let's go on to creating the rest of the agent.
+
+121
+00:08:34,340 --> 00:08:38,580
+So this should all look very similar to the previous lesson, because not much is changing.
+
+122
+00:08:38,580 --> 00:08:42,540
+We've mostly just added these tools to the response agent.
+
+123
+00:08:42,540 --> 00:08:45,620
+So first we're creating the state, this is the same as before.
+
+124
+00:08:45,620 --> 00:08:48,379
+We're making some imports, same as before.
+
+125
+00:08:48,379 --> 00:08:55,379
+We're creating this triage router node, same as before.
+
+126
+00:08:55,379 --> 00:08:57,779
+We then create the email agent.
+
+127
+00:08:57,779 --> 00:09:00,580
+This is the same as before, with two changes.
+
+128
+00:09:00,580 --> 00:09:04,060
+First, I've changed this to be response agent.
+
+129
+00:09:04,060 --> 00:09:08,019
+So before previous lesson two, this was called agent, I've just updated the variable name
+
+130
+00:09:08,019 --> 00:09:11,740
+and so it's changed here, nothing big.
+
+131
+00:09:11,740 --> 00:09:15,419
+But next, I'm going to change the compile step.
+
+132
+00:09:15,419 --> 00:09:19,699
+So I'm going to pass in store equals store when I create the email agent.
+
+133
+00:09:19,699 --> 00:09:24,259
+This is giving it access to that long-term memory store that our memory tools are going
+
+134
+00:09:24,259 --> 00:09:26,019
+to use.
+
+135
+00:09:26,019 --> 00:09:32,459
+If I display the email agent, I get the same graph as before, so nothing's changed here.
+
+136
+00:09:32,459 --> 00:09:35,659
+I can create this example email input.
+
+137
+00:09:35,659 --> 00:09:40,139
+And then when I call the email agent, this is now also going to change slightly.
+
+138
+00:09:40,139 --> 00:09:43,740
+I'm going to remember to pass in my configuration.
+
+139
+00:09:43,740 --> 00:09:49,419
+This contains the lane graph user ID that we will use in the memory tools.
+
+140
+00:09:49,419 --> 00:09:54,899
+We can see that it runs and that it first classifies that it should respond and then it continues
+
+141
+00:09:54,899 --> 00:09:59,060
+down that path.
+
+142
+00:09:59,060 --> 00:10:03,419
+Once it's finished, let's take a look at the list of messages that are in the agent's
+
+143
+00:10:03,419 --> 00:10:06,779
+trajectory so we can see what it does.
+
+144
+00:10:06,779 --> 00:10:08,700
+So the first message there is a human message.
+
+145
+00:10:08,700 --> 00:10:11,139
+This is the input of the email.
+
+146
+00:10:11,139 --> 00:10:14,500
+We then get back an AI message where it's writing an email.
+
+147
+00:10:14,500 --> 00:10:19,139
+So it has a tool call with this right email and it's passing in all these arguments and
+
+148
+00:10:19,139 --> 00:10:22,500
+so you can see the content of the email that it writes here.
+
+149
+00:10:22,500 --> 00:10:26,379
+We then get back a tool message saying that it sent that email successfully.
+
+150
+00:10:26,379 --> 00:10:31,379
+We then call the I message again and we see that it calls the managed memory tool and
+
+151
+00:10:31,379 --> 00:10:34,779
+it creates this memory with this content.
+
+152
+00:10:34,779 --> 00:10:35,779
+Follow up needed.
+
+153
+00:10:35,779 --> 00:10:39,419
+Alice Smith has inquired about missing API endpoints.
+
+154
+00:10:39,419 --> 00:10:43,179
+We get back a tool message that it created that memory and then we get back the final
+
+155
+00:10:43,179 --> 00:10:45,579
+response from the agent that it's taken two actions.
+
+156
+00:10:45,579 --> 00:10:50,740
+It's sent a response to Alice and it's created a memory entry.
+
+157
+00:10:50,740 --> 00:10:57,339
+So this is the agent with the semantic tools in place.
+
+158
+00:10:57,339 --> 00:11:01,979
+Let's try out another example that requires some of the memory that was saved as part
+
+159
+00:11:01,979 --> 00:11:04,219
+of this previous email.
+
+160
+00:11:04,219 --> 00:11:08,219
+So let's pass in this new email from Alice Smith as well, so same author and it says
+
+161
+00:11:08,220 --> 00:11:13,500
+hi John, any update on my previous ask.
+
+162
+00:11:13,500 --> 00:11:17,379
+When we invoke it, we can see that it correctly classifies it as an email that it needs
+
+163
+00:11:17,379 --> 00:11:23,220
+a response to and it continues from there.
+
+164
+00:11:23,220 --> 00:11:27,259
+Let's take a look at the agent trajectory.
+
+165
+00:11:27,259 --> 00:11:31,220
+So we can see that we have the human message with the new email and we can see that it
+
+166
+00:11:31,220 --> 00:11:36,940
+now first calls the search memory tool with this query Alice Smith previous requests to
+
+167
+00:11:36,940 --> 00:11:38,380
+ask communication.
+
+168
+00:11:38,380 --> 00:11:41,220
+So it's trying to figure out what information it has.
+
+169
+00:11:41,220 --> 00:11:44,660
+It gets back this memory that it saved before.
+
+170
+00:11:44,660 --> 00:11:51,180
+We can see it's logic and then it calls this right email tool and it writes this email
+
+171
+00:11:51,180 --> 00:11:55,540
+and we can see that in its responses as thanks for following up regarding the API endpoints
+
+172
+00:11:55,540 --> 00:11:56,540
+documentation.
+
+173
+00:11:56,540 --> 00:12:02,180
+So this is remembered from before even though it's a completely separate email.
+
+174
+00:12:02,180 --> 00:12:07,020
+We can see the tool message that it sent a response to Alice and then we can see the
+
+175
+00:12:07,020 --> 00:12:10,620
+final response.
+
+176
+00:12:10,620 --> 00:12:16,020
+This is an example of how you can see that the memory tools are saving relevant information
+
+177
+00:12:16,020 --> 00:12:20,540
+and then also searching over it in the future.
+
+178
+00:12:20,540 --> 00:12:22,140
+This is it for this lesson.
+
+179
+00:12:22,140 --> 00:12:26,220
+So now is a great time to pause and spend a few more minutes playing around with different
+
+180
+00:12:26,220 --> 00:12:31,580
+emails, trying out different questions and seeing if they can remember different facts.
+
+181
+00:12:31,580 --> 00:12:32,420
+See you in the next lesson.
