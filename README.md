@@ -71,8 +71,8 @@ uv run main.py
 
 | 目录 | 主线 | 简介 | 文档 |
 | --- | :---: | --- | :---: |
-| 🔁 [`agent-loop/`](./agent-loop) | B · Harness | 用 `httpx` 裸调 Ollama `/api/chat`，**不套任何框架**手写「模型 → 工具调用 → 结果回灌 → 再决策」核心循环 | [README](./agent-loop/README.md) |
-| ⚡ [`fast-api-demo/`](./fast-api-demo) | A · 应用 | 主线 A「产品化 / API 服务化」练习场（FastAPI、流式接口、鉴权、限流、可观测性） | — |
+| 🔁 [`agent-loop/`](project-demos/agent-loop) | B · Harness | 用 `httpx` 裸调 Ollama `/api/chat`，**不套任何框架**手写「模型 → 工具调用 → 结果回灌 → 再决策」核心循环 | [README](project-demos/agent-loop/README.md) |
+| ⚡ [`fast-api-demo/`](project-demos/fast-api-demo) | A · 应用 | 主线 A「产品化 / API 服务化」练习场（FastAPI、流式接口、鉴权、限流、可观测性） | — |
 | 🎡 [`learning-flywheel/`](./learning-flywheel) | 方法论 | 仓库方法论中枢，可视化「双循环能力复利飞轮」（浏览器打开 HTML 可导出 PNG/PDF） | — |
 | 🗺️ [`ai-roles-roadmap/`](./ai-roles-roadmap) | 方向 | AI 岗位 JD / 技能 Roadmap 可视化页面 | — |
 | 🎬 [`roadmap-video/`](./roadmap-video) | 输出 | 用 HyperFrames 制作的转型 Roadmap 概览视频（`roadmap.mp4`） | — |
