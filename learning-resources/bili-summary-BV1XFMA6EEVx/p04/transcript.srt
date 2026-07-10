@@ -1,0 +1,572 @@
+1
+00:00:00,000 --> 00:00:04,400
+I'm excited to dive into it.
+
+2
+00:00:04,400 --> 00:00:06,840
+All right, to start with this first lesson,
+
+3
+00:00:06,840 --> 00:00:10,840
+Harrison will teach the most important key building block of Lanchain,
+
+4
+00:00:10,840 --> 00:00:12,760
+ namely the chain.
+
+5
+00:00:12,760 --> 00:00:15,240
+The chain usually combines an LLM,
+
+6
+00:00:15,240 --> 00:00:17,800
+LargeLanguageModel, together with a prompt.
+
+7
+00:00:17,800 --> 00:00:19,160
+And with this building block,
+
+8
+00:00:19,160 --> 00:00:22,360
+you can also put a bunch of these building blocks together
+
+9
+00:00:22,360 --> 00:00:27,120
+to carry out a sequence of operations on your text or on your other data.
+
+10
+00:00:27,120 --> 00:00:29,080
+I'm excited to dive into it.
+
+11
+00:00:29,080 --> 00:00:32,400
+All right, to start, we're going to load the environment variables
+
+12
+00:00:32,400 --> 00:00:34,520
+ as we have before.
+
+13
+00:00:34,520 --> 00:00:38,160
+And then we're also going to load some data that we're going to use.
+
+14
+00:00:38,160 --> 00:00:41,640
+So part of the power of these chains
+
+15
+00:00:41,640 --> 00:00:44,840
+is that you can run them over many inputs at a time.
+
+16
+00:00:44,840 --> 00:00:47,360
+Here we're going to load a pandas data frame.
+
+17
+00:00:47,360 --> 00:00:49,200
+A pandas data frame is just a data structure
+
+18
+00:00:49,200 --> 00:00:52,600
+that contains a bunch of different elements of data.
+
+19
+00:00:52,600 --> 00:00:54,720
+If you're not familiar with pandas, don't worry about it.
+
+20
+00:00:54,720 --> 00:00:56,880
+The main point here is that we're loading some data
+
+21
+00:00:56,880 --> 00:00:58,160
+that we can then use later on.
+
+22
+00:00:58,160 --> 00:01:00,920
+and so if we look inside at this pandas data frame,
+
+23
+00:01:00,920 --> 00:01:04,440
+we can see that there is a product column and then a review column.
+
+24
+00:01:04,440 --> 00:01:06,840
+And each of these rows is a different data point
+
+25
+00:01:06,840 --> 00:01:08,600
+that we can start passing through our chains.
+
+26
+00:01:08,600 --> 00:01:12,320
+So the first chain we're going to cover is the LLM chain.
+
+27
+00:01:12,320 --> 00:01:14,600
+And this is a simple but really powerful chain
+
+28
+00:01:14,600 --> 00:01:18,480
+that underpins a lot of the chains that we'll go over in the future.
+
+29
+00:01:18,480 --> 00:01:21,440
+And so we're going to import three different things.
+
+30
+00:01:21,440 --> 00:01:25,120
+we're going to import the OpenAI model, so the LLM.
+
+31
+00:01:25,120 --> 00:01:27,720
+We're going to import the chat prompt template.
+
+32
+00:01:27,720 --> 00:01:28,720
+And so this is the prompt.
+
+33
+00:01:28,720 --> 00:01:30,120
+And then we're going to import the LLM chain.
+
+34
+00:01:30,120 --> 00:01:36,200
+And so first, what we're going to do is we're going to initialize the language model that we want to use.
+
+35
+00:01:36,200 --> 00:01:40,720
+So we're going to initialize the chat OpenAI with a temperature, with a high temperature,
+
+36
+00:01:40,720 --> 00:01:44,120
+So that we can get some some fun descriptions.
+
+37
+00:01:44,120 --> 00:01:46,120
+And now we're going to initialize a prompt.
+
+38
+00:01:46,120 --> 00:01:49,160
+And this prompt is going to take in a variable called product.
+
+39
+00:01:49,160 --> 00:01:54,840
+It's going to ask the LLM to generate what the best name is to describe a company that makes that product.
+
+40
+00:01:54,840 --> 00:01:59,240
+And then finally, we're going to combine these two things into a chain.
+
+41
+00:01:59,240 --> 00:02:03,040
+And so this is what we call an LLM chain, and it's quite simple.
+
+42
+00:02:03,040 --> 00:02:06,280
+It's just the combination of the LLM and the prompt.
+
+43
+00:02:06,280 --> 00:02:10,640
+But now this chain will let us run through the prompt and into the LLM.
+
+44
+00:02:10,640 --> 00:02:17,200
+And so if we have a product called QueenSizeSheetSet, we can run this through the chain by using
+
+45
+00:02:17,200 --> 00:02:22,160
+Chain.run.And what this will do is it will format the prompt under the hood, and then it will pass
+
+46
+00:02:22,160 --> 00:02:27,920
+ the whole prompt into the LLM.And so we can see that we get back the name of this hypothetical
+
+47
+00:02:27,920 --> 00:02:33,200
+ company called RoyalBettings.And so here would be a good time to pause and you can input any
+
+48
+00:02:33,200 --> 00:02:37,280
+ product descriptions that you would want, and you can see what the chain will output as a result.
+
+49
+00:02:38,240 --> 00:02:44,240
+So the LLM chain is the most basic type of chain, and that's going to be used a lot in the future.And so
+
+50
+00:02:44,240 --> 00:02:48,800
+ we can see how this will be used in the next type of chain, which will be sequential chains.And so
+
+51
+00:02:48,800 --> 00:02:55,760
+ sequential chains run a sequence of chains one after another.So to start, you're going to import the
+
+52
+00:02:55,760 --> 00:03:01,360
+ simple sequential chain.And this works well when we have subchains that expect only one input and return
+
+53
+00:03:01,360 --> 00:03:08,960
+ only one output.And so here we're going to first create one chain, which uses an LLM and a prompt.And
+
+54
+00:03:08,960 --> 00:03:15,120
+ this prompt is going to take in the product and will return the best name to describe that company.So
+
+55
+00:03:15,120 --> 00:03:21,280
+ that will be the first chain.Then we're going to create a second chain.And this second chain will take
+
+56
+00:03:21,280 --> 00:03:27,920
+ in the company name and then output a 20-word description of that company.And so you can
+
+57
+00:03:27,920 --> 00:03:32,800
+ imagine how these chains might want to be run one after another, where the output of the first chain,
+
+58
+00:03:32,800 --> 00:03:39,120
+ the company name, is then passed into the second chain.We can easily do this by creating a simple
+
+59
+00:03:39,120 --> 00:03:44,560
+ sequential chain where we have the two chains described there.And we'll call this overall
+
+60
+00:03:44,560 --> 00:03:53,920
+ simple chain.Now what you can do is run this chain over any product description.And so if we use it
+
+61
+00:03:53,920 --> 00:03:59,520
+ with the product above the queen size sheet set, we can run it over and we can see that it first outputs
+
+62
+00:03:59,520 --> 00:04:05,120
+ royal bedding and then it passes it into the second chain and it comes up with this description of what
+
+63
+00:04:05,120 --> 00:04:11,920
+ that company could be about.The simple sequential chain works well when there's only a single input
+
+64
+00:04:11,920 --> 00:04:17,360
+ and a single output.But what about when there are multiple inputs or multiple outputs?And so we can
+
+65
+00:04:17,360 --> 00:04:23,040
+ do this by using just the regular sequential chain.So let's import that and then you're going to create
+
+66
+00:04:23,040 --> 00:04:28,160
+ a bunch of chains that we're going to use one after another.We're going to be using the data from above
+
+67
+00:04:28,160 --> 00:04:34,720
+ which has a review.And so the first chain we're going to take the review and translate it into English.
+
+68
+00:04:35,120 --> 00:04:45,120
+ With a second chain we're going to create a summary of that review in one sentence.And this will use the
+
+69
+00:04:45,120 --> 00:04:53,040
+ previously generated English review.The third chain is going to detect what the language of the review
+
+70
+00:04:53,040 --> 00:04:58,640
+ was in the first place.And so if you notice this is using the review variable that is coming from the
+
+71
+00:04:58,640 --> 00:05:06,720
+ from the original review.And finally the fourth chain will take in multiple inputs.So this will take in the
+
+72
+00:05:06,720 --> 00:05:12,400
+ summary variable which we calculated with the second chain and the language variable which we calculated
+
+73
+00:05:12,400 --> 00:05:17,680
+ with the third chain and it's going to ask for a follow-up response to the summary in the specified
+
+74
+00:05:17,680 --> 00:05:24,640
+ language.One important thing to note about all these subchains is that the input keys and output keys need to be pretty
+
+75
+00:05:24,640 --> 00:05:31,920
+ precise.So here we're taking in review.This is a variable that will be passed in at the start.We can
+
+76
+00:05:31,920 --> 00:05:39,200
+ see that we explicitly set the output key to English review.This is then used in the next prompt down below
+
+77
+00:05:39,200 --> 00:05:44,400
+ where we take in English review with that same variable name and we set the output key of that chain
+
+78
+00:05:44,400 --> 00:05:51,360
+ to summary which we can see is used in the final chain.The third prompt takes in review the original
+
+79
+00:05:51,360 --> 00:05:58,160
+ variable and output language which is again used in the final prompt.It's really important to get these
+
+80
+00:05:58,160 --> 00:06:03,680
+ variable names lined up exactly right because there's so many different inputs and outputs going on and if
+
+81
+00:06:03,680 --> 00:06:10,160
+ you get any key errors you should definitely check that they are lined up so.The simple sequential chain
+
+82
+00:06:10,160 --> 00:06:16,880
+ takes in multiple chains where each one has a single input and a single output.To see a visual representation
+
+83
+00:06:16,880 --> 00:06:23,680
+ of this we can look at the slide where it has one chain feeding into the other chain one after another.
+
+84
+00:06:23,680 --> 00:06:30,720
+Here we can see a visual description of the sequential chain.Comparing it to the above chain you can notice
+
+85
+00:06:30,720 --> 00:06:36,320
+ that any step in the chain can take in multiple input variables.This is useful when you have more
+
+86
+00:06:36,320 --> 00:06:43,760
+ complicated downstream chains that need to be a composition of multiple previous chains.Now that
+
+87
+00:06:43,760 --> 00:06:49,120
+ we have all these chains we can easily combine them in the sequential chain.So you'll notice here that
+
+88
+00:06:49,120 --> 00:06:55,840
+ we'll pass in the four chains we created into the chains variable.We'll create the inputs variable with the
+
+89
+00:06:55,840 --> 00:07:03,200
+ one human input which is the review and then we want to return all the intermediate outputs.So the English
+
+90
+00:07:03,200 --> 00:07:11,120
+ review, the summary and then the follow-up message.Now we can run this over some of the data.So let's
+
+91
+00:07:11,120 --> 00:07:23,600
+ choose a review and pass it in through the overall chain.We can see here that the original review looks
+
+92
+00:07:23,600 --> 00:07:30,480
+ like it was in French.We can see the English review as a translation.We can see a summary of that review
+
+93
+00:07:30,480 --> 00:07:36,560
+ and then we can see a follow-up message in the original language of French.You should pause the video
+
+94
+00:07:36,560 --> 00:07:43,760
+ here and try putting in different inputs.So far we've covered the LLM chain and then a sequential chain
+
+95
+00:07:43,760 --> 00:07:49,680
+ but what if you want to do something more complicated?A pretty common but basic operation is to route an
+
+96
+00:07:49,680 --> 00:07:56,880
+ input to a chain depending on what exactly that input is.A good way to imagine this is if you have
+
+97
+00:07:56,880 --> 00:08:03,040
+ multiple subchains each of which specialized for a particular type of input you could have a router chain
+
+98
+00:08:03,040 --> 00:08:10,080
+ which first decides which subchain to pass it to and then passes it to that chain.For a concrete example
+
+99
+00:08:10,080 --> 00:08:16,000
+ let's look at where we are routing between different types of chains depending on the subject
+
+100
+00:08:16,000 --> 00:08:22,240
+ that seems to come in.So we have here different prompts.One prompt is good for answering physics
+
+101
+00:08:22,240 --> 00:08:27,360
+ questions.The second prompt is good for answering math questions.The third for history and then a fourth
+
+102
+00:08:27,360 --> 00:08:37,040
+ for computer science.Let's define all these prompt templates.After we have these prompt templates we can
+
+103
+00:08:37,040 --> 00:08:43,920
+ then provide more information about them.We can give each one a name and then a description.This description
+
+104
+00:08:43,920 --> 00:08:49,520
+ for the physics one is good for answering questions about physics.This information is going to be passed to
+
+105
+00:08:49,520 --> 00:09:00,000
+ to the router chain.So the router chain can decide when to use this subchain.
+
+106
+00:09:00,000 --> 00:09:06,400
+Let's now import the other types of chains that we need.Here we need a multi-prompt chain.This is a specific
+
+107
+00:09:06,400 --> 00:09:12,000
+ type of chain that is used when routing between multiple different prompt templates.As you can see
+
+108
+00:09:12,000 --> 00:09:17,440
+ all the options we have are prompt templates themselves but this is just one type of thing that you can route
+
+109
+00:09:17,440 --> 00:09:23,040
+ between.You can route between any type of chain.The other classes that we'll implement here are an
+
+110
+00:09:23,040 --> 00:09:28,800
+ LLM router chain.This uses a language model itself to route between the different subchains.This is
+
+111
+00:09:28,800 --> 00:09:35,840
+ where the description and the name provided above will be used.We'll also import a router output parser.This
+
+112
+00:09:35,840 --> 00:09:42,240
+ parses the LLM output into a dictionary that can be used downstream to determine which chain to use and
+
+113
+00:09:42,240 --> 00:09:50,720
+ and what the input to that chain should be.Now we can get around to using it first.Let's import and
+
+114
+00:09:50,720 --> 00:10:00,000
+ define the language model that we will use.We now create the destination chains.These are the chains
+
+115
+00:10:00,000 --> 00:10:05,840
+ that will be called by the router chain.As you can see each destination chain itself is a language model
+
+116
+00:10:05,840 --> 00:10:13,920
+ chain, an LLM chain.In addition to the destination chains, we also need a default chain.This is a chain
+
+117
+00:10:13,920 --> 00:10:19,440
+ that's called when the router can't decide which of the subchains to use.In the example above,
+
+118
+00:10:19,440 --> 00:10:25,280
+ this might be called when the input question has nothing to do with physics, math, history, or computer
+
+119
+00:10:25,280 --> 00:10:35,040
+ science.Now we define the template that is used by the LLM to route between the different chains.This has
+
+120
+00:10:35,040 --> 00:10:40,400
+ instructions of the task to be done as well as the specific formatting that the output should be in.
+
+121
+00:10:40,400 --> 00:10:44,720
+ Let's put a few of these pieces together to build the router chain.
+
+122
+00:10:44,720 --> 00:10:50,000
+ First, we create the full router template by formatting it with the destinations that we defined
+
+123
+00:10:50,000 --> 00:10:55,360
+ above.This template is flexible to a bunch of different types of destinations.One thing you can do
+
+124
+00:10:55,360 --> 00:11:01,200
+ here is pause and add different types of destinations.So up here, rather than just physics, math, history,
+
+125
+00:11:01,200 --> 00:11:06,880
+ and computer science, you could add a different subject like English or Latin.Next, we create the
+
+126
+00:11:06,880 --> 00:11:12,800
+ prompt template from this template and then we create the router chain by passing in the LLM and
+
+127
+00:11:12,800 --> 00:11:18,960
+ the overall router prompt.Note that here we have the router output parser.This is important as it will
+
+128
+00:11:18,960 --> 00:11:28,400
+ help this chain decide which subchains to route between.And finally, putting it all together, we can create
+
+129
+00:11:28,400 --> 00:11:35,440
+ the overall chain.This has a router chain which is defined here, it has destination chains which we
+
+130
+00:11:35,440 --> 00:11:42,480
+ pass in here, and then we also pass in the default chain.We can now use this chain, so let's ask it some
+
+131
+00:11:42,480 --> 00:11:49,200
+ questions.If we ask it a question about physics, we should hopefully see that it is routed to the
+
+132
+00:11:49,200 --> 00:11:56,080
+ physics chain with the input "what is blackbody radiation?" and then that is passed into the chain
+
+133
+00:11:56,080 --> 00:12:03,280
+ down below, and we can see that the response is very detailed with lots of physics details.You should
+
+134
+00:12:03,280 --> 00:12:09,280
+ pause the video here and try putting in different inputs.You can try with all the other types of
+
+135
+00:12:09,840 --> 00:12:15,280
+ special chains that we have defined above.So, for example, if we ask it a math question,
+
+136
+00:12:15,280 --> 00:12:33,680
+ we should see that it's routed to the math chain and then passed into that.We can also see what happens
+
+137
+00:12:33,680 --> 00:12:39,680
+ when we pass in a question that is not related to any of the subchains.So, here we ask it a question
+
+138
+00:12:39,680 --> 00:12:44,800
+ about biology and we can see the chain that it chooses is none.This means that it will be passed
+
+139
+00:12:44,800 --> 00:12:49,600
+ to the default chain, which itself is just a generic call to the language model.The language model
+
+140
+00:12:49,600 --> 00:12:55,200
+ luckily knows a lot about biology, so it can help us out here.Now that we've covered these basic
+
+141
+00:12:55,200 --> 00:12:59,360
+ building blocks types of chains, we can start to put them together to create really interesting
+
+142
+00:12:59,360 --> 00:13:04,080
+ applications.For example, in the next section, we're going to cover how to create a chain that
+
+143
+00:13:04,080 --> 00:13:06,780
+that can do question answering over your documents.
+

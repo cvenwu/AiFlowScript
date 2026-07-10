@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LlamaIndex / Pydantic / LangChain / LangGraph 区别图解</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --ink: #211c17;
+      --muted: #71685e;
+      --line: rgba(33, 28, 23, 0.16);
+      --panel: rgba(255, 252, 246, 0.82);
+      --panel-strong: #fffaf0;
+      --pydantic: #d6513c;
+      --llama: #267f6f;
+      --chain: #6f61d7;
+      --graph: #c58a19;
+      --shadow: 0 24px 70px rgba(56, 42, 24, 0.13);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 15px;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 5%, rgba(214, 81, 60, 0.16), transparent 34rem),
+        radial-gradient(circle at 88% 10%, rgba(38, 127, 111, 0.18), transparent 35rem),
+        linear-gradient(135deg, #f7f0e5 0%, #eee4d6 100%);
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Times New Roman", "Noto Serif SC", serif;
+      min-height: 100vh;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.28;
+      mix-blend-mode: multiply;
+      background-image:
+        linear-gradient(rgba(33, 28, 23, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(33, 28, 23, 0.035) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: linear-gradient(to bottom, black, transparent 90%);
+    }
+
+    main {
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 42px 0 80px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 30px;
+      align-items: stretch;
+      min-height: 520px;
+    }
+
+    .hero-copy,
+    .hero-card,
+    .section,
+    .mini-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-copy {
+      border-radius: var(--radius-xl);
+      padding: clamp(28px, 5vw, 64px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font: 600 12px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--llama);
+      box-shadow: 0 0 0 5px rgba(38, 127, 111, 0.14);
+    }
+
+    h1 {
+      margin: 26px 0 18px;
+      font-size: clamp(48px, 8vw, 104px);
+      line-height: 0.88;
+      letter-spacing: -0.075em;
+      text-wrap: balance;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      width: min(680px, 100%);
+      font: 500 clamp(17px, 2vw, 22px)/1.72 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      color: var(--muted);
+      text-wrap: pretty;
+    }
+
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 252, 246, 0.68);
+      font: 700 13px/1 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .pill i {
+      width: 10px;
+      height: 10px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .hero-card {
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 480px;
+    }
+
+    .stack-title {
+      font: 800 13px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .layer {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .layer::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 7px;
+      background: var(--c);
+    }
+
+    .layer strong {
+      display: block;
+      font: 850 22px/1.1 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      letter-spacing: -0.04em;
+    }
+
+    .layer span {
+      display: block;
+      margin-top: 6px;
+      font: 520 13px/1.55 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .caption {
+      margin-top: 20px;
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+      font: 560 14px/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .section {
+      margin-top: 30px;
+      border-radius: var(--radius-xl);
+      padding: clamp(24px, 4vw, 44px);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 58px);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 410px;
+      color: var(--muted);
+      font: 540 15px/1.7 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .tool-card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 252, 246, 0.62);
+      padding: 20px;
+      min-height: 260px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 45px rgba(56, 42, 24, 0.13);
+      background: rgba(255, 252, 246, 0.88);
+    }
+
+    .tool-card::after {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      border-radius: 999px;
+      background: color-mix(in oklch, var(--c), transparent 82%);
+      top: -96px;
+      right: -92px;
+    }
+
+    .iconbox {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: var(--c);
+      color: white;
+      display: grid;
+      place-items: center;
+      font: 900 20px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      box-shadow: 0 14px 28px color-mix(in oklch, var(--c), transparent 75%);
+    }
+
+    .tool-card h3 {
+      margin: 18px 0 8px;
+      font: 850 27px/1.05 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      letter-spacing: -0.055em;
+    }
+
+    .tagline {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font: 580 14px/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .tool-card ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .tool-card li {
+      display: flex;
+      gap: 8px;
+      color: #3b332b;
+      font: 560 13px/1.45 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .tool-card li::before {
+      content: "";
+      flex: 0 0 6px;
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      background: var(--c);
+      margin-top: 7px;
+    }
+
+    .pipeline {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .pipe-step {
+      position: relative;
+      border: 1px solid var(--line);
+      background: rgba(255, 252, 246, 0.64);
+      border-radius: 22px;
+      padding: 18px;
+      min-height: 180px;
+    }
+
+    .pipe-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -13px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: #2f2922;
+      z-index: 2;
+      font: 800 15px/1 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .pipe-step b {
+      display: inline-flex;
+      color: white;
+      background: var(--c);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font: 850 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: 0.06em;
+    }
+
+    .pipe-step h3 {
+      margin: 18px 0 8px;
+      font: 820 22px/1.12 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      letter-spacing: -0.045em;
+    }
+
+    .pipe-step p {
+      margin: 0;
+      color: var(--muted);
+      font: 540 13px/1.62 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .buttons {
+      display: grid;
+      gap: 10px;
+    }
+
+    button.choice {
+      border: 1px solid var(--line);
+      background: rgba(255, 252, 246, 0.62);
+      border-radius: 18px;
+      padding: 18px;
+      text-align: left;
+      color: var(--ink);
+      cursor: pointer;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+      font: inherit;
+    }
+
+    button.choice:hover { transform: translateX(4px); }
+
+    button.choice.active {
+      background: var(--panel-strong);
+      border-color: color-mix(in oklch, var(--active), var(--line) 40%);
+      box-shadow: 0 14px 38px rgba(56, 42, 24, 0.1);
+    }
+
+    button.choice strong {
+      display: block;
+      font: 850 20px/1.15 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      letter-spacing: -0.04em;
+    }
+
+    button.choice span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font: 540 13px/1.5 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .answer {
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      padding: clamp(22px, 4vw, 38px);
+      min-height: 404px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .answer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 100% 0%, color-mix(in oklch, var(--answer-color), transparent 78%), transparent 24rem);
+      pointer-events: none;
+    }
+
+    .answer > * { position: relative; }
+
+    .answer-kicker {
+      color: var(--answer-color);
+      font: 900 13px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .answer h3 {
+      margin: 18px 0 14px;
+      font: 900 clamp(32px, 5vw, 64px)/0.94 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      letter-spacing: -0.07em;
+    }
+
+    .answer p {
+      margin: 0;
+      color: var(--muted);
+      font: 560 17px/1.75 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      text-wrap: pretty;
+    }
+
+    .answer-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .answer-list div {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 13px 14px;
+      background: rgba(255, 255, 255, 0.45);
+      font: 650 14px/1.45 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 252, 246, 0.64);
+      font: 540 14px/1.55 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .compare-table th {
+      background: rgba(33, 28, 23, 0.055);
+      font: 850 13px/1.25 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: 0.06em;
+      color: #443a30;
+      text-transform: uppercase;
+    }
+
+    .compare-table tr:last-child td { border-bottom: 0; }
+
+    .name {
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .scenario {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mini-card {
+      border-radius: 22px;
+      padding: 22px;
+      min-height: 210px;
+    }
+
+    .mini-card h3 {
+      margin: 0 0 10px;
+      font: 850 24px/1.08 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      letter-spacing: -0.045em;
+    }
+
+    .mini-card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font: 540 14px/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    .combo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .combo span {
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: var(--c);
+      color: white;
+      font: 850 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .footer-note {
+      margin-top: 28px;
+      text-align: center;
+      color: var(--muted);
+      font: 560 13px/1.6 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+
+    @media (max-width: 960px) {
+      .hero,
+      .choice-grid { grid-template-columns: 1fr; }
+      .cards,
+      .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .scenario { grid-template-columns: 1fr; }
+      .pipe-step:not(:last-child)::after { display: none; }
+    }
+
+    @media (max-width: 620px) {
+      main { width: min(100% - 22px, 1180px); padding-top: 18px; }
+      .cards,
+      .pipeline { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 12px; }
+      .compare-table { font-size: 13px; }
+      .compare-table th,
+      .compare-table td { padding: 12px; }
+      h1 { font-size: 54px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <main>
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="dot"></span>LLM 应用框架速查图</div>
+        <h1 id="title">四个工具，四个层级。</h1>
+        <p>
+          它们不是互相替代的同类产品，而是分别站在「数据结构」「知识检索」「应用编排」「状态机工作流」四个层级。
+          最简单的记忆方式：Pydantic 管格式，LlamaIndex 管知识，LangChain 管串联，LangGraph 管复杂流程。
+        </p>
+        <div class="legend-row" aria-label="工具图例">
+          <span class="pill"><i style="background: var(--pydantic)"></i>Pydantic</span>
+          <span class="pill"><i style="background: var(--llama)"></i>LlamaIndex</span>
+          <span class="pill"><i style="background: var(--chain)"></i>LangChain</span>
+          <span class="pill"><i style="background: var(--graph)"></i>LangGraph</span>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="层级关系图">
+        <div>
+          <div class="stack-title">Layer model</div>
+          <div class="stack">
+            <div class="layer" style="--c: var(--graph)">
+              <strong>LangGraph</strong>
+              <span>有状态、多节点、可循环的 Agent 工作流</span>
+            </div>
+            <div class="layer" style="--c: var(--chain)">
+              <strong>LangChain</strong>
+              <span>把 LLM、Prompt、工具、API、检索器串起来</span>
+            </div>
+            <div class="layer" style="--c: var(--llama)">
+              <strong>LlamaIndex</strong>
+              <span>读取外部资料，切分、索引、检索、RAG 问答</span>
+            </div>
+            <div class="layer" style="--c: var(--pydantic)">
+              <strong>Pydantic</strong>
+              <span>定义输入、输出、业务对象的数据结构与校验</span>
+            </div>
+          </div>
+        </div>
+        <div class="caption">
+          图中越往下越基础，越往上越接近完整应用。实际项目可以只用其中一个，也可以组合使用。
+        </div>
+      </aside>
+    </section>
+
+    <section class="section" aria-labelledby="cards-title">
+      <div class="section-head">
+        <h2 id="cards-title">每个工具的主战场</h2>
+        <p>把它们想成一家公司里的四种角色：数据合同、知识管理员、应用集成工程师、流程导演。</p>
+      </div>
+      <div class="cards">
+        <article class="tool-card" style="--c: var(--pydantic)">
+          <div class="iconbox">P</div>
+          <h3>Pydantic</h3>
+          <p class="tagline">数据结构与类型校验。</p>
+          <ul>
+            <li>定义字段、类型、默认值</li>
+            <li>校验 JSON / API 入参</li>
+            <li>约束 LLM 结构化输出</li>
+          </ul>
+        </article>
+        <article class="tool-card" style="--c: var(--llama)">
+          <div class="iconbox">L</div>
+          <h3>LlamaIndex</h3>
+          <p class="tagline">外部知识接入与 RAG。</p>
+          <ul>
+            <li>读取 PDF、网页、数据库</li>
+            <li>切分、索引、向量检索</li>
+            <li>基于私有资料回答问题</li>
+          </ul>
+        </article>
+        <article class="tool-card" style="--c: var(--chain)">
+          <div class="iconbox">C</div>
+          <h3>LangChain</h3>
+          <p class="tagline">LLM 应用编排胶水。</p>
+          <ul>
+            <li>连接模型、Prompt、工具</li>
+            <li>封装 Retriever 与 Agent</li>
+            <li>调用搜索、数据库、外部 API</li>
+          </ul>
+        </article>
+        <article class="tool-card" style="--c: var(--graph)">
+          <div class="iconbox">G</div>
+          <h3>LangGraph</h3>
+          <p class="tagline">复杂 Agent 状态机。</p>
+          <ul>
+            <li>节点、边、条件分支</li>
+            <li>循环、回退、中断、恢复</li>
+            <li>多 Agent 与人工审批流程</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="flow-title">
+      <div class="section-head">
+        <h2 id="flow-title">一个 AI 助理的完整链路</h2>
+        <p>如果把四者放进同一个项目，它们通常这样分工。</p>
+      </div>
+      <div class="pipeline" aria-label="工作流图例">
+        <div class="pipe-step" style="--c: var(--pydantic)">
+          <b>01 / STRUCTURE</b>
+          <h3>先定义数据长什么样</h3>
+          <p>用 Pydantic 规定用户请求、工具参数、最终回答的字段和类型。</p>
+        </div>
+        <div class="pipe-step" style="--c: var(--llama)">
+          <b>02 / KNOWLEDGE</b>
+          <h3>再接入企业资料</h3>
+          <p>用 LlamaIndex 把文档、网页、数据库变成可检索的知识索引。</p>
+        </div>
+        <div class="pipe-step" style="--c: var(--chain)">
+          <b>03 / TOOLS</b>
+          <h3>然后串起模型和工具</h3>
+          <p>用 LangChain 组织 Prompt、LLM、检索器、搜索、数据库等调用。</p>
+        </div>
+        <div class="pipe-step" style="--c: var(--graph)">
+          <b>04 / CONTROL</b>
+          <h3>最后控制复杂流程</h3>
+          <p>用 LangGraph 让 Agent 能规划、执行、反思、重试和等待人工确认。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="choice-title">
+      <div class="section-head">
+        <h2 id="choice-title">我该用哪个？</h2>
+        <p>点击左侧场景，右侧会给出推荐组合。</p>
+      </div>
+      <div class="choice-grid">
+        <div class="buttons" aria-label="场景选择">
+          <button class="choice active" data-case="schema" style="--active: var(--pydantic)">
+            <strong>我要校验模型输出 / API 数据</strong>
+            <span>比如要求 LLM 一定输出 name、age、summary。</span>
+          </button>
+          <button class="choice" data-case="rag" style="--active: var(--llama)">
+            <strong>我要做企业知识库问答</strong>
+            <span>比如上传一堆文档，然后让 AI 根据文档回答。</span>
+          </button>
+          <button class="choice" data-case="tools" style="--active: var(--chain)">
+            <strong>我要让 AI 调用很多工具</strong>
+            <span>比如搜索网页、查数据库、发邮件、调用内部 API。</span>
+          </button>
+          <button class="choice" data-case="agent" style="--active: var(--graph)">
+            <strong>我要做复杂多步骤 Agent</strong>
+            <span>比如规划 → 执行 → 检查 → 不满意就重试。</span>
+          </button>
+        </div>
+        <div class="answer" id="answer" style="--answer-color: var(--pydantic)">
+          <div class="answer-kicker" id="answerKicker">Recommended</div>
+          <h3 id="answerTitle">优先用 Pydantic</h3>
+          <p id="answerText">它负责把「不稳定的自然语言输出」变成「稳定的结构化对象」。如果你只是需要字段校验、JSON Schema、结构化输出，不需要上 LlamaIndex / LangChain / LangGraph。</p>
+          <div class="answer-list" id="answerList">
+            <div>典型组合：Pydantic + OpenAI / Claude structured output</div>
+            <div>关键词：BaseModel、Field、类型校验、JSON Schema</div>
+            <div>不要误用：不要拿它做文档检索或 Agent 流程控制</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="table-title">
+      <div class="section-head">
+        <h2 id="table-title">一句话对照表</h2>
+        <p>如果只记一张表，就记这张。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>工具</th>
+            <th>它管什么</th>
+            <th>不主要管什么</th>
+            <th>类比</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name" style="color: var(--pydantic)">Pydantic</td>
+            <td>数据模型、类型校验、结构化输出</td>
+            <td>不负责检索文档，不负责 Agent 编排</td>
+            <td>合同模板 / 表单校验器</td>
+          </tr>
+          <tr>
+            <td class="name" style="color: var(--llama)">LlamaIndex</td>
+            <td>数据接入、索引、检索、RAG 问答</td>
+            <td>不专注复杂业务流程状态机</td>
+            <td>图书馆管理员 / 知识库引擎</td>
+          </tr>
+          <tr>
+            <td class="name" style="color: var(--chain)">LangChain</td>
+            <td>LLM、Prompt、工具、外部 API 的编排</td>
+            <td>不如 LangGraph 擅长复杂循环状态控制</td>
+            <td>应用集成胶水 / 调度脚本</td>
+          </tr>
+          <tr>
+            <td class="name" style="color: var(--graph)">LangGraph</td>
+            <td>多节点、有状态、可循环的 Agent 工作流</td>
+            <td>不替代底层数据校验和知识索引</td>
+            <td>流程导演 / 状态机引擎</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" aria-labelledby="combo-title">
+      <div class="section-head">
+        <h2 id="combo-title">常见项目组合</h2>
+        <p>现实中它们经常组合使用，而不是四选一。</p>
+      </div>
+      <div class="scenario">
+        <article class="mini-card">
+          <h3>普通 RAG 知识库</h3>
+          <p>员工问制度、客服问手册、研发问文档。</p>
+          <div class="combo">
+            <span style="--c: var(--llama)">LlamaIndex</span>
+            <span style="--c: var(--pydantic)">Pydantic</span>
+          </div>
+        </article>
+        <article class="mini-card">
+          <h3>会调用工具的助手</h3>
+          <p>既能查资料，也能调用搜索、数据库、内部系统。</p>
+          <div class="combo">
+            <span style="--c: var(--chain)">LangChain</span>
+            <span style="--c: var(--pydantic)">Pydantic</span>
+          </div>
+        </article>
+        <article class="mini-card">
+          <h3>复杂自动化 Agent</h3>
+          <p>需要规划、执行、重试、人工审批、长期状态。</p>
+          <div class="combo">
+            <span style="--c: var(--graph)">LangGraph</span>
+            <span style="--c: var(--chain)">LangChain</span>
+            <span style="--c: var(--pydantic)">Pydantic</span>
+          </div>
+        </article>
+      </div>
+      <div class="footer-note">结论：Pydantic 是地基，LlamaIndex 是知识层，LangChain 是连接层，LangGraph 是复杂流程控制层。</div>
+    </section>
+  </main>
+
+  <script>
+    const answers = {
+      schema: {
+        color: 'var(--pydantic)',
+        title: '优先用 Pydantic',
+        text: '它负责把「不稳定的自然语言输出」变成「稳定的结构化对象」。如果你只是需要字段校验、JSON Schema、结构化输出，不需要上 LlamaIndex / LangChain / LangGraph。',
+        list: [
+          '典型组合：Pydantic + OpenAI / Claude structured output',
+          '关键词：BaseModel、Field、类型校验、JSON Schema',
+          '不要误用：不要拿它做文档检索或 Agent 流程控制'
+        ]
+      },
+      rag: {
+        color: 'var(--llama)',
+        title: '优先用 LlamaIndex',
+        text: '它最擅长把外部资料变成可检索的知识系统：读取、切分、索引、召回、合成答案。如果核心问题是「让模型懂我的文档」，先看 LlamaIndex。',
+        list: [
+          '典型组合：LlamaIndex + 向量数据库 + LLM',
+          '关键词：Document、Index、Retriever、Query Engine、RAG',
+          '可搭配：用 Pydantic 约束最终回答格式'
+        ]
+      },
+      tools: {
+        color: 'var(--chain)',
+        title: '优先用 LangChain',
+        text: '它像应用胶水，把模型、Prompt、工具、搜索、数据库、检索器串成一个可运行的 LLM 应用。适合工具调用多、集成多的场景。',
+        list: [
+          '典型组合：LangChain + Tools + Pydantic',
+          '关键词：Chain、Tool、Agent、PromptTemplate、OutputParser',
+          '边界：流程一复杂、有循环和恢复需求，就考虑 LangGraph'
+        ]
+      },
+      agent: {
+        color: 'var(--graph)',
+        title: '优先用 LangGraph',
+        text: '它把 Agent 拆成节点和边，让流程可以分支、循环、中断、恢复和观测。适合复杂任务，而不是一次性问答。',
+        list: [
+          '典型组合：LangGraph + LangChain Tools + Pydantic State',
+          '关键词：State、Node、Edge、Checkpoint、Human-in-the-loop',
+          '适合：多 Agent、长流程、审批、重试、反思循环'
+        ]
+      }
+    };
+
+    const buttons = document.querySelectorAll('.choice');
+    const answer = document.getElementById('answer');
+    const answerTitle = document.getElementById('answerTitle');
+    const answerText = document.getElementById('answerText');
+    const answerList = document.getElementById('answerList');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        buttons.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        const item = answers[button.dataset.case];
+        answer.style.setProperty('--answer-color', item.color);
+        answerTitle.textContent = item.title;
+        answerText.textContent = item.text;
+        answerList.innerHTML = item.list.map((line) => `<div>${line}</div>`).join('');
+      });
+    });
+  </script>
+</body>
+</html>

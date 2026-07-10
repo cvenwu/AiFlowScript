@@ -1,0 +1,44 @@
+{
+  "frames": [
+    {
+      "file": "frames/scene_001.jpg",
+      "ts_seconds": 40.77,
+      "ts_display": "00:40"
+    },
+    {
+      "file": "frames/scene_002.jpg",
+      "ts_seconds": 257.46,
+      "ts_display": "04:17"
+    },
+    {
+      "file": "frames/scene_003.jpg",
+      "ts_seconds": 261.49,
+      "ts_display": "04:21"
+    },
+    {
+      "file": "frames/scene_004.jpg",
+      "ts_seconds": 269.1,
+      "ts_display": "04:29"
+    },
+    {
+      "file": "frames/scene_005.jpg",
+      "ts_seconds": 276.91,
+      "ts_display": "04:36"
+    },
+    {
+      "file": "frames/scene_006.jpg",
+      "ts_seconds": 293.39,
+      "ts_display": "04:53"
+    },
+    {
+      "file": "frames/scene_007.jpg",
+      "ts_seconds": 337.8,
+      "ts_display": "05:37"
+    },
+    {
+      "file": "frames/scene_008.jpg",
+      "ts_seconds": 351.52,
+      "ts_display": "05:51"
+    }
+  ]
+}

@@ -1,0 +1,543 @@
+1
+00:00:00,000 --> 00:00:06,759
+In the previous lesson, we added in semantic memory to our agent.
+
+2
+00:00:06,759 --> 00:00:09,720
+We're now going to add in episodic memory.
+
+3
+00:00:09,720 --> 00:00:13,640
+We're going to add it in the form of few shot examples, and we're going to add it into
+
+4
+00:00:13,640 --> 00:00:15,560
+the triage step.
+
+5
+00:00:15,560 --> 00:00:21,679
+So as a reminder, episodic memory is experiences, and in agents, this is generally best represented
+
+6
+00:00:21,679 --> 00:00:28,160
+as past agent actions and as few shot examples that will pass into the prompt.
+
+7
+00:00:28,160 --> 00:00:30,480
+Let's see this in action.
+
+8
+00:00:30,480 --> 00:00:32,600
+This should hopefully look familiar to you by now.
+
+9
+00:00:32,600 --> 00:00:33,600
+This is the basic setup.
+
+10
+00:00:33,600 --> 00:00:39,560
+We're going to load some environment variables, define our profile, define our prompt instructions,
+
+11
+00:00:39,560 --> 00:00:43,519
+and define an example email.
+
+12
+00:00:43,519 --> 00:00:46,560
+Now is where we normally define the triage logic.
+
+13
+00:00:46,560 --> 00:00:52,519
+But let's take a pause here and talk about few shot examples.
+
+14
+00:00:52,519 --> 00:00:56,960
+The first thing we need to do is define our long-term memory store.
+
+15
+00:00:56,960 --> 00:01:01,359
+This is the same as we used in lesson three.
+
+16
+00:01:01,359 --> 00:01:07,159
+After this, we can define the data that we want to load as few shot examples.
+
+17
+00:01:07,159 --> 00:01:12,240
+So first, we need to decide on the email content that we want to store.
+
+18
+00:01:12,240 --> 00:01:16,400
+So this is actually the same as the example input above.
+
+19
+00:01:16,400 --> 00:01:20,200
+But we will use this now as a few shot example.
+
+20
+00:01:20,200 --> 00:01:25,000
+We then put this as part of a larger data model that contains the email.
+
+21
+00:01:25,000 --> 00:01:27,560
+This is generally the inputs.
+
+22
+00:01:27,560 --> 00:01:32,719
+And then the outputs, in this case, we'll call it label and we'll call it respond.
+
+23
+00:01:32,719 --> 00:01:37,079
+And these outputs are also going to be in the few shot examples that we format.
+
+24
+00:01:37,079 --> 00:01:41,840
+So this is going to help change the behavior of the agent.
+
+25
+00:01:41,840 --> 00:01:45,960
+We can now put this example into the long-term memory store.
+
+26
+00:01:45,960 --> 00:01:48,400
+We can do this by specifying a namespace.
+
+27
+00:01:48,400 --> 00:01:52,280
+And so this is similar to before, email assistant lands.
+
+28
+00:01:52,280 --> 00:01:55,239
+But then notice that here is examples.
+
+29
+00:01:55,239 --> 00:02:00,439
+Whereas what we use for the semantic search over fax is collection.
+
+30
+00:02:00,439 --> 00:02:07,840
+We pass in the ID, which is just a UUID, and then we pass in this data up here.
+
+31
+00:02:07,840 --> 00:02:13,280
+Let's add in another data point so that we can do search over multiple data points and
+
+32
+00:02:13,280 --> 00:02:15,439
+see which ones are returned.
+
+33
+00:02:15,439 --> 00:02:17,280
+So here we'll add in a separate one.
+
+34
+00:02:17,280 --> 00:02:22,479
+This one is a new email sent by Sarah Chen.
+
+35
+00:02:22,479 --> 00:02:28,560
+Let's now simulate searching and returning these examples in a formatted way.
+
+36
+00:02:28,560 --> 00:02:33,599
+Before that, we're going to define a simple helper function, which is going to take in
+
+37
+00:02:33,599 --> 00:02:38,439
+the few shot examples that we retrieved directly from the store and format them nicely
+
+38
+00:02:38,439 --> 00:02:40,039
+into a string.
+
+39
+00:02:40,039 --> 00:02:43,680
+This is great because it will allow us to easily see what we retrieved.
+
+40
+00:02:43,680 --> 00:02:49,200
+And this is also a better format to pass into the LLM than the raw examples.
+
+41
+00:02:49,200 --> 00:02:53,560
+We can see that once we get the examples back from the store, we are going to format them
+
+42
+00:02:53,560 --> 00:02:58,000
+into this template, which just contains information about the email subject, email from email
+
+43
+00:02:58,000 --> 00:02:59,000
+two.
+
+44
+00:02:59,000 --> 00:03:01,040
+So it's putting it in a nice, human readable way.
+
+45
+00:03:01,040 --> 00:03:03,800
+And then it has this triage result.
+
+46
+00:03:03,800 --> 00:03:08,400
+This is the outcome of the triage step, and we're now going to be putting this as part
+
+47
+00:03:08,400 --> 00:03:10,879
+of the prompt.
+
+48
+00:03:10,919 --> 00:03:15,359
+So here, you can see that for each example, we're taking the email part.
+
+49
+00:03:15,359 --> 00:03:18,919
+This is the input, and we're formatting this above.
+
+50
+00:03:18,919 --> 00:03:21,120
+And then we're putting the result is the label.
+
+51
+00:03:21,120 --> 00:03:26,359
+This is the output that we put as part of the data that we stored in the store.
+
+52
+00:03:26,359 --> 00:03:31,240
+So these are just helper functions to take that data and format it nicely.
+
+53
+00:03:31,240 --> 00:03:33,159
+So let's now simulate searching over.
+
+54
+00:03:33,159 --> 00:03:36,359
+This is the exact same email that we passed in above.
+
+55
+00:03:36,360 --> 00:03:41,440
+And I'm going to change something small, just so that it's not doing an exact match.
+
+56
+00:03:41,440 --> 00:03:46,520
+I'm then going to search over the namespace that we had, and I'm going to pass in as
+
+57
+00:03:46,520 --> 00:03:49,760
+a query parameter this email data.
+
+58
+00:03:49,760 --> 00:03:51,280
+I'm going to set limit equals once.
+
+59
+00:03:51,280 --> 00:03:55,520
+So remember, I've stored two pieces of information in the store already.
+
+60
+00:03:55,520 --> 00:04:00,320
+So it should just fetch the one that is most similar to this.
+
+61
+00:04:00,320 --> 00:04:05,720
+I get back some results, and now let's format them with the helper function we had above.
+
+62
+00:04:05,719 --> 00:04:15,479
+We can see that it got back the data point that we stored, which is slightly different
+
+63
+00:04:15,479 --> 00:04:21,040
+from the data point we passed in, but it's still semantically very similar.
+
+64
+00:04:21,040 --> 00:04:27,040
+Let's now start putting this together into a new triage step that does this few shot
+
+65
+00:04:27,040 --> 00:04:28,759
+example search.
+
+66
+00:04:28,759 --> 00:04:32,279
+So the first thing we're going to do is define a triage system prompt.
+
+67
+00:04:32,280 --> 00:04:36,400
+So previously we imported this from a helper file, but now we're actually going to find
+
+68
+00:04:36,400 --> 00:04:41,080
+it in code so that we can modify it if we want.
+
+69
+00:04:41,080 --> 00:04:45,480
+And we can see down here that we have this few shot examples section where we are going
+
+70
+00:04:45,480 --> 00:04:50,000
+to format the examples, and then also add some more instructions here that basically is
+
+71
+00:04:50,000 --> 00:04:55,920
+just say to pay close attention to these examples.
+
+72
+00:04:55,920 --> 00:04:59,400
+Let's import a bunch of stuff for the routing step.
+
+73
+00:04:59,400 --> 00:05:01,040
+So this is all the same as before.
+
+74
+00:05:01,040 --> 00:05:02,040
+We have some imports.
+
+75
+00:05:02,040 --> 00:05:03,760
+We're going to initialize a chat model.
+
+76
+00:05:03,760 --> 00:05:05,600
+We have this output schema.
+
+77
+00:05:05,600 --> 00:05:09,920
+We're going to attach that and get this L on that now generates structured information.
+
+78
+00:05:09,920 --> 00:05:12,319
+And then we're going to import our triage user prompt.
+
+79
+00:05:12,319 --> 00:05:18,400
+We don't need to import the triage system prompt because we've defined that above already.
+
+80
+00:05:18,400 --> 00:05:23,120
+We then have some code that should look pretty similar to before.
+
+81
+00:05:23,120 --> 00:05:26,840
+It's used to set up the triage router node.
+
+82
+00:05:26,840 --> 00:05:32,520
+So we're going to create our state and we're going to have some imports here.
+
+83
+00:05:32,520 --> 00:05:36,360
+This is the previous definition of the triage router node.
+
+84
+00:05:36,360 --> 00:05:41,120
+So how are we going to modify this to account for this few shot example prompting?
+
+85
+00:05:41,120 --> 00:05:46,240
+First, we're going to take in a config and a store into the input.
+
+86
+00:05:46,240 --> 00:05:50,160
+These will be passed through by the main agent.
+
+87
+00:05:50,160 --> 00:05:55,360
+We're then going to add some logic before the system prompt gets formatted to basically
+
+88
+00:05:55,360 --> 00:05:59,879
+add in the few shot examples here.
+
+89
+00:05:59,879 --> 00:06:02,199
+This is the logic that we're going to add.
+
+90
+00:06:02,199 --> 00:06:03,600
+First we define the namespace.
+
+91
+00:06:03,600 --> 00:06:07,000
+This is where to search for the few shot examples.
+
+92
+00:06:07,000 --> 00:06:08,720
+It's going to be email assistant.
+
+93
+00:06:08,720 --> 00:06:11,680
+And then this is where we're going to use the config and we're going to pull in the
+
+94
+00:06:11,680 --> 00:06:13,759
+length graph user ID from there.
+
+95
+00:06:13,759 --> 00:06:14,759
+And then examples.
+
+96
+00:06:14,759 --> 00:06:16,120
+And so this is the namespace.
+
+97
+00:06:16,120 --> 00:06:21,400
+We're then going to use this to search in the long-term memory store for the query which
+
+98
+00:06:21,400 --> 00:06:25,960
+is just a stringified version of the email.
+
+99
+00:06:25,960 --> 00:06:30,640
+We're then going to format these few shot examples into a string and we're going to update
+
+100
+00:06:30,640 --> 00:06:35,840
+this to pass in the example string into the system prompt.
+
+101
+00:06:35,840 --> 00:06:40,120
+After that, we can go about creating the rest of our agent.
+
+102
+00:06:40,120 --> 00:06:44,680
+So we're going to create all the same tools that we had before.
+
+103
+00:06:44,680 --> 00:06:49,200
+We don't need to redo this because we already created the store.
+
+104
+00:06:49,199 --> 00:06:51,959
+So we can get rid of that.
+
+105
+00:06:51,959 --> 00:06:55,639
+We're going to create the tools for managing and searching memories.
+
+106
+00:06:55,639 --> 00:06:59,479
+We're going to create this prompt and the function for creating it.
+
+107
+00:06:59,479 --> 00:07:04,240
+We're going to create this response agent and we're going to have this config that we're
+
+108
+00:07:04,240 --> 00:07:07,839
+going to use.
+
+109
+00:07:07,839 --> 00:07:11,519
+We're then going to put together this email agent, same as before.
+
+110
+00:07:11,519 --> 00:07:17,639
+And again, we're passing in the store to make sure that it's covered.
+
+111
+00:07:17,639 --> 00:07:23,199
+Let's now test this email agent out and see the effect of few shot prompting.
+
+112
+00:07:23,199 --> 00:07:29,360
+So here we have an example email input from Tom Jones, Hyde John, want to buy documentation.
+
+113
+00:07:29,360 --> 00:07:35,439
+Let's call it and let's pass in the config with the link ref user ID of Harrison and
+
+114
+00:07:35,439 --> 00:07:41,039
+we can see that by default, this email requires a response.
+
+115
+00:07:41,039 --> 00:07:42,680
+But what if we don't like that?
+
+116
+00:07:42,680 --> 00:07:48,720
+What we can do is we can add a few shot example into our long-term memory and then that will
+
+117
+00:07:48,720 --> 00:07:54,759
+be pulled in at runtime and it will handle future similar emails in a similar way.
+
+118
+00:07:54,759 --> 00:07:58,439
+So here we can add that with the label of ignore.
+
+119
+00:07:58,439 --> 00:08:02,040
+So let's now say we want to ignore these types of emails.
+
+120
+00:08:02,040 --> 00:08:03,720
+We'll put that in the store.
+
+121
+00:08:03,720 --> 00:08:10,199
+Our namespace is email assistant Harrison because this is the link ref user ID examples
+
+122
+00:08:10,199 --> 00:08:13,959
+and then we store it in there.
+
+123
+00:08:13,959 --> 00:08:18,959
+If we run this again, we can now see that it's classified as ignore.
+
+124
+00:08:18,959 --> 00:08:23,719
+It's pulling in this few shot example and learning that this should be ignored.
+
+125
+00:08:23,719 --> 00:08:29,079
+We can also change it slightly.
+
+126
+00:08:29,079 --> 00:08:32,879
+So I've now added more question marks and added in Jim.
+
+127
+00:08:32,879 --> 00:08:36,600
+And we can see that it still gets classified as ignored.
+
+128
+00:08:36,600 --> 00:08:42,879
+So it's learning to treat similar emails in a similar way.
+
+129
+00:08:42,879 --> 00:08:47,960
+If we pass in a different link ref user ID, we can see that it's respond.
+
+130
+00:08:47,960 --> 00:08:56,159
+That's because these few shot examples are scope to this individual link ref user ID.
+
+131
+00:08:56,159 --> 00:09:02,040
+We've now added an episodic memory to help with updating and learning user preferences
+
+132
+00:09:02,040 --> 00:09:04,160
+for triaging.
+
+133
+00:09:04,159 --> 00:09:08,079
+This is the end of the lesson, so it's a great time to pause and play around with different
+
+134
+00:09:08,079 --> 00:09:13,000
+examples and different link ref user IDs and just generally play around with it and better
+
+135
+00:09:13,000 --> 00:09:18,439
+understand all the fun and all the learning that it can have.
+
+136
+00:09:18,439 --> 00:09:19,279
+See you in the next lesson.

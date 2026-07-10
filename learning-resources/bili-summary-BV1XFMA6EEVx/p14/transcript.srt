@@ -1,0 +1,668 @@
+1
+00:00:00,000 --> 00:00:08,880
+ in this lesson we'll cover a second big use case of open AI functions tool usage in this lesson
+
+2
+00:00:08,880 --> 00:00:14,240
+ we'll first introduce the link chain concept of a tool and then we'll go over how to use open AI
+
+3
+00:00:14,240 --> 00:00:21,280
+ functions to choose which tool to use and then execute that let's dive in when we think about
+
+4
+00:00:21,280 --> 00:00:25,600
+ having a language model use functions there's actually two components to it the first is having
+
+5
+00:00:25,600 --> 00:00:29,840
+ the language model decide which function to use and what the inputs to that function should be
+
+6
+00:00:30,720 --> 00:00:36,640
+ the next component is actually calling that function with those inputs langchain combines
+
+7
+00:00:36,640 --> 00:00:42,320
+ those two ideas into something called a tool which is basically a schema definition for the function
+
+8
+00:00:42,320 --> 00:00:48,160
+ which we can then convert into the open AI function spec and a callable so we can actually call that
+
+9
+00:00:48,160 --> 00:00:54,880
+ model as well we have many of these tools built into the package search tools math tools sql tools
+
+10
+00:00:54,880 --> 00:00:59,840
+ but in this lab we'll largely focus on creating our own tools one thing that we've noticed is that
+
+11
+00:00:59,840 --> 00:01:05,200
+ when you create your own chains and agents a lot of it relies on actually creating your own tools
+
+12
+00:01:05,200 --> 00:01:10,400
+ because what you're trying to do is probably pretty specific to your particular task so we're going
+
+13
+00:01:10,400 --> 00:01:15,120
+ to go over how to create our own tools easily and then we're going to go over how to use a language
+
+14
+00:01:15,120 --> 00:01:22,080
+ model to select which tools to use and then also call those tools let's jump into the code and see what
+
+15
+00:01:22,080 --> 00:01:26,880
+ it looks like we're going to get started with the usual setup and then we're going to import a tool
+
+16
+00:01:26,880 --> 00:01:32,400
+ decorator from LinkedIn so this decorator we can use to put on top of the function
+
+17
+00:01:36,080 --> 00:01:50,480
+ and then when we define the function
+
+18
+00:01:50,480 --> 00:02:00,400
+ so this tool decorator we can put on top of the function that we define what this does is it then
+
+19
+00:02:00,400 --> 00:02:05,840
+ automatically converts this function into a link chain tool that we can use down the line so this
+
+20
+00:02:05,840 --> 00:02:17,200
+ search thing now has a name it now has a description and it now has arguments and so all of these will
+
+21
+00:02:17,200 --> 00:02:23,200
+ be used when creating the open ai functions definition we can also improve upon this by defining a more
+
+22
+00:02:23,200 --> 00:02:29,360
+ explicit structure for the input schema this is often important because again the description of the input
+
+23
+00:02:29,360 --> 00:02:33,920
+ is what the language model uses to determine what the input should be and so having a really clear
+
+24
+00:02:33,920 --> 00:02:39,920
+ definition for the input becomes important we can do this by defining a pydantic model and then when
+
+25
+00:02:39,920 --> 00:02:46,720
+ we define the function we can add in our schema equals search input so search input is this class that
+
+26
+00:02:46,720 --> 00:02:51,840
+ we created up here it's got the same structure as the function so it's got a query parameter which
+
+27
+00:02:51,840 --> 00:02:56,800
+ matches the query parameter there the main difference here is that we're adding a description for that
+
+28
+00:02:56,800 --> 00:03:01,280
+ query parameter and so this is a way of passing descriptions and other information should we want
+
+29
+00:03:01,280 --> 00:03:08,800
+ to include that in the field to the args schema of the tool and so now if we run this and now if we do
+
+30
+00:03:08,800 --> 00:03:16,320
+ and now if we do search.args we can see that we get the description of what we passed in
+
+31
+00:03:17,600 --> 00:03:25,280
+ and again this is still callable so if we do this and we pass in a string we get back the value and
+
+32
+00:03:25,280 --> 00:03:29,280
+ this isn't actually doing anything under the hood but we'll see later on how you can actually do
+
+33
+00:03:29,280 --> 00:03:34,560
+ stuff the first real tool that we're going to create is a tool that gets the current temperature
+
+34
+00:03:34,560 --> 00:03:41,280
+ given a latitude and longitude so first we're going to define the input schema so latitude longitude
+
+35
+00:03:41,280 --> 00:03:45,600
+ and we're going to give it a description we'll then define this function we'll we'll decorate it with
+
+36
+00:03:45,600 --> 00:03:51,760
+ this tool decorator and we'll pass in arg schema equals openmedio input and openmedio is the api
+
+37
+00:03:51,760 --> 00:03:58,640
+ that we're going to use under the hood so we're calling api.openmedio.com we're calling the forecast
+
+38
+00:03:58,640 --> 00:04:03,680
+ endpoint so we're getting a forecast and we're getting one forecast day ahead we're passing in the
+
+39
+00:04:03,680 --> 00:04:08,640
+ longitude and latitude and these are passed into the function we're specifying temperature as what we want to
+
+40
+00:04:08,640 --> 00:04:14,960
+ to get back we're then making this call with the requests library we're then parsing out the response
+
+41
+00:04:14,960 --> 00:04:21,760
+ into json then what we're doing is we're getting the forecast for the next day and we're finding the
+
+42
+00:04:21,760 --> 00:04:27,520
+ point in the forecast that is most close to the current time once we do that and we have that
+
+43
+00:04:27,520 --> 00:04:32,400
+ temperature we're going to respond with the current temperature is blank degrees celsius
+
+44
+00:04:34,880 --> 00:04:40,240
+ if we look at the name and description for this we call it get current temperature if we look at the
+
+45
+00:04:40,240 --> 00:04:44,400
+ description we can see that the description has the signature in there as well as the doc string
+
+46
+00:04:44,400 --> 00:04:50,240
+ and then if we look at the args we can see that it has longitude and latitude
+
+47
+00:04:50,240 --> 00:04:59,520
+ what we can also do is we can convert this tool into the exact open ai functions definition and you can do
+
+48
+00:04:59,520 --> 00:05:07,360
+ this by doing from link chain dot tools dot render import format tool to open ai function and so when we
+
+49
+00:05:07,360 --> 00:05:10,000
+ call this on a given tool
+
+50
+00:05:10,000 --> 00:05:17,680
+ we get back a json blob which combines all those elements and now have the name the description
+
+51
+00:05:17,680 --> 00:05:21,840
+ and then the parameters which include the properties of the longitude and latitude and this is the format
+
+52
+00:05:21,840 --> 00:05:27,760
+ that open ai functions expects and again this tool is callable so if we pass in latitude and longitude
+
+53
+00:05:27,760 --> 00:05:33,440
+ there this is now making a real request to the open media api and getting back a response
+
+54
+00:05:33,440 --> 00:05:39,760
+ the second tool that we're going to define is a wikipedia tool so this is going to search things in
+
+55
+00:05:39,760 --> 00:05:46,640
+ wikipedia so it's going to take in a query and it's first going to call the wikipedia python library dot
+
+56
+00:05:46,640 --> 00:05:52,720
+ search and it's going to get back a list of pages it's going to iterate through the first three elements
+
+57
+00:05:52,720 --> 00:05:58,160
+ in that list and it's going to get more information about that page so it's going to call wikipedia dot
+
+58
+00:05:58,160 --> 00:06:02,400
+ page with the page title that we got back and it's going to get this wiki page element what we're
+
+59
+00:06:02,400 --> 00:06:08,160
+ then going to do is we're going to construct a list of summaries so we're going to put page in the page title
+
+60
+00:06:08,160 --> 00:06:15,040
+ and then summary and the summary of the page and we're going to create that list and then what we're going to respond with is just a
+
+61
+00:06:15,040 --> 00:06:23,360
+ concatenated list of those summaries so if we take a look at this tool we can look at the name we can look at the
+
+62
+00:06:23,360 --> 00:06:38,960
+ description we can convert it to an opai functions definition and then we can also call it with a given query
+
+63
+00:06:44,640 --> 00:06:49,840
+ so let's look up laying chain see what wikipedia knows about laying chain and it returns a bunch of
+
+64
+00:06:49,840 --> 00:06:54,240
+ things the first page that returns is the laying chain page so it's got the page in the summary
+
+65
+00:06:54,240 --> 00:06:59,120
+ if we look down we can see that the next page that returns is about prompt engineering in general
+
+66
+00:06:59,120 --> 00:07:05,120
+ and then the third page that it returns is about sentence embeddings so it's returned three different
+
+67
+00:07:05,120 --> 00:07:10,720
+ things in this large-ish text blob so far what we've done is we've created functions in our notebook and
+
+68
+00:07:10,720 --> 00:07:17,040
+ and then created open ai function definitions for those functions oftentimes functions that we want to
+
+69
+00:07:17,040 --> 00:07:25,600
+ interact with are exposed behind apis and oftentimes apis have a specific specification for their inputs
+
+70
+00:07:25,600 --> 00:07:31,840
+ and outputs called an open api specification and so what we're going to show now is we're going to show
+
+71
+00:07:31,840 --> 00:07:38,320
+ how you can take one of these open api specs and convert it into a list of opening ai function calls and
+
+72
+00:07:38,320 --> 00:07:43,840
+ and again this is really useful because a lot of functionality is behind apis and so having a
+
+73
+00:07:43,840 --> 00:07:51,520
+ general easy way to interact with those apis is going to prove very useful so we're going to import two
+
+74
+00:07:51,520 --> 00:07:59,920
+ things first we're going to import a function called open api spec to open ai function and this is going to
+
+75
+00:07:59,920 --> 00:08:05,440
+ take in an open api spec and can and return a list of open ai functions and then we're also have
+
+76
+00:08:06,320 --> 00:08:11,600
+ and then we also have this open api spec class and this is going to be used to load the open api spec
+
+77
+00:08:11,600 --> 00:08:19,200
+ in the first place let's take a look at this example open api spec we can see that there's a few paths
+
+78
+00:08:19,200 --> 00:08:26,880
+ defined first we have the pets path and there's a get endpoint and this lists all pets we can then see
+
+79
+00:08:26,880 --> 00:08:33,200
+ that there is a post endpoint for the same path and this creates a pet and finally we can see that there's
+
+80
+00:08:33,200 --> 00:08:38,800
+ another endpoint which takes in a pet id and then it gets information for that specific pet
+
+81
+00:08:38,800 --> 00:08:45,040
+ we're going to load the open api spec from this text and we're then going to pass that spec into the
+
+82
+00:08:45,040 --> 00:08:50,320
+ open api spec to open ai function and we're going to get back two things first we're going to get back
+
+83
+00:08:50,320 --> 00:08:55,840
+ the function definitions the open ai function definitions that we can use and then second we'll
+
+84
+00:08:55,840 --> 00:09:01,120
+ also get back a set of callables that we could actually call to invoke those functions because
+
+85
+00:09:01,120 --> 00:09:05,840
+ this is a made-up spec those callables aren't actually going to be real but if this was a real
+
+86
+00:09:05,840 --> 00:09:13,840
+ functioning spec those would work if we take a look at what's in this list we can see that we have
+
+87
+00:09:13,840 --> 00:09:19,840
+ three functions we first have the list pets function then we have the create pets function and then we have the show pet by id function
+
+88
+00:09:19,840 --> 00:09:27,120
+ we'll now show how we can use a language model to determine which of these functions to call
+
+89
+00:09:27,120 --> 00:09:29,920
+ so we're going to import our open ai model
+
+90
+00:09:29,920 --> 00:09:37,680
+ and we're then going to create a simple version of this model and we're going to pass in temperature
+
+91
+00:09:37,680 --> 00:09:41,600
+ equals zero again because when we're choosing between functions we probably want to do that in a pretty
+
+92
+00:09:41,600 --> 00:09:48,160
+ deterministic way and then we're also going to bind in the functions argument to this
+
+93
+00:09:48,160 --> 00:09:54,480
+ we can now try this out on a few different sentences and see what happens so we can pass in
+
+94
+00:09:54,480 --> 00:10:04,000
+ what are three pets names and we can see that it will recognize that it needs to call the list pets
+
+95
+00:10:04,000 --> 00:10:14,960
+ function with parameters limit equals three we can try another one we can call it with tell me about pet with id
+
+96
+00:10:14,960 --> 00:10:22,400
+ 42 and we can see that it calls the show pet by id function with pet id 42
+
+97
+00:10:22,400 --> 00:10:28,480
+ now is a good time to pause and try this out on a few more sample sentences and see what happens
+
+98
+00:10:29,440 --> 00:10:34,480
+ in the example above we showed how you could use the open ai model and choose between different
+
+99
+00:10:34,480 --> 00:10:38,880
+ functions to take now we're going to make that a bit more applied we're going to use that on the two
+
+100
+00:10:38,880 --> 00:10:44,400
+ real functions that we created earlier the weather tool and the wikipedia tool we're going to use the
+
+101
+00:10:44,400 --> 00:10:50,160
+ open ai model to decide which function to invoke and then we're actually going to do the step of invoking
+
+102
+00:10:50,160 --> 00:10:55,040
+ that as well this creates something called routing which is where we're using a language model
+
+103
+00:10:55,040 --> 00:11:02,080
+ to determine which path to take and also the inputs to that path first we're going to create the list
+
+104
+00:11:02,080 --> 00:11:06,880
+ of open ai function specs to use so we're going to call format tool to open ai functions on our two
+
+105
+00:11:06,880 --> 00:11:12,080
+ tools search wikipedia and get current temperature and then we're going to create a model setting temperature
+
+106
+00:11:12,080 --> 00:11:18,400
+ equals zero and binding those functions
+
+107
+00:11:18,400 --> 00:11:27,920
+ let's then call that model on a few sentences so let's call it on what is the weather in sf right now
+
+108
+00:11:27,920 --> 00:11:33,680
+ we can see that it uses the get current temperature tool with arguments for the latitude and longitude
+
+109
+00:11:39,840 --> 00:11:44,560
+ if we call it on what is lane chain we can see that it uses the search wikipedia tool with the query
+
+110
+00:11:44,560 --> 00:11:49,600
+ equals to lane chain we can then take it to the next step and add in a prompt before the language
+
+111
+00:11:49,600 --> 00:11:53,600
+ model call and so we're going to create a super simple chain where there's just this prompt and the
+
+112
+00:11:53,600 --> 00:11:57,680
+ model the prompt is going to be very simple it just says a system message which says you are a helpful
+
+113
+00:11:57,680 --> 00:12:02,800
+ but sassy assistant but we're showing this because when you do need to customize the prompt to make it
+
+114
+00:12:02,800 --> 00:12:07,360
+ more specific to the type of tasks that you're trying to solve this will show you how to set up that pipeline
+
+115
+00:12:09,840 --> 00:12:16,400
+ and now if we invoke the chain on the same inputs we can see that we get back the same responses
+
+116
+00:12:16,400 --> 00:12:22,000
+ so this is good and useful but it's still a little bit annoying because we have this ai message
+
+117
+00:12:22,000 --> 00:12:27,200
+ and we have the content which is null we have the additional quarks which are themselves a dictionary
+
+118
+00:12:27,200 --> 00:12:32,000
+ which then has function calls which is itself a dictionary and so what we want to do
+
+119
+00:12:32,000 --> 00:12:36,560
+ is we're going to convert this into a slightly more usable and workable format
+
+120
+00:12:37,520 --> 00:12:41,840
+ as well let's think about the possible end states for this response from the language model
+
+121
+00:12:41,840 --> 00:12:47,680
+ the two main ones are first when it decides to call a tool and second when it doesn't decide to
+
+122
+00:12:47,680 --> 00:12:52,320
+ call a tool when it doesn't decide to call a tool the main thing that we're interested in
+
+123
+00:12:52,320 --> 00:12:57,920
+ is the value of content here when it does decide to call a tool the main thing that we're interested
+
+124
+00:12:57,920 --> 00:13:03,360
+ in is the tool that it decides to call as well as the input to that tool for the input to that tool
+
+125
+00:13:03,360 --> 00:13:09,360
+ it would be really nice if it wasn't just a string of this json blob but rather parsed out into a
+
+126
+00:13:09,360 --> 00:13:15,120
+ dictionary like we saw done in the tagging and extraction sections we can do this with a new output
+
+127
+00:13:15,120 --> 00:13:22,160
+ parser the open ai functions agent output parser this is going to take in the output and parse it into
+
+128
+00:13:22,160 --> 00:13:28,560
+ a format which has that information first whether it's just a function call or whether it's a response
+
+129
+00:13:28,560 --> 00:13:33,520
+ and then second if it is a function call what is the function that should be called and what is the
+
+130
+00:13:33,520 --> 00:13:39,120
+ input we'll create a chain by combining the prompt above with the model in this new output parser
+
+131
+00:13:40,160 --> 00:13:45,680
+ and then we'll invoke the chain on the same input as before let's now take a look at what result
+
+132
+00:13:45,680 --> 00:13:50,080
+ looks like so if we look at the type of result it is an agent action and that's because what it's
+
+133
+00:13:50,080 --> 00:13:57,600
+ doing is it's going to be calling one of these tools and so if we call result.tool we can now see
+
+134
+00:13:57,600 --> 00:14:04,720
+ exactly what that tool is and if we call result.tool input we have this dictionary of inputs that we want
+
+135
+00:14:04,720 --> 00:14:12,160
+ to pass the tool from there we can do things like pass that tool input into the function itself
+
+136
+00:14:12,160 --> 00:14:16,800
+ so we can pass this in and we can get back the response for the current temperature in sf
+
+137
+00:14:16,800 --> 00:14:21,440
+ what about when there's no tool to call what about when we're just saying hi
+
+138
+00:14:21,440 --> 00:14:27,040
+ if we look at this and we look at the type of this result we can see that we get back in agent finish
+
+139
+00:14:27,840 --> 00:14:34,720
+ if we then look at result.return values which are on all agent finish classes we can see that we get
+
+140
+00:14:34,720 --> 00:14:41,200
+ an output of hello how can i assist you today so we've shown here how depending on the input it could
+
+141
+00:14:41,200 --> 00:14:46,720
+ either be an agent action or an agent finish what exactly is going on under the hood what's happening
+
+142
+00:14:46,720 --> 00:14:53,200
+ is quite simple if a function is called then we take that as an agent action if a function is not called
+
+143
+00:14:53,200 --> 00:14:58,640
+ and it's just a normal response then we represent that as an agent finish we've shown how we can use
+
+144
+00:14:58,640 --> 00:15:04,160
+ a language model to determine what action to take or whether to take an action at all and have this
+
+145
+00:15:04,160 --> 00:15:10,000
+ represented as an agent finish or an agent action the last thing we're going to add in is actually
+
+146
+00:15:10,000 --> 00:15:16,320
+ taking that action if appropriate in order to do that we're going to define a route function this route
+
+147
+00:15:16,320 --> 00:15:22,960
+ function is going to act on the result of the language model and do the corresponding steps so we're going to
+
+148
+00:15:22,960 --> 00:15:28,000
+ check if it's an agent finish and if it is an agent finish we're just going to return the values of
+
+149
+00:15:28,000 --> 00:15:34,320
+ output if it's not an agent finish so if it is an agent action we're going to look up the correct tool
+
+150
+00:15:34,320 --> 00:15:39,280
+ to use and then we're then going to run that tool with the tool input as specified
+
+151
+00:15:39,280 --> 00:15:46,080
+ let's create a new chain which is the same as before except now we're adding in this last step of
+
+152
+00:15:46,080 --> 00:15:50,880
+ this route function we're going to construct a prompt we're going to pass it to the model we're going to
+
+153
+00:15:50,880 --> 00:15:55,600
+ parse that output into an agent finish or an agent action which we're then going to pass into this
+
+154
+00:15:55,600 --> 00:15:56,240
+ route function
+
+155
+00:15:56,240 --> 00:16:03,040
+ let's now call an example where we're asking what the weather is so what is the weather in san
+
+156
+00:16:03,040 --> 00:16:10,160
+ francisco right now if we look at the result we get back the current temperature is 22.9 degrees celsius
+
+157
+00:16:10,160 --> 00:16:18,320
+ let's now do it on an input where we want it to call wikipedia so let's invoke it with what is lane chain if we
+
+158
+00:16:18,320 --> 00:16:23,680
+ look at the result when it's passed back we get back this big blob which is what we got back in the
+
+159
+00:16:23,680 --> 00:16:29,040
+ beginning when we were looking up what lane chain is in the wikipedia tool and then finally let's try
+
+160
+00:16:29,040 --> 00:16:37,200
+ it out on something really simple so if we just do chain invoke and pass in some simple input like just
+
+161
+00:16:37,200 --> 00:16:44,720
+ high we'll just get back a nice simple hello how can i assist you today now is a good time to pause and try this
+
+162
+00:16:44,720 --> 00:16:50,240
+ out on a few different inputs of your choice it's also a good time to try creating new tools and add
+
+163
+00:16:50,240 --> 00:16:55,920
+ those into the list of functions that could be called that wraps up the end of this lesson we've
+
+164
+00:16:55,920 --> 00:17:01,200
+ covered what tools are and shown how we can route between them not only using the language model to
+
+165
+00:17:01,200 --> 00:17:05,760
+ determine what actions to take but then actually adding in a routing step that takes that action
+
+166
+00:17:06,320 --> 00:17:11,520
+ what we'll show in the next lesson is how we can combine this into a loop that continues to iterate
+
+167
+00:17:11,520 --> 00:17:15,840
+ until we reach the agent finish see you there
+

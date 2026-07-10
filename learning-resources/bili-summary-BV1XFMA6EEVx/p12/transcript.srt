@@ -1,0 +1,688 @@
+1
+00:00:00,000 --> 00:00:05,920
+In this lesson, we'll combine what we learned in the previous two lessons and go over how
+
+2
+00:00:05,920 --> 00:00:09,820
+ to use OpenAI functions with LaneChainExpress and Language.
+
+3
+00:00:09,820 --> 00:00:15,480
+ We'll also introduce Pydantic, a Python library that makes it easier to construct OpenAI
+
+4
+00:00:15,480 --> 00:00:16,480
+ functions.
+
+5
+00:00:16,480 --> 00:00:18,220
+ Let's get to it.
+
+6
+00:00:18,220 --> 00:00:19,220
+ So what is Pydantic?
+
+7
+00:00:19,220 --> 00:00:22,760
+ Pydantic is a data validation library for Python.
+
+8
+00:00:22,760 --> 00:00:26,420
+ It makes it really easy to define different schemas, and then it also makes it really
+
+9
+00:00:26,420 --> 00:00:29,560
+ easy to export those schemas to JSON.
+
+10
+00:00:29,560 --> 00:00:33,880
+ That's going to come in handy because we can use the Pydantic objects to create the
+
+11
+00:00:33,880 --> 00:00:36,240
+ OpenAI functions descriptions.
+
+12
+00:00:36,240 --> 00:00:40,920
+ If you remember, those OpenAI function descriptions were a big blob of JSON with a bunch of different
+
+13
+00:00:40,920 --> 00:00:45,920
+ components, and so rather than having to think about all of that, we can use Pydantic.
+
+14
+00:00:45,920 --> 00:00:49,460
+ The way that we'll do that is we'll define a Pydantic class.
+
+15
+00:00:49,460 --> 00:00:53,560
+ It's very similar to a normal Python class, so you can see them side by side here.
+
+16
+00:00:53,560 --> 00:00:56,820
+ And the main difference is, rather than having an init method, we're just going to list the
+
+17
+00:00:56,820 --> 00:01:00,580
+ attributes and their type under the class definition.
+
+18
+00:01:00,580 --> 00:01:02,620
+ We're not actually going to use these classes for anything.
+
+19
+00:01:02,620 --> 00:01:07,040
+ We're just going to use it to create that OpenAI functions JSON.
+
+20
+00:01:07,040 --> 00:01:10,580
+ Let's take a look at what this looks like in practice.
+
+21
+00:01:10,580 --> 00:01:14,900
+ First we're going to load in all our normal environment variables.
+
+22
+00:01:14,900 --> 00:01:18,700
+ We'll then import a few Pydantic classes as well as some type pins that we'll use later
+
+23
+00:01:18,700 --> 00:01:19,700
+ on.
+
+24
+00:01:19,700 --> 00:01:23,700
+ We'll start with just a normal Python class.
+
+25
+00:01:23,700 --> 00:01:25,460
+ So this is a normal Python class for user.
+
+26
+00:01:25,460 --> 00:01:31,300
+ It has an init method, and we pass in name, age, and email.
+
+27
+00:01:31,300 --> 00:01:38,180
+ So if we create an instance of this, we can see that we have a normal Python class, and we
+
+28
+00:01:38,180 --> 00:01:42,180
+ can access those elements accordingly.
+
+29
+00:01:42,180 --> 00:01:48,540
+ If we pass in an invalid value for age, so here we have bar, which is a string, and we expect
+
+30
+00:01:48,540 --> 00:01:54,400
+ it to be an integer, we can see that it creates it okay.
+
+31
+00:01:54,400 --> 00:01:56,600
+ And if we look at the element, we have it accessed.
+
+32
+00:01:56,600 --> 00:01:59,660
+ And that's actually not good, because we do want to have some validation that if we say
+
+33
+00:01:59,660 --> 00:02:02,620
+ it's an integer, it actually is an integer.
+
+34
+00:02:02,620 --> 00:02:04,980
+ Let's now take a look at doing this with Pydantic.
+
+35
+00:02:04,980 --> 00:02:09,540
+ We can now have our class inherit from base model, and this is imported from Pydantic above.
+
+36
+00:02:09,540 --> 00:02:13,540
+ And then we can define our attributes just right under the class definition with various
+
+37
+00:02:13,540 --> 00:02:14,540
+ type pins.
+
+38
+00:02:14,540 --> 00:02:19,640
+ So we're saying name is a string, age is an integer, email is another string.
+
+39
+00:02:19,640 --> 00:02:23,860
+ We can create an object as normal, and if we inspect this object, we can actually see that
+
+40
+00:02:23,860 --> 00:02:27,780
+ it prints out nicely all the different elements, and so this is a nice benefit of Pydantic as
+
+41
+00:02:27,780 --> 00:02:28,780
+ well.
+
+42
+00:02:28,780 --> 00:02:35,780
+ And similarly, we can access individual elements like that.
+
+43
+00:02:35,780 --> 00:02:40,380
+ Now if we try to pass in an invalid argument for age, if we try to pass in a string of value
+
+44
+00:02:40,380 --> 00:02:43,340
+ bar, we can see that it raises a validation error.
+
+45
+00:02:43,340 --> 00:02:46,460
+ So this is something that Pydantic is doing under the hood, it's actually doing some additional
+
+46
+00:02:46,460 --> 00:02:52,100
+ validation on the inputs that we pass in, which is another nice benefit of Pydantic.
+
+47
+00:02:52,100 --> 00:02:56,700
+ One other thing we can do with Pydantic is we can actually nest these data structures.
+
+48
+00:02:56,700 --> 00:03:01,000
+ So here we're going to define a class type, and this is a Pydantic model, so it's inheriting
+
+49
+00:03:01,000 --> 00:03:02,500
+ from base model.
+
+50
+00:03:02,500 --> 00:03:06,320
+ And then the only element on this class is going to be students, and students is going to be
+
+51
+00:03:06,320 --> 00:03:10,520
+ a list of P user, which we defined above.
+
+52
+00:03:10,520 --> 00:03:14,060
+ And now we can create an object that has this exact structure.
+
+53
+00:03:14,060 --> 00:03:18,700
+ So we're passing in a list of students, in this case one, and we're getting an object back.
+
+54
+00:03:18,700 --> 00:03:23,320
+ And if we look at what this object looks like, we can see again that it's printed out nicely.
+
+55
+00:03:23,320 --> 00:03:26,120
+ And so the point here is that you can nest Pydantic objects.
+
+56
+00:03:26,120 --> 00:03:27,620
+ This is a brief introduction to Pydantic.
+
+57
+00:03:27,620 --> 00:03:31,620
+ If you want to learn more, I'd encourage you to go look at their docs.
+
+58
+00:03:31,620 --> 00:03:35,700
+ Or now is also a good time to play around with it a little bit, try out some different type
+
+59
+00:03:35,700 --> 00:03:38,820
+ hints, see what it ends up looking like.
+
+60
+00:03:38,820 --> 00:03:44,500
+ Now we're going to talk about how to use Pydantic to create these OpenAI function definitions.
+
+61
+00:03:44,500 --> 00:03:48,920
+ So what we're going to do is we're going to create a Pydantic object that we can then cast
+
+62
+00:03:48,920 --> 00:03:52,460
+ to that JSON schema that we went over in lesson one.
+
+63
+00:03:52,460 --> 00:03:56,180
+ Importantly here, the Pydantic object that we create isn't actually going to do anything.
+
+64
+00:03:56,180 --> 00:04:00,300
+ We're just using it to create this schema.
+
+65
+00:04:00,300 --> 00:04:03,740
+ We'll create a class called WeatherSearch, and this lines up with the function that we created
+
+66
+00:04:03,740 --> 00:04:04,900
+ earlier.
+
+67
+00:04:04,900 --> 00:04:06,620
+ We're inheriting from base model.
+
+68
+00:04:06,620 --> 00:04:10,340
+ You can see also here that we're adding a doc string, and we'll see how this gets reflected
+
+69
+00:04:10,340 --> 00:04:11,720
+ in later on.
+
+70
+00:04:11,720 --> 00:04:16,320
+ And then we're having a single argument called airport code, which we type in as a string.
+
+71
+00:04:16,320 --> 00:04:22,440
+ And then we also add in this field description for airport code to get the weather for.
+
+72
+00:04:22,440 --> 00:04:27,100
+ Field is a Pydantic module that we can use to set things like the description of various
+
+73
+00:04:27,100 --> 00:04:29,400
+ fields.
+
+74
+00:04:29,400 --> 00:04:31,940
+ From there, we're going to import a function from linkchain.
+
+75
+00:04:31,940 --> 00:04:37,080
+ From linkchain utils OpenAI functions, import convert Pydantic to OpenAI functions.
+
+76
+00:04:37,080 --> 00:04:39,180
+ This function is going to do exactly what it sounds like.
+
+77
+00:04:39,180 --> 00:04:43,560
+ It's going to convert a Pydantic object to the JSON schema that's expected for an OpenAI
+
+78
+00:04:43,560 --> 00:04:50,160
+ function.
+
+79
+00:04:50,160 --> 00:04:54,780
+ And so if we pass the class in here, and notice that we're passing in the name of the class,
+
+80
+00:04:54,780 --> 00:04:57,140
+ we're not initializing it with an object.
+
+81
+00:04:57,140 --> 00:05:00,500
+ We're passing in the class type, we get back weather function.
+
+82
+00:05:00,500 --> 00:05:04,740
+ If we look at what weather function is, this is a JSON schema in the same form as what we
+
+83
+00:05:04,740 --> 00:05:07,760
+ passed into OpenAI in the first lesson.
+
+84
+00:05:07,760 --> 00:05:09,520
+ We can see that it has name weather search.
+
+85
+00:05:09,520 --> 00:05:11,140
+ So this is the name of the Python class.
+
+86
+00:05:11,140 --> 00:05:13,140
+ We can also see that it has a description.
+
+87
+00:05:13,140 --> 00:05:16,680
+ And this is pulled from the doc string here.
+
+88
+00:05:16,680 --> 00:05:22,200
+ For parameters, we can see that it has a list of properties, one of which is airport code,
+
+89
+00:05:22,200 --> 00:05:24,200
+ or the only one of which is airport code.
+
+90
+00:05:24,200 --> 00:05:27,140
+ And this is pulled from the arguments that are listed here.
+
+91
+00:05:27,140 --> 00:05:31,540
+ Airport code itself has a description, and that's pulled from the field description here.
+
+92
+00:05:31,540 --> 00:05:33,300
+ And then it has a type, which is string.
+
+93
+00:05:33,300 --> 00:05:37,920
+ We've made some assumptions about how people would want to create OpenAI functions.
+
+94
+00:05:37,920 --> 00:05:43,920
+ So, one thing in particular that we've done is we've made this doc string here required, because
+
+95
+00:05:43,920 --> 00:05:46,300
+ that gets put in to the description of the function.
+
+96
+00:05:46,300 --> 00:05:48,920
+ And as we talked about earlier, the functions really are prompts.
+
+97
+00:05:48,920 --> 00:05:52,600
+ And so if you're passing in a function, you want to give a good description of what that
+
+98
+00:05:52,600 --> 00:05:54,000
+ function is doing.
+
+99
+00:05:54,000 --> 00:05:58,880
+ And so we've added some checks that enforce that you are passing in the description.
+
+100
+00:05:58,880 --> 00:06:05,260
+ So, if we have a separate class called weather search one, and if we call convert pidantic
+
+101
+00:06:05,260 --> 00:06:12,200
+ to open AI function on this, we actually get an error because of this enforcement that we're
+
+102
+00:06:12,200 --> 00:06:14,880
+ using a description.
+
+103
+00:06:14,880 --> 00:06:17,280
+ We don't enforce descriptions for everywhere though.
+
+104
+00:06:17,280 --> 00:06:22,120
+ So if we remove the airport code description and create a new tool called weather search two,
+
+105
+00:06:22,120 --> 00:06:29,120
+ and then we call convert pidantic to open AI function on this, we can see that it succeeds.
+
+106
+00:06:29,120 --> 00:06:34,540
+ Now, however, you'll see that there's no description for the airport code argument.
+
+107
+00:06:34,540 --> 00:06:38,300
+ Descriptions to arguments are optional in link chain, they're not required.
+
+108
+00:06:38,300 --> 00:06:43,240
+ Let's now look at combining open AI functions with link chain expression language.
+
+109
+00:06:43,240 --> 00:06:53,480
+ So first, let's import the chat model.
+
+110
+00:06:53,480 --> 00:06:58,360
+ We'll then create an instance of this model.
+
+111
+00:06:58,360 --> 00:07:01,180
+ And for now, we'll just interact with it directly.
+
+112
+00:07:01,180 --> 00:07:07,780
+ So specifically what we're going to do is we're going to call invoke on this model.
+
+113
+00:07:07,780 --> 00:07:10,160
+ Let's ask a question that's going to require the weather function.
+
+114
+00:07:10,160 --> 00:07:16,460
+ So what is the weather in SF today?
+
+115
+00:07:16,460 --> 00:07:20,340
+ And then we can also pass in keyword arguments.
+
+116
+00:07:20,340 --> 00:07:26,440
+ So we'll pass in this weather function that we defined above.
+
+117
+00:07:26,440 --> 00:07:32,600
+ And so here, what we get back from the model is going to be a content message that's null.
+
+118
+00:07:32,600 --> 00:07:36,880
+ And then in the additional quarks field, we're going to have this function call parameter,
+
+119
+00:07:36,880 --> 00:07:41,180
+ which returns a function call with name weather search, and then arguments airport code SFO.
+
+120
+00:07:41,180 --> 00:07:43,180
+ So it's using the function appropriately.
+
+121
+00:07:43,180 --> 00:07:48,480
+ What we can also do is we can bind the function invocations to the model.
+
+122
+00:07:48,480 --> 00:07:53,480
+ And one reason for doing this is so that we could just pass that model plus functions around
+
+123
+00:07:53,480 --> 00:07:58,480
+ together and not have to worry about always passing in these function keyword arguments.
+
+124
+00:07:58,480 --> 00:08:10,780
+ So here, if we do model with function, and set that equal to model dot bind functions equals weather function,
+
+125
+00:08:10,780 --> 00:08:14,780
+ we can now call this model with function directly.
+
+126
+00:08:14,780 --> 00:08:25,080
+ And we can just pass in what is the weather in SF.
+
+127
+00:08:25,080 --> 00:08:28,080
+ And now we can see that it responds and it's still using the function call.
+
+128
+00:08:28,080 --> 00:08:33,080
+ And that's because it still knows that the function calls exist because we've bound them to the model like that.
+
+129
+00:08:33,080 --> 00:08:45,380
+ And so we can do the same thing and we can force the model to use a function.
+
+130
+00:08:45,380 --> 00:08:49,380
+ And so we can bind the weather function as above.
+
+131
+00:08:49,380 --> 00:08:53,180
+ And then we can also bind this function call argument.
+
+132
+00:08:53,180 --> 00:09:03,380
+ And we set this equal to name and then the value of the function that we want to call, which is weather search.
+
+133
+00:09:03,380 --> 00:09:10,080
+ And now if we call this, we can see that it's again calling the function call.
+
+134
+00:09:10,080 --> 00:09:15,280
+ Again, this is actually expected and desired because it's a question about weather.
+
+135
+00:09:15,280 --> 00:09:16,480
+ And so we should be calling it.
+
+136
+00:09:16,480 --> 00:09:20,380
+ We can maybe see exactly a better representation of this if we just say hi.
+
+137
+00:09:20,380 --> 00:09:23,580
+ And then we can see that it's still forcing it to call a function.
+
+138
+00:09:23,580 --> 00:09:26,180
+ And it's just calling it with airport code LAX.
+
+139
+00:09:26,180 --> 00:09:33,580
+ We can now use this model, which has the function bound to it in a chain like we'd normally use a model.
+
+140
+00:09:33,580 --> 00:09:37,780
+ And so in order to do that, we're going to import a prompt template.
+
+141
+00:09:45,180 --> 00:09:54,980
+ We'll create a really simple prompt template, so we'll do something like chat prompt template from messages.
+
+142
+00:09:54,980 --> 00:10:02,780
+ We'll create a really simple system message.
+
+143
+00:10:09,480 --> 00:10:11,580
+ And then we'll add our user input here.
+
+144
+00:10:11,580 --> 00:10:23,580
+ We'll then create a chain by just piping together prompt and the model with the function.
+
+145
+00:10:23,580 --> 00:10:25,380
+ So we'll still let it decide what to do.
+
+146
+00:10:29,780 --> 00:10:42,780
+ And now we can do chain.invoke with input, what is the weather in SF, and it pipes it through the prompt and then to the model at the end.
+
+147
+00:10:42,780 --> 00:10:50,880
+ Our next step up is we can pass in a list of functions and let the language model decide which one to use based on the question context.
+
+148
+00:10:51,880 --> 00:11:01,680
+ So here we're going to create another Pydantic model, this one called artist search, and we're going to have the description and the usage be call this to get the names of songs by a particular artist.
+
+149
+00:11:01,680 --> 00:11:08,780
+ We're going to add two arguments, the artist name and then n, which is an integer corresponding to the number of results to look up.
+
+150
+00:11:10,780 --> 00:11:18,680
+ We'll then create a new list of functions, and this time there's going to be two, weather search and artist search, and we're going to use convert Pydantic to OpenAI function on both of them.
+
+151
+00:11:18,680 --> 00:11:23,680
+ And we're going to create a new object called model with functions.
+
+152
+00:11:23,680 --> 00:11:26,480
+ And we're going to do model.bind.
+
+153
+00:11:26,480 --> 00:11:30,180
+ And we're going to attach the functions here.
+
+154
+00:11:31,980 --> 00:11:36,080
+ And now let's try invoking this with different inputs and see what happens.
+
+155
+00:11:36,080 --> 00:11:41,380
+ So first ask it, what is the weather in SF?
+
+156
+00:11:41,380 --> 00:11:43,380
+ And here it responds.
+
+157
+00:11:43,380 --> 00:11:45,080
+ It's going to do a function call.
+
+158
+00:11:45,080 --> 00:11:46,980
+ It's going to call the weather search tool.
+
+159
+00:11:46,980 --> 00:11:49,480
+ Let's try this again, but let's change it up.
+
+160
+00:11:49,480 --> 00:11:51,180
+ Let's ask it something about music.
+
+161
+00:11:51,180 --> 00:11:58,680
+ So let's say, what are three songs by Taylor Swift?
+
+162
+00:12:00,480 --> 00:12:06,380
+ And here we get is calling the artist search, artist name is Taylor Swift, and then n is equal to three.
+
+163
+00:12:06,380 --> 00:12:08,380
+ So it recognizes that we want three songs.
+
+164
+00:12:08,380 --> 00:12:11,680
+ And again, here we're not forcing it to call a function.
+
+165
+00:12:11,680 --> 00:12:16,980
+ So if we just say, hi, it should respond with something that doesn't use functions at all.
+
+166
+00:12:16,980 --> 00:12:18,780
+ So hello, how can I assist you today?
+
+167
+00:12:18,780 --> 00:12:21,680
+ Now's a good point to pause and try this out.
+
+168
+00:12:21,680 --> 00:12:22,080
+ Try it.
+
+169
+00:12:22,080 --> 00:12:29,980
+ Try passing in a few different Pydantic objects to convert Pydantic to OpenAI functions, getting a list of multiple functions, binding those to a model,
+
+170
+00:12:29,980 --> 00:12:33,480
+ and then passing in various inputs and seeing what the response turns out to be.
+
+171
+00:12:33,480 --> 00:12:39,380
+ That's it for an overview of using link chain expression language and OpenAI functions together.
+
+172
+00:12:39,380 --> 00:12:46,680
+ In the next lesson, we're going to talk about one of the main use cases for this type of functionality, tagging and extraction.
+

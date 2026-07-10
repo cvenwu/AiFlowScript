@@ -1,0 +1,191 @@
+1
+00:00:00,000 --> 00:00:03,839
+Congratulations. You now have a good hand on how to build your own agents.
+
+2
+00:00:04,639 --> 00:00:09,120
+With what you have learned today, you can build simple or quite complex agents.
+
+3
+00:00:09,679 --> 00:00:14,800
+But before we go, I wanted to cover some of the agent flows that we couldn't build today,
+
+4
+00:00:14,800 --> 00:00:16,399
+but I think you should know about.
+
+5
+00:00:19,280 --> 00:00:23,519
+The first architecture I want to talk about is a multi-agent architecture.
+
+6
+00:00:24,160 --> 00:00:28,560
+And we covered this a little bit with the writing agent, but just to make it a little bit more
+
+7
+00:00:28,560 --> 00:00:35,679
+concrete. A multi-agent architecture is when multiple different agents work on the same shared
+
+8
+00:00:35,679 --> 00:00:41,920
+state. And so these agents could be just a prompt and a language model as they were in the writer.
+
+9
+00:00:41,920 --> 00:00:46,079
+They could also have different tools that they could call this, so they could be a prompt,
+
+10
+00:00:46,079 --> 00:00:50,560
+a language model, and tools, and they could actually have their own loops inside them.
+
+11
+00:00:51,280 --> 00:00:55,680
+The crucial thing here and the differentiator between the next thing that we'll see is that they
+
+12
+00:00:55,679 --> 00:01:02,000
+all work on the same shared state, so they're passing that around from one agent to the next.
+
+13
+00:01:02,880 --> 00:01:07,840
+Let's contrast that with a supervisor agent. So here we have a supervisor
+
+14
+00:01:07,840 --> 00:01:13,200
+which is calling into some subagents. And here the supervisor will actually determine what the
+
+15
+00:01:13,200 --> 00:01:18,640
+input to that agent is. And those agents themselves could have different states inside them.
+
+16
+00:01:18,640 --> 00:01:24,480
+They're a graph. And so there's not necessarily the same concept of a shared state.
+
+17
+00:01:24,480 --> 00:01:30,000
+Other than that, this is pretty similar to the multi-agent framework. It just really emphasizes
+
+18
+00:01:30,000 --> 00:01:35,359
+that there's just one supervisor that's in charge of routing and coordinating these other agents.
+
+19
+00:01:36,159 --> 00:01:41,040
+This is often good when you can use a really powerful language model as the supervisor,
+
+20
+00:01:41,040 --> 00:01:45,439
+because doing the supervision, doing this planning requires a lot of intelligence.
+
+21
+00:01:46,320 --> 00:01:51,840
+One term that's popped up a bunch recently is flow engineering. This comes from an alpha-coding
+
+22
+00:01:51,840 --> 00:01:58,400
+paper where they achieve state-of-the-art coding performance, and they do it with a very
+
+23
+00:01:58,400 --> 00:02:05,840
+graphical-like solution like this. And so looking at it, you can see that it's basically a pipeline,
+
+24
+00:02:05,840 --> 00:02:11,840
+but there are a few key nodes where there's actually a loop. So there's loops on the initial code
+
+25
+00:02:11,840 --> 00:02:17,199
+solution. There's loops when you iterate on public tests, and there's loops when you iterate on AI
+
+26
+00:02:18,160 --> 00:02:23,520
+tests. And so this is an interesting graph because you have this very directed flow up until a
+
+27
+00:02:23,520 --> 00:02:31,040
+certain point, and then you have these iterations. This is a really bespoke architecture
+
+28
+00:02:31,040 --> 00:02:37,520
+for a particular coding problem, but the concept of flow engineering extends more broadly,
+
+29
+00:02:37,520 --> 00:02:43,120
+and it generally refers to thinking of what is the right information flow for your agents to take
+
+30
+00:02:43,120 --> 00:02:52,480
+action and think. In that vein, a common paradigm is to have a plan and execute style flow,
+
+31
+00:02:53,120 --> 00:02:59,360
+where first you do an explicit planning step up front, and then you start to execute on that plan.
+
+32
+00:03:00,080 --> 00:03:05,840
+So you may come up with a few steps that a sub agent should go do. It can then go do one,
+
+33
+00:03:05,840 --> 00:03:09,520
+come back, maybe you update the plan, maybe you don't, this is where there are some different
+
+34
+00:03:09,520 --> 00:03:14,880
+variants, but then it goes on to the next thing, and it does that, and it comes back and tell us
+
+35
+00:03:14,880 --> 00:03:20,320
+finishes the plan, then you maybe check to see if the plan is successfully accomplished or whether
+
+36
+00:03:20,320 --> 00:03:26,160
+you need to replan, and then if all's good, you return to the user. The final one I want to touch
+
+37
+00:03:26,160 --> 00:03:32,960
+on is a really interesting paper called language agent tree search. So this basically does a tree
+
+38
+00:03:32,960 --> 00:03:38,320
+search over the state of possible actions, and so it first generates an action, it then reflects,
+
+39
+00:03:38,879 --> 00:03:44,000
+and then goes down based on that action and generates some other sub actions, reflects on that,
+
+40
+00:03:44,000 --> 00:03:50,239
+and throughout all these reflections, it can basically reflect on where in the tree of action states
+
+41
+00:03:50,239 --> 00:03:56,479
+it wants to jump back to. So we can back propagate and update parent nodes to have more information
+
+42
+00:03:56,479 --> 00:04:03,359
+which may inform future directions from that previous state. For this in particular, you can really see
+
+43
+00:04:03,440 --> 00:04:09,760
+by persistence is really important because you need to be able to go back in time to previous states.
+
+44
+00:04:11,040 --> 00:04:15,280
+These are just some of the emerging paradigms for creating more complex,
+
+45
+00:04:15,280 --> 00:04:21,840
+agentic flows. Langgraph is really aimed at being highly controllable and allowing you to create
+
+46
+00:04:21,840 --> 00:04:29,199
+these cyclical or non-cyclical flows. This degree of controllability is really what differentiates it
+
+47
+00:04:29,199 --> 00:04:33,839
+from other frameworks, and it's what we're really excited about going forward,
+
+48
+00:04:33,839 --> 00:04:44,079
+as we view this to be crucial to creating agents that actually work.

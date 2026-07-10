@@ -219,3 +219,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Media files (large binaries not tracked in git)
+*.mp4
+*.wav

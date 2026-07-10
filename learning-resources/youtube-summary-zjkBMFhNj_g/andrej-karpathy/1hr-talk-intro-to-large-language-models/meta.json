@@ -1,0 +1,124 @@
+{
+  "videoId": "zjkBMFhNj_g",
+  "title": "[1hr Talk] Intro to Large Language Models",
+  "channel": "Andrej Karpathy",
+  "channelId": "UCXUPKJO5MZQN11PqgIvyuvQ",
+  "description": "This is a 1 hour general-audience introduction to Large Language Models: the core technical component behind systems like ChatGPT, Claude, and Bard. What they are, where they are headed, comparisons and analogies to present-day operating systems, and some of the security-related challenges of this new computing paradigm.\nAs of November 2023 (this field moves fast!).\n\nContext: This video is based on the slides of a talk I gave recently at the AI Security Summit. The talk was not recorded but a lot of people came to me after and told me they liked it. Seeing as I had already put in one long weekend of work to make the slides, I decided to just tune them a bit, record this round 2 of the talk and upload it here on YouTube. Pardon the random background, that's my hotel room during the thanksgiving break.\n\n- Slides as PDF: https://drive.google.com/file/d/1pxx_ZI7O-Nwl7ZLNk5hI3WzAsTLwvNU7/view?usp=share_link (42MB)\n- Slides. as Keynote: https://drive.google.com/file/d/1FPUpFMiCkMRKPFjhi9MAhby68MHVqe8u/view?usp=share_link (140MB)\n\nFew things I wish I said (I'll add items here as they come up):\n- The dreams and hallucinations do not get fixed with finetuning. Finetuning just \"directs\" the dreams into \"helpful assistant dreams\". Always be careful with what LLMs tell you, especially if they are telling you something from memory alone. That said, similar to a human, if the LLM used browsing or retrieval and the answer made its way into the \"working memory\" of its context window, you can trust the LLM a bit more to process that information into the final answer. But TLDR right now, do not trust what LLMs say or do. For example, in the tools section, I'd always recommend double-checking the math/code the LLM did.\n- How does the LLM use a tool like the browser? It emits special words, e.g. |BROWSER|. When the code \"above\" that is inferencing the LLM detects these words it captures the output that follows, sends it off to a tool, comes back with the result and continues the generation. How does the LLM know to emit these special words? Finetuning datasets teach it how and when to browse, by example. And/or the instructions for tool use can also be automatically placed in the context window (in the “system message”).\n- You might also enjoy my 2015 blog post \"Unreasonable Effectiveness of Recurrent Neural Networks\". The way we obtain base models today is pretty much identical on a high level, except the RNN is swapped for a Transformer. http://karpathy.github.io/2015/05/21/rnn-effectiveness/\n- What is in the run.c file? A bit more full-featured 1000-line version hre: https://github.com/karpathy/llama2.c/blob/master/run.c\n\nChapters:\nPart 1: LLMs\n00:00:00 Intro: Large Language Model (LLM) talk\n00:00:20 LLM Inference\n00:04:17 LLM Training\n00:08:58 LLM dreams\n00:11:22 How do they work?\n00:14:14 Finetuning into an Assistant\n00:17:52 Summary so far\n00:21:05 Appendix: Comparisons, Labeling docs, RLHF, Synthetic data, Leaderboard\nPart 2: Future of LLMs\n00:25:43 LLM Scaling Laws\n00:27:43 Tool Use (Browser, Calculator, Interpreter, DALL-E)\n00:33:32 Multimodality (Vision, Audio)\n00:35:00 Thinking, System 1/2\n00:38:02 Self-improvement, LLM AlphaGo\n00:40:45 LLM Customization, GPTs store\n00:42:15 LLM OS\nPart 3: LLM Security\n00:45:43 LLM Security Intro\n00:46:14 Jailbreaks\n00:51:30 Prompt Injection\n00:56:23 Data poisoning\n00:58:37 LLM Security conclusions\nEnd\n00:59:23 Outro\n\nEducational Use Licensing\nThis video is freely available for educational and internal training purposes. Educators, students, schools, universities, nonprofit institutions, businesses, and individual learners may use this content freely for lessons, courses, internal training, and learning activities, provided they do not engage in commercial resale, redistribution, external commercial use, or modify content to misrepresent its intent.",
+  "duration": 3588,
+  "publishDate": "2023-11-23",
+  "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g",
+  "coverImage": "imgs/cover.jpg",
+  "thumbnailUrl": "https://i.ytimg.com/vi/zjkBMFhNj_g/maxresdefault.jpg",
+  "language": {
+    "code": "en",
+    "name": "English",
+    "isGenerated": true
+  },
+  "chapters": [
+    {
+      "title": "Intro: Large Language Model (LLM) talk",
+      "start": 0,
+      "end": 20
+    },
+    {
+      "title": "LLM Inference",
+      "start": 20,
+      "end": 257
+    },
+    {
+      "title": "LLM Training",
+      "start": 257,
+      "end": 538
+    },
+    {
+      "title": "LLM dreams",
+      "start": 538,
+      "end": 682
+    },
+    {
+      "title": "How do they work?",
+      "start": 682,
+      "end": 854
+    },
+    {
+      "title": "Finetuning into an Assistant",
+      "start": 854,
+      "end": 1072
+    },
+    {
+      "title": "Summary so far",
+      "start": 1072,
+      "end": 1265
+    },
+    {
+      "title": "Appendix: Comparisons, Labeling docs, RLHF, Synthetic data, Leaderboard",
+      "start": 1265,
+      "end": 1543
+    },
+    {
+      "title": "LLM Scaling Laws",
+      "start": 1543,
+      "end": 1663
+    },
+    {
+      "title": "Tool Use (Browser, Calculator, Interpreter, DALL-E)",
+      "start": 1663,
+      "end": 2012
+    },
+    {
+      "title": "Multimodality (Vision, Audio)",
+      "start": 2012,
+      "end": 2100
+    },
+    {
+      "title": "Thinking, System 1/2",
+      "start": 2100,
+      "end": 2282
+    },
+    {
+      "title": "Self-improvement, LLM AlphaGo",
+      "start": 2282,
+      "end": 2445
+    },
+    {
+      "title": "LLM Customization, GPTs store",
+      "start": 2445,
+      "end": 2535
+    },
+    {
+      "title": "LLM OS",
+      "start": 2535,
+      "end": 2743
+    },
+    {
+      "title": "LLM Security Intro",
+      "start": 2743,
+      "end": 2774
+    },
+    {
+      "title": "Jailbreaks",
+      "start": 2774,
+      "end": 3090
+    },
+    {
+      "title": "Prompt Injection",
+      "start": 3090,
+      "end": 3383
+    },
+    {
+      "title": "Data poisoning",
+      "start": 3383,
+      "end": 3517
+    },
+    {
+      "title": "LLM Security conclusions",
+      "start": 3517,
+      "end": 3563
+    },
+    {
+      "title": "Outro",
+      "start": 3563,
+      "end": 3588
+    }
+  ]
+}

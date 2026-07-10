@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:09,000
+Congratulations! You're now equipped to add memory to your agents. You've learned to categorize memory as semantic, episodic, or procedural.
+
+2
+00:00:09,000 --> 00:00:18,000
+And you're ready to do memory operations in the hotpath or in the background, where information can be consolidated later without impacting latency.
+
+3
+00:00:18,000 --> 00:00:22,000
+I'm looking forward to seeing how you use memory in your future project.

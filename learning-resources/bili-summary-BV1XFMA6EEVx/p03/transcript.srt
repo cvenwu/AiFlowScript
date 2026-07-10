@@ -1,0 +1,340 @@
+1
+00:00:00,000 --> 00:00:29,980
+ How do you interact with these models naturally they don't remember what you say before or any of the previous conversation which is an issue when you're building some applications like chatbot and you want to have a conversation with them and so in this section we'll cover memory which is basically how do you remember previous parts of the conversation and feed that into the language model so that they can have this conversational flow as you're interacting with them.
+
+2
+00:00:30,000 --> 00:00:37,000
+ Yep, so Langchain offers multiple sophisticated options for managing these memories. Let's jump in and take a look.
+
+3
+00:00:37,000 --> 00:00:54,000
+ So let me start off by importing my OpenAI API key and then let me import a few tools that I'll need. Let's use as the motivating example for memory using Langchain to manage a chat or a chatbot conversation.
+
+4
+00:00:54,000 --> 00:01:11,000
+ So to do that I'm going to set the LM as a chat interface of OpenAI with temperature equals zero and I'm going to use the memory as a conversation buffer memory and you'll see later what this means.
+
+5
+00:01:11,000 --> 00:01:28,000
+ And I'm going to build a conversation chain. Again, later in this short course, Harrison will dive much more deeply into what exactly is a chain in Langchain. So don't worry too much about the details of the syntax for now. But this builds an LM.
+
+6
+00:01:28,000 --> 00:01:45,000
+ And if I start to have a conversation conversation dot predict, give the input. Hi, my name is Andrew. Let's see what it says. Hello, Andrew. Nice to meet you. Right? And so on. And then let's say I ask it, what is one plus one?
+
+7
+00:01:45,000 --> 00:02:14,000
+ Well, one plus one is two. And then ask it again, you know, what's my name? Your name is Andrew, as you mentioned earlier. Hmm. A little bit of trace of sarcasm there. Not sure. And so if you want, you can change this variables variable to true to see what Langchain is actually doing. When you run predict how my name is Andrew, this is the prompt the Langchain is generating. It says, the following is a friendly conversation between a human and an AI.
+
+8
+00:02:14,000 --> 00:02:43,000
+ And so on. So this is a prompt that Langchain has generated to have the system have a hopeful and friendly conversation. And it has to save the conversation. And here's the response. And when you execute this on the second and third parts of the conversations, it keeps the prompt as follows. And notice that by the time I'm uttering, what is my name? This is the third turn. That's my third input.
+
+9
+00:02:43,000 --> 00:02:56,000
+ It has stored the current conversation as follows. Hi, my name is Andrew. What is one plus one? And so on. And so this memory or this history of the conversation gets longer and longer.
+
+10
+00:02:56,000 --> 00:03:13,000
+ In fact, up on top, up on top, I had used the memory variable to store the memory. So if I were to print memory dot buffer, it has stored the conversation so far. Um, you can also print this out memory dot load memory variables.
+
+11
+00:03:13,000 --> 00:03:28,000
+ The curly braces here. Um, the curly braces here is actually an empty dictionary. There's some more advanced features that you can use with a more sophisticated input, but we won't talk about them in this short course. So don't worry about why there's an empty curly braces here.
+
+12
+00:03:28,000 --> 00:03:40,000
+ But this is what Langchain has remembered in the memory of the conversation so far. It's just everything that the AI or that the human has said. I encourage you to pause the video and run the code.
+
+13
+00:03:40,000 --> 00:03:58,000
+ So the way that Langchain is storing the conversation is with this conversation buffer memory. In order to use the conversation buffer memory to specify a couple of inputs and outputs. This is how you add new things to the memory if you wish to do so explicitly.
+
+14
+00:03:58,000 --> 00:04:20,000
+ Memory dot save context says hi, what's up. I know this is not the most exciting conversation, but I wanted to have a short example. Um, and with that, this is what the status of the memory is. And once again, let me actually show the memory variables.
+
+15
+00:04:21,000 --> 00:04:38,000
+ Now, if you want to add additional, um, data to the memory, you can keep on saving additional context. So conversation goes on, not much, just hanging, cool. And if you print out the memory, you know, there's now more stuff in it.
+
+16
+00:04:38,000 --> 00:04:50,000
+ So when you use the large language model for a chat conversation, um, the large language model itself is actually stateless. The language model itself does not remember the conversation
+
+17
+00:04:50,000 --> 00:04:55,000
+ you've had so far and each transaction. And each transaction, each call to the API endpoint is independent.
+
+18
+00:04:55,000 --> 00:05:07,000
+ And chatbots appear to have memory only because there's usually rapid code that provides the full conversation that's been had so far as context to the LM.
+
+19
+00:05:07,000 --> 00:05:29,000
+ And so the memory can store explicitly the turns or the utterances so far. Hi, my name is Andrew. Hello, it's just nice to meet you and so on. And this memory storage is used as input or additional context to the LM so that they can generate an output as if it's just having the next conversational turn, knowing what's been said before.
+
+20
+00:05:29,000 --> 00:05:46,000
+ And as the conversation becomes long, the amounts of memory needed becomes really, really long and does the cost of sending a lot of tokens to the LM, which usually charges based on the number of tokens it needs to process will also become more expensive.
+
+21
+00:05:46,000 --> 00:06:04,000
+ So that chain provides several convenient kinds of memory to store and accumulate the conversation. So far, we've been looking at the conversation buffer memory. Let's look at a different type of memory. I'm going to import the conversation buffer window.
+
+22
+00:06:04,000 --> 00:06:05,000
+ memory.
+
+23
+00:06:05,000 --> 00:06:25,000
+ If I set memory to conversational buffer window memory with k equals one, the variable k equals one specifies that I wanted to remember just one conversational exchange that is one utterance from me and one utterance from the chatbot.
+
+24
+00:06:25,000 --> 00:06:47,000
+ So now if I were to have it save context, hi, what's up? Not much, just hanging. If I were to look at memory.load variables, it only remembers the most recent utterance. Notice it's dropped. Hi, what's up? It's just saying human says not much, just hanging and the AI says cool. So that's because k was equal to one.
+
+25
+00:06:47,000 --> 00:07:02,000
+ So this is a nice feature because it lets you keep track of just the most recent few conversational turns. In practice, you probably won't use this with k equals one. You use this with k set to larger number.
+
+26
+00:07:02,000 --> 00:07:15,000
+ But still, this prevents the memory from growing without limit as the conversation goes longer. And so if I were to rerun the conversation that we had just now.
+
+27
+00:07:15,000 --> 00:07:44,000
+ We'll say, hi, my name is Andrew. What is one plus one? And now I ask it, what is my name? Because k equals one, it only remembers the last exchange, which is what is one plus one? The answer is one plus one equals two. And it's forgotten this early exchange, which is now it now says, sorry, don't have access to that information.
+
+28
+00:07:44,000 --> 00:08:03,000
+ One thing I hope you will do is pause the video, change this to true in the code on the left and rerun this conversation with verbose equals true. And then you will see the prompts actually used to generate this. And hopefully you'll see that the memory.
+
+29
+00:08:03,000 --> 00:08:14,000
+ The memory. When you're calling the LLM on what is my name that the memory has dropped this exchange where it learned what is my name, which is why it now says it doesn't know what is my name.
+
+30
+00:08:14,000 --> 00:08:37,000
+ With the conversational token buffer memory, the memory will limit the number of tokens saved. And because a lot of LLM pricing is based on tokens, this maps more directly to the cost of the LLM calls.
+
+31
+00:08:37,000 --> 00:08:52,000
+ So if I were to say the max token limit is equal to 50, and actually let me inject a few comments. So let's say the conversation is AI is what? Amazing. Backpropagation is what? Beautiful. Chatbots are what? Charming.
+
+32
+00:08:52,000 --> 00:09:14,000
+ I use ABC as the first letter of all of these conversational terms. We can keep track of what was said when. If I run this with a high token limit, it has almost a whole conversation. If I increase the token limit to 100, it now has a whole conversation.
+
+33
+00:09:14,000 --> 00:09:31,000
+ starting with AI is what? If I decrease it, then it chops off the earlier part of this conversation to retain the number of tokens corresponding to the most recent exchanges, but subject to not exceeding the token limit.
+
+34
+00:09:31,000 --> 00:09:46,000
+ And in case you're wondering why we needed to specify an LLM is because different LLMs use different ways of counting tokens. So this tells it to use the way of counting tokens that the chat OpenAI LLM uses.
+
+35
+00:09:46,000 --> 00:10:04,000
+ I encourage you to pause the video and run the code and also try modifying the prompt to see if you can get a different output. Finally, there's one last type of memory I want to illustrate here, which is the conversation summary buffer memory.
+
+36
+00:10:04,000 --> 00:10:23,000
+ And the idea is instead of limiting the memory to fixed number of tokens based on the most recent utterances or a fixed number of conversational exchanges, let's use an LLM to write a summary of the conversation so far and let that be the memory.
+
+37
+00:10:23,000 --> 00:10:33,000
+ So here's the example where I'm going to create a long string with someone's schedule. You know, this meeting AM with your product team, you need your PowerPoint presentation and so on and so on.
+
+38
+00:10:33,000 --> 00:10:46,000
+ So there's a long string saying, what's your schedule, you know, maybe ending with a new lunch at the Italian restaurant with a customer, bring your laptop, show the LLs, latest LLM demo.
+
+39
+00:10:46,000 --> 00:11:02,000
+ And so let me use a conversation summary buffer memory with a max token limit of 400 in this case, pretty high token limit. And I'm going to insert in a few conversations.
+
+40
+00:11:02,000 --> 00:11:31,000
+ a few conversational terms in which we start with hello, what's up, no one's just hanging. Cool. And then what is on the schedule today? And the response is, you know, that long schedule. So this memory now has quite a lot of text in it. In fact, let's take a look at the memory variables. It contains that entire piece of text.
+
+41
+00:11:31,000 --> 00:12:00,000
+ because 400 tokens was sufficient to store all this text. But now if I were to reduce the max token limit, say to 100 tokens, remember, this stores the entire conversational history. If I reduce the number of tokens to 100, then the conversation summary buffer memory has actually used an LLM, the open AI endpoint in this case, because that's where we set the LLM to.
+
+42
+00:12:00,000 --> 00:12:25,000
+ We set the LLM to actually generate a summary of the conversation so far. So the summary is, human AI engaged in small talk before the scheduled day schedule, AI informs human in the morning meeting, blah, blah, blah. Lunch meeting with customer interested in AI and latest AI developments. And so, if we were to have a conversation using this LLM,
+
+43
+00:12:25,000 --> 00:12:41,000
+ that's the LLM, let's create a conversation chain, same as before. And let's say that we were to ask, you know, input, what would be a good demo to show?
+
+44
+00:12:41,000 --> 00:13:09,000
+ I said verbose equals true. So here's the prompt. The LLM thinks the current conversation has had this discussion so far, because that's the summary of the conversation. And just one note, if you're familiar with the open AI chat API endpoint, there is a specific system message. In this example, this is not using the official open AI system.
+
+45
+00:13:09,000 --> 00:13:25,000
+ message. It's just including it as part of the prompt here. But it nonetheless works pretty well. And given this prompt, you know, the output is based on customer interest in AI development. So suggest showcasing our latest NLP capabilities. Okay, that's cool.
+
+46
+00:13:25,000 --> 00:13:44,000
+ Well, it's, you know, making some suggestions for cool demos and makes you think if I was meeting a customer, I would say, boy, if only there were open source framework available to help me build cool NLP applications using LLMs. Good things are lacking.
+
+47
+00:13:44,000 --> 00:14:13,720
+ Good things are lagging. And the interesting thing is if you now look at what has happened to the memory, so notice that here it has incorporated the most recent AI system output, whereas my utterance asking it won't be a good demo to show, has been incorporated into the system message, the overall summary of the conversation.
+
+48
+00:14:13,720 --> 00:14:40,220
+ With the conversation summary buffer memory, what it tries to do is keep the explicit storage of the messages up to the number of tokens we have specified as a limit. So this part, the explicit storage, we try to cap at 100 tokens because that's what we've asked for. And then anything beyond that, it will use CLM to generate a summary, which is what is seen up here.
+
+49
+00:14:43,440 --> 00:14:46,180
+用 Chat as a running example.
+
+50
+00:14:46,180 --> 00:14:49,760
+ These memories are useful for other applications too,
+
+51
+00:14:49,760 --> 00:14:53,000
+ where you might keep on getting new snippets of text
+
+52
+00:14:53,000 --> 00:14:54,440
+ or keep on getting new information,
+
+53
+00:14:54,440 --> 00:14:59,000
+ such as if your system repeatedly goes online to search for facts,
+
+54
+00:14:59,000 --> 00:15:01,900
+ but you want to keep the total memory used to store
+
+55
+00:15:01,900 --> 00:15:07,320
+ this growing list of facts as cat and not growing arbitrarily long.
+
+56
+00:15:07,320 --> 00:15:10,200
+ I encourage you to pause the video and run the code.
+
+57
+00:15:11,380 --> 00:15:14,660
+ In this video, you saw a few types of memory,
+
+58
+00:15:14,660 --> 00:15:19,960
+ including buffer memories that limits based on number of conversation exchanges
+
+59
+00:15:19,960 --> 00:15:26,180
+ or tokens, or a memory that can summarize tokens above a certain limit.
+
+60
+00:15:26,180 --> 00:15:29,600
+ Nanchain actually supports additional memory types as well.
+
+61
+00:15:29,600 --> 00:15:32,820
+ One of the most powerful is a vector data memory.
+
+62
+00:15:32,820 --> 00:15:36,280
+ If you're familiar with word embeddings and text embeddings,
+
+63
+00:15:36,280 --> 00:15:38,760
+ the vector database actually stores such embeddings.
+
+64
+00:15:39,340 --> 00:15:41,480
+ If you don't know what that means, don't worry about it.
+
+65
+00:15:41,480 --> 00:15:42,840
+ Harrison will explain it later.
+
+66
+00:15:42,840 --> 00:15:47,220
+ And it can then retrieve the most relevant blocks of text
+
+67
+00:15:47,220 --> 00:15:50,380
+ using this type of a vector database for its memory.
+
+68
+00:15:50,380 --> 00:15:54,080
+ And Nanchain also supports entity memories,
+
+69
+00:15:54,080 --> 00:15:56,800
+ which is applicable when you want it to remember
+
+70
+00:15:56,800 --> 00:16:00,280
+ details about specific people, specific other entities,
+
+71
+00:16:00,620 --> 00:16:08,500
+ such as if you talk about specific friends, you can have Nanchain remember facts about that friend,
+
+72
+00:16:08,500 --> 00:16:12,140
+ which should be an entity in an explicit way.
+
+73
+00:16:12,140 --> 00:16:17,140
+ When you're implementing applications using Nanchain, you can also use multiple types of memories,
+
+74
+00:16:17,140 --> 00:16:22,300
+ such as using one of the types of conversation memory that you saw in this video,
+
+75
+00:16:22,300 --> 00:16:26,340
+ plus additionally entity memory to recall individuals.
+
+76
+00:16:26,340 --> 00:16:29,760
+ So this way you can remember, maybe a summary of the conversation,
+
+77
+00:16:29,760 --> 00:16:34,700
+ plus an explicit way of storing important facts about important people in the conversation.
+
+78
+00:16:34,700 --> 00:16:37,840
+ And of course, in addition to using these memory types,
+
+79
+00:16:37,840 --> 00:16:43,400
+ it's also not uncommon for developers to store the entire conversation in the conventional database,
+
+80
+00:16:43,400 --> 00:16:45,860
+ some sort of key value store or SQL database.
+
+81
+00:16:45,860 --> 00:16:51,180
+ So you could refer back to the whole conversation for auditing or for improving the system further.
+
+82
+00:16:51,180 --> 00:16:53,540
+ And so that's memory types.
+
+83
+00:16:53,540 --> 00:16:56,500
+ I hope you find this useful building your own applications.
+
+84
+00:16:56,500 --> 00:17:02,540
+ And now let's go on to the next video to learn about the key building block of Nanchain,
+
+85
+00:17:02,540 --> 00:17:04,160
+ namely the chain.
+

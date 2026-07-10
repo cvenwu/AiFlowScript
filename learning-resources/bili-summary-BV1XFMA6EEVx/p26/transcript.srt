@@ -1,0 +1,1059 @@
+1
+00:00:00,000 --> 00:00:05,000
+In the last lesson, you built an agent from scratch.
+
+2
+00:00:05,000 --> 00:00:09,000
+Now, let's implement the agent using the link graph,
+
+3
+00:00:09,000 --> 00:00:13,000
+and along the way, introduce some of its components and features.
+
+4
+00:00:13,000 --> 00:00:16,000
+All right, let's get coding.
+
+5
+00:00:16,000 --> 00:00:21,000
+All right, so let's break down what exactly we did in the last lesson.
+
+6
+00:00:21,000 --> 00:00:23,000
+We had this user message that came in.
+
+7
+00:00:23,000 --> 00:00:27,000
+We then had this system prompt, and this was this very long one.
+
+8
+00:00:27,000 --> 00:00:30,000
+We then called an LLM with that.
+
+9
+00:00:30,000 --> 00:00:35,000
+This outputted something like what's right there, a thought and an action.
+
+10
+00:00:35,000 --> 00:00:37,000
+Based on that, we then made a decision.
+
+11
+00:00:37,000 --> 00:00:41,000
+We would either return or we would call a tool.
+
+12
+00:00:41,000 --> 00:00:45,000
+And we put this all in a big loop, this query function.
+
+13
+00:00:45,000 --> 00:00:50,000
+And we had these two tools that we would call, calculate an average dogway.
+
+14
+00:00:50,000 --> 00:00:53,000
+And if we called a tool, we would get that in observation
+
+15
+00:00:53,000 --> 00:00:56,000
+and then would loop back in to the prompt,
+
+16
+00:00:56,000 --> 00:01:00,000
+and would put that observation as a new message.
+
+17
+00:01:00,000 --> 00:01:03,000
+So let's break this down into length chain components.
+
+18
+00:01:03,000 --> 00:01:05,000
+First, let's talk about prompts.
+
+19
+00:01:05,000 --> 00:01:09,000
+So prompt templates allow reusable prompts.
+
+20
+00:01:09,000 --> 00:01:15,000
+And what this basically means is that we can create something like this right here.
+
+21
+00:01:15,000 --> 00:01:19,000
+A little string with some formatted variables that we can replace.
+
+22
+00:01:19,000 --> 00:01:22,000
+And so those formatted variables can come from user content.
+
+23
+00:01:22,000 --> 00:01:26,000
+So we can have this prompt template that we format in different ways,
+
+24
+00:01:26,000 --> 00:01:28,000
+depending on the user content.
+
+25
+00:01:28,000 --> 00:01:31,000
+If you want to see a bunch of examples of these prompt templates,
+
+26
+00:01:31,000 --> 00:01:34,000
+you can actually see them in the length chain hub.
+
+27
+00:01:34,000 --> 00:01:39,000
+So here is one that's very similar to the agent prompt that we just used.
+
+28
+00:01:39,000 --> 00:01:42,000
+So you can see here, it says, answer the following questions as best you can.
+
+29
+00:01:42,000 --> 00:01:44,000
+You have access to the following tools.
+
+30
+00:01:44,000 --> 00:01:49,000
+And here we don't hard code the tools themselves, but we have this little variable.
+
+31
+00:01:49,000 --> 00:01:52,000
+And same with tool names down here.
+
+32
+00:01:52,000 --> 00:01:54,000
+And then we have the input here.
+
+33
+00:01:54,000 --> 00:01:55,000
+And this is the user question.
+
+34
+00:01:55,000 --> 00:01:56,000
+And then the agent scratch pad.
+
+35
+00:01:56,000 --> 00:02:00,000
+And these are all the actions it takes and the observations.
+
+36
+00:02:00,000 --> 00:02:03,000
+If you want to see more prompts, you can go to the hub here.
+
+37
+00:02:03,000 --> 00:02:07,000
+And you can see a bunch of prompts that people in the community have contributed.
+
+38
+00:02:07,000 --> 00:02:10,000
+The next component in length chain that we have is tools.
+
+39
+00:02:10,000 --> 00:02:12,000
+So here's a Taville tool.
+
+40
+00:02:12,000 --> 00:02:15,000
+And this is the search that we will be using from here on out.
+
+41
+00:02:15,000 --> 00:02:18,000
+You can see that we import it from the length chain community package,
+
+42
+00:02:18,000 --> 00:02:21,000
+which contains hundreds of other tools.
+
+43
+00:02:21,000 --> 00:02:26,000
+Maybe the biggest part of this application, the most code that we wrote,
+
+44
+00:02:26,000 --> 00:02:28,000
+was this function that would loop.
+
+45
+00:02:28,000 --> 00:02:31,000
+And that's represented by all these arrows here.
+
+46
+00:02:31,000 --> 00:02:34,000
+And that's one way to think about Langgraph.
+
+47
+00:02:34,000 --> 00:02:38,000
+Langgraph helps you describe and orchestrate that control flow.
+
+48
+00:02:38,000 --> 00:02:44,000
+Specifically, it allows you to create cyclic graphs, which is exactly what we have here.
+
+49
+00:02:44,000 --> 00:02:47,000
+It also comes with built in persistence.
+
+50
+00:02:47,000 --> 00:02:51,000
+And this is really nice for having multiple conversations at the same time
+
+51
+00:02:51,000 --> 00:02:54,000
+or remembering previous iterations and actions.
+
+52
+00:02:54,000 --> 00:02:59,000
+This persistence also enables really cool human and the loop features.
+
+53
+00:02:59,000 --> 00:03:05,000
+If you look at these diagrams here, and these are all diagrams of agents from academic papers,
+
+54
+00:03:05,000 --> 00:03:08,000
+these are all represented as graphs.
+
+55
+00:03:08,000 --> 00:03:12,000
+And that realization was what led us to create Langgraph,
+
+56
+00:03:12,000 --> 00:03:18,000
+an extension of Langchain, specifically aimed at agent and multi-agent flows.
+
+57
+00:03:18,000 --> 00:03:22,000
+Crucially, it allows for really controlled flows.
+
+58
+00:03:22,000 --> 00:03:29,000
+So in these diagrams, there's really specific arrows leading from one box or state to the next.
+
+59
+00:03:29,000 --> 00:03:35,000
+We've seen that this control ability is crucial for creating agents that can perform well.
+
+60
+00:03:35,000 --> 00:03:41,000
+Three of the core concepts of Langgraph are nodes, edges, and conditional edges.
+
+61
+00:03:42,000 --> 00:03:45,000
+Nodes are agents or functions.
+
+62
+00:03:45,000 --> 00:03:51,000
+Edges connect these nodes, and then conditional edges are used when you need to make decisions
+
+63
+00:03:51,000 --> 00:03:55,000
+about which node you should go to next.
+
+64
+00:03:55,000 --> 00:04:01,000
+So let's take a look at an example of a Langgraph you can create that is equivalent
+
+65
+00:04:01,000 --> 00:04:04,000
+to the function that we wrote in the lesson before.
+
+66
+00:04:04,000 --> 00:04:07,000
+We can have an agent node. This is the LLM.
+
+67
+00:04:07,000 --> 00:04:13,000
+We can then have a conditional edge, which takes the result of that LLM call and decides what to do next.
+
+68
+00:04:13,000 --> 00:04:18,000
+One of those edges can be an action edge, which calls a function node,
+
+69
+00:04:18,000 --> 00:04:21,000
+and that automatically loops back to the agent node.
+
+70
+00:04:21,000 --> 00:04:26,000
+There's an entry point, which is where you start, and then there's the end node,
+
+71
+00:04:26,000 --> 00:04:30,000
+which is the other action available to take after the agent.
+
+72
+00:04:30,000 --> 00:04:36,000
+One of the most important things to understand when working with Langgraph is the state that is tracked over time.
+
+73
+00:04:36,000 --> 00:04:38,000
+This is often called the agent state.
+
+74
+00:04:38,000 --> 00:04:44,000
+This is accessible at all parts of the graph, at each node in each edge.
+
+75
+00:04:44,000 --> 00:04:48,000
+It is local to the graph, and it can be stored into persistence layer,
+
+76
+00:04:48,000 --> 00:04:53,000
+meaning that you can resume with that state at any point in time later on.
+
+77
+00:04:53,000 --> 00:05:01,000
+Looking at two examples, we first have a simple state where we just have this list of messages.
+
+78
+00:05:01,000 --> 00:05:07,000
+Taking a closer look, we can see that this message variable is a sequence of base message.
+
+79
+00:05:07,000 --> 00:05:13,000
+Base message is a chain type. It's annotated with operator dot add.
+
+80
+00:05:13,000 --> 00:05:21,000
+This means that when the state is updated with new messages, it doesn't override the existing messages,
+
+81
+00:05:21,000 --> 00:05:24,000
+but rather it adds them to that state.
+
+82
+00:05:24,000 --> 00:05:27,000
+Let's take a look at a more complex state.
+
+83
+00:05:27,000 --> 00:05:32,000
+Here we have input, chat history, agent outcome, and intermediate steps.
+
+84
+00:05:32,000 --> 00:05:34,000
+They all have their own different type.
+
+85
+00:05:34,000 --> 00:05:37,000
+Three of them are not annotated in any way.
+
+86
+00:05:37,000 --> 00:05:44,000
+This means that when a new update is pushed to that variable, it overrides the existing value there.
+
+87
+00:05:44,000 --> 00:05:48,000
+However, intermediate steps is annotated.
+
+88
+00:05:48,000 --> 00:05:56,000
+It's annotated with operator dot add, which means that when a new update is pushed there, it adds to it.
+
+89
+00:05:56,000 --> 00:06:04,000
+This makes sense because intermediate steps is what is tracked as the agent action and agent observation throughout the graph as it executes.
+
+90
+00:06:04,000 --> 00:06:08,000
+And so we want to continuously add to that as more and more actions are taken.
+
+91
+00:06:08,000 --> 00:06:15,000
+Getting really specific about the previous agent that we created and how that would map to a lane graph object.
+
+92
+00:06:15,000 --> 00:06:18,000
+We can see that we will have one node.
+
+93
+00:06:18,000 --> 00:06:22,000
+We'll call this call open AI and this will call the lm.
+
+94
+00:06:22,000 --> 00:06:27,000
+We'll then have a conditional edge, which will check for the existence of an action to take.
+
+95
+00:06:27,000 --> 00:06:29,000
+And so we'll call this exists action.
+
+96
+00:06:29,000 --> 00:06:32,000
+And then we'll have another node which actually executes that action.
+
+97
+00:06:32,000 --> 00:06:34,000
+We'll call that take action.
+
+98
+00:06:34,000 --> 00:06:36,000
+And the state that will track is pretty simple.
+
+99
+00:06:36,000 --> 00:06:40,000
+It's just this list of messages to which we add over time.
+
+100
+00:06:40,000 --> 00:06:44,000
+With that high level overview, let's dive into the code.
+
+101
+00:06:44,000 --> 00:06:48,000
+Let's first load in any environment variables that we're going to need to use.
+
+102
+00:06:48,000 --> 00:06:51,000
+This is our open AI API key.
+
+103
+00:06:51,000 --> 00:07:00,000
+We're now going to import a bunch of things that we need to create these tools, agent state, and the lane graph itself.
+
+104
+00:07:00,000 --> 00:07:04,000
+First, let's import state graph and this end node from lane graph.
+
+105
+00:07:04,000 --> 00:07:06,000
+We'll see how we'll use those later on.
+
+106
+00:07:06,000 --> 00:07:10,000
+These typing imports and operator are used to construct the agent state.
+
+107
+00:07:10,000 --> 00:07:13,000
+We then have all these different message types.
+
+108
+00:07:13,000 --> 00:07:20,000
+These are lane chain message types that we'll use to represent the human and AI and system messages.
+
+109
+00:07:20,000 --> 00:07:24,000
+From lane chain open AI, we're going to import chat open AI.
+
+110
+00:07:24,000 --> 00:07:28,000
+This is a lane chain wrapper around the open AI API.
+
+111
+00:07:28,000 --> 00:07:35,000
+This exposes a standard interface for all language models, meaning that even though we're going to use chat open AI for this lesson,
+
+112
+00:07:35,000 --> 00:07:40,000
+we can actually switch it out for any of the language model providers that lane chain supports,
+
+113
+00:07:40,000 --> 00:07:43,000
+without having to change any other lines of code.
+
+114
+00:07:43,000 --> 00:07:51,000
+Finally, we're going to import Taville, the search engine that we're going to start using as the tool in this example.
+
+115
+00:07:51,000 --> 00:07:53,000
+Let's first take a look at the tool.
+
+116
+00:07:53,000 --> 00:07:59,000
+We'll create the tool by initializing Taville search results with max results equals two.
+
+117
+00:07:59,000 --> 00:08:04,000
+This means that we'll only get back two responses from the search API.
+
+118
+00:08:04,000 --> 00:08:11,000
+We can see that it's of this type and it's got a specific name Taville underscore search underscore results underscore JSON.
+
+119
+00:08:11,000 --> 00:08:16,000
+This is the name that the language model will use to call this tool.
+
+120
+00:08:16,000 --> 00:08:18,000
+Let's now create the agent state.
+
+121
+00:08:18,000 --> 00:08:21,000
+This is exactly what was in the presentation.
+
+122
+00:08:21,000 --> 00:08:26,000
+It's just an annotated list of messages that we will add to over time.
+
+123
+00:08:26,000 --> 00:08:29,000
+Let's now create our agent.
+
+124
+00:08:29,000 --> 00:08:32,000
+As discussed, we're going to need three functions.
+
+125
+00:08:32,000 --> 00:08:41,000
+We're going to need one function to call open AI, one function to check whether there's an action present and another function to take that action.
+
+126
+00:08:41,000 --> 00:08:44,000
+These will all be different methods on this agent class.
+
+127
+00:08:44,000 --> 00:08:51,000
+So let's create those first and we can then see how they interact with each other.
+
+128
+00:08:51,000 --> 00:08:53,000
+Let's now create the agent class.
+
+129
+00:08:53,000 --> 00:08:57,000
+We're going to want this agent to be parameterized by three different things,
+
+130
+00:08:57,000 --> 00:09:01,000
+a model to use, the tools to call, and the system message.
+
+131
+00:09:01,000 --> 00:09:07,000
+As before, let's save the system message as an attribute.
+
+132
+00:09:07,000 --> 00:09:10,000
+We're now going to start creating the graph.
+
+133
+00:09:10,000 --> 00:09:17,000
+First, let's initialize state graph with the agent state.
+
+134
+00:09:17,000 --> 00:09:19,000
+Right now this graph is pretty bear.
+
+135
+00:09:19,000 --> 00:09:22,000
+It doesn't have any nodes or edges attached to it.
+
+136
+00:09:22,000 --> 00:09:29,000
+We know that we're going to want to create those three functions before and use them, two as nodes and one as edges.
+
+137
+00:09:29,000 --> 00:09:34,000
+So let's sketch it out and then we'll implement those functions as methods on the class.
+
+138
+00:09:34,000 --> 00:09:40,000
+So first, we know that we're going to want to create a node called LLM, which will execute the LLM.
+
+139
+00:09:40,000 --> 00:09:48,000
+And we can do that by doing graph, add node, LLM.
+
+140
+00:09:48,000 --> 00:09:54,000
+And then we're going to need to come back here and we're going to need to pass in the function that we want to represent this node.
+
+141
+00:09:54,000 --> 00:10:00,000
+We'll add another node, the action node. We'll do the same thing here.
+
+142
+00:10:00,000 --> 00:10:02,000
+Now we're going to add that conditional edge.
+
+143
+00:10:02,000 --> 00:10:05,000
+This goes after the LLM is called.
+
+144
+00:10:05,000 --> 00:10:07,000
+It checks whether there's an action present.
+
+145
+00:10:07,000 --> 00:10:10,000
+If there is, then it goes to the action node.
+
+146
+00:10:10,000 --> 00:10:13,000
+If there isn't, then it goes to the end node and it finishes.
+
+147
+00:10:13,000 --> 00:10:20,000
+So let's add this. Again, we'll have to add the specific functions later on.
+
+148
+00:10:20,000 --> 00:10:27,000
+The first argument we pass in is the node where the edge starts. This is from LLM.
+
+149
+00:10:27,000 --> 00:10:33,000
+The second argument we pass in is the function that will determine where to go after that.
+
+150
+00:10:33,000 --> 00:10:41,000
+We're going to implement this later on, so we'll leave this blank.
+
+151
+00:10:41,000 --> 00:10:53,000
+The third and final argument that we're going to pass in is the dictionary representing how to map the response of the function to the next node to go to.
+
+152
+00:10:53,000 --> 00:10:57,000
+So if the function returns true, then we're going to go to the action node.
+
+153
+00:10:57,000 --> 00:11:06,000
+If it returns false, then we're going to go to the end node.
+
+154
+00:11:06,000 --> 00:11:12,000
+We're now going to add a regular edge. This is going to go from the action node to the LLM node.
+
+155
+00:11:12,000 --> 00:11:24,000
+So we can do this by calling add edge. The first argument is the start of the edge. The second argument is the end of the edge.
+
+156
+00:11:24,000 --> 00:11:32,000
+We're then going to set an entry point for the graph. This is at the LLM node.
+
+157
+00:11:32,000 --> 00:11:42,000
+With that done, we can compile the graph. Graph.compile is just what we need to call after we've done all this setups and we'll turn it into a lane chain runable.
+
+158
+00:11:42,000 --> 00:11:49,000
+A lane chain runable exposes a standard interface for calling and invoking this graph. We'll see more about that later on.
+
+159
+00:11:49,000 --> 00:11:53,000
+We'll save this as an attribute on the class.
+
+160
+00:11:53,000 --> 00:11:58,000
+We'll also save the tools and the model that we passed in.
+
+161
+00:11:59,000 --> 00:12:07,000
+For the tools, we'll create a dictionary, mapping the name of the tool to the tool itself.
+
+162
+00:12:07,000 --> 00:12:15,000
+For the model, we'll actually call bind tools on the model, passing in the list of tools that we passed into the agent.
+
+163
+00:12:15,000 --> 00:12:21,000
+What this is doing is this is letting the model know that it has these tools available to call.
+
+164
+00:12:22,000 --> 00:12:30,000
+We've created this graph, but we still need to create three things. We need to create the function representing the LLM node.
+
+165
+00:12:30,000 --> 00:12:38,000
+We need to create another function representing the action node, and we need to create a third function representing this conditional edge.
+
+166
+00:12:38,000 --> 00:12:43,000
+We'll add all of these as methods on this agent class.
+
+167
+00:12:43,000 --> 00:12:48,000
+For the LLM node, we're just going to create a function called call openAI.
+
+168
+00:12:48,000 --> 00:12:55,000
+It's going to take in this state, this agent state, all of the nodes, and the edges will take this in.
+
+169
+00:12:55,000 --> 00:13:03,000
+What we'll do is we'll get the list of messages from the state, we'll then add in this system message, and we'll then call the model.
+
+170
+00:13:03,000 --> 00:13:10,000
+We'll then return this dictionary with a list of messages, but there's only one message in it. It's the message that's returned from the model.
+
+171
+00:13:10,000 --> 00:13:18,000
+Again, remember because we had annotated the messages attribute on the agent state with the operator dot add.
+
+172
+00:13:18,000 --> 00:13:22,000
+This isn't overwriting this, it's adding to that state.
+
+173
+00:13:22,000 --> 00:13:27,000
+We can then go back to the graph dot add node and change that to pass in this method.
+
+174
+00:13:27,000 --> 00:13:31,000
+Let's now do the same for the action node.
+
+175
+00:13:31,000 --> 00:13:34,000
+The action node will also take in this agent state.
+
+176
+00:13:34,000 --> 00:13:38,000
+We'll get the last message from the list of messages.
+
+177
+00:13:38,000 --> 00:13:44,000
+We know that if we've got into this state, the language model must have wanted to call some tools.
+
+178
+00:13:44,000 --> 00:13:51,000
+That means that there will be this tool calls attribute present on the last message in the agent state.
+
+179
+00:13:51,000 --> 00:13:54,000
+Crucially, this can actually be a list of tool calls.
+
+180
+00:13:54,000 --> 00:13:59,000
+So a lot of the more modern models support parallel tool or parallel function calling.
+
+181
+00:13:59,000 --> 00:14:03,000
+What we can now do is we can loop over these tool calls.
+
+182
+00:14:03,000 --> 00:14:10,000
+We can find the relevant tool by looking up tool name in the dictionary of tools that we created.
+
+183
+00:14:10,000 --> 00:14:17,000
+We can then call invoke on it passing in the arguments that we have from this tool call.
+
+184
+00:14:17,000 --> 00:14:21,000
+We can then append this as a tool message to this results list.
+
+185
+00:14:21,000 --> 00:14:26,000
+And then we're returning this messages mapping to this results thing.
+
+186
+00:14:26,000 --> 00:14:30,000
+Again, this is just the new messages that we need to add.
+
+187
+00:14:31,000 --> 00:14:37,000
+What's happening under the hood is that length graph is adding that to the state in between iterations.
+
+188
+00:14:37,000 --> 00:14:46,000
+Let's go back up and let's put this here in the action node.
+
+189
+00:14:46,000 --> 00:14:49,000
+Finally, we need to define our conditional edge.
+
+190
+00:14:49,000 --> 00:14:55,000
+So this is what's going to take in the result after the LLM is called and return a Boolean,
+
+191
+00:14:55,000 --> 00:15:00,000
+true or false, representing whether we should take an action or whether we shouldn't.
+
+192
+00:15:00,000 --> 00:15:04,000
+In order to do that, we're just going to get the last message from the state,
+
+193
+00:15:04,000 --> 00:15:07,000
+which is the most recent call from the language model.
+
+194
+00:15:07,000 --> 00:15:12,000
+And we're going to return length of that message dot tool calls greater than zero.
+
+195
+00:15:12,000 --> 00:15:15,000
+So basically if there's any tool calls, we're going to return true.
+
+196
+00:15:15,000 --> 00:15:18,000
+If there's none, then we're going to return false.
+
+197
+00:15:18,000 --> 00:15:22,000
+Let's set this as the conditional edge.
+
+198
+00:15:22,000 --> 00:15:27,000
+And with that, we have our agent. So let's start to use it.
+
+199
+00:15:27,000 --> 00:15:29,000
+We create a nice little system prompt here.
+
+200
+00:15:29,000 --> 00:15:31,000
+We initialize chat open AI.
+
+201
+00:15:31,000 --> 00:15:33,000
+So this is the language model we're going to use.
+
+202
+00:15:33,000 --> 00:15:37,000
+And for our list of tools that we're passing in, we're just passing in our one,
+
+203
+00:15:37,000 --> 00:15:40,000
+our Taville search tool.
+
+204
+00:15:40,000 --> 00:15:45,000
+One of the cool things we can do is we can actually visualize this graph we just created.
+
+205
+00:15:45,000 --> 00:15:51,000
+So if we get the graph and then called docket graph and then dot draw PNG,
+
+206
+00:15:51,000 --> 00:15:55,000
+we actually get an amazing visualization of the graph itself.
+
+207
+00:15:55,000 --> 00:15:59,000
+This is all done automatically.
+
+208
+00:15:59,000 --> 00:16:01,000
+So let's now call this agent.
+
+209
+00:16:01,000 --> 00:16:06,000
+So let's first call it with this, what is the weather NSF question?
+
+210
+00:16:06,000 --> 00:16:11,000
+In order to do this, we're going to create this human message representing a user message.
+
+211
+00:16:11,000 --> 00:16:14,000
+We're then going to put it in this list of messages.
+
+212
+00:16:14,000 --> 00:16:19,000
+And note that we have to do this because the state that the agent expects to work with
+
+213
+00:16:19,000 --> 00:16:23,000
+has this messages attribute, which is a list of messages.
+
+214
+00:16:23,000 --> 00:16:26,000
+So we need to make it conform with that state.
+
+215
+00:16:26,000 --> 00:16:31,000
+Once we have this input, we can call the agent.graph.invoke with this.
+
+216
+00:16:31,000 --> 00:16:34,000
+And we can get back a result.
+
+217
+00:16:34,000 --> 00:16:37,000
+So we added some print statements in the agent.
+
+218
+00:16:37,000 --> 00:16:40,000
+And so we can see that it printed out what it was calling.
+
+219
+00:16:40,000 --> 00:16:43,000
+And it was calling to really search results JSON.
+
+220
+00:16:43,000 --> 00:16:47,000
+And it was calling it with current weather NSF in San Francisco.
+
+221
+00:16:47,000 --> 00:16:49,000
+And then it prints out back to the model.
+
+222
+00:16:49,000 --> 00:16:52,000
+This means we're going back to the model if we look at result.
+
+223
+00:16:52,000 --> 00:16:56,000
+If we look at result, we can see that it's a list of messages.
+
+224
+00:16:56,000 --> 00:17:00,000
+So result is the final state that the agent ended up in.
+
+225
+00:17:00,000 --> 00:17:04,000
+If we just want to get the final message in this list of messages,
+
+226
+00:17:04,000 --> 00:17:10,000
+we can go into the messages attribute.
+
+227
+00:17:10,000 --> 00:17:13,000
+Get the last one and look at the content attribute.
+
+228
+00:17:13,000 --> 00:17:18,000
+And we can see that the current weather in San Francisco is partly cloudy blah blah blah.
+
+229
+00:17:18,000 --> 00:17:21,000
+Let's now try this with more complicated question.
+
+230
+00:17:21,000 --> 00:17:25,000
+So what is the weather in SF and LA?
+
+231
+00:17:25,000 --> 00:17:31,000
+We can see that it first calls to really search results JSON with the current weather in San Francisco.
+
+232
+00:17:31,000 --> 00:17:34,000
+Then before even going back to the model,
+
+233
+00:17:34,000 --> 00:17:39,000
+it calls to really search results JSON again with current weather in Los Angeles.
+
+234
+00:17:39,000 --> 00:17:42,000
+This is an example of parallel function or tool calling.
+
+235
+00:17:42,000 --> 00:17:44,000
+Finally, it goes back to the model.
+
+236
+00:17:44,000 --> 00:17:46,000
+And after that, it has all the information it needs.
+
+237
+00:17:46,000 --> 00:17:48,000
+So it responds.
+
+238
+00:17:48,000 --> 00:17:52,000
+And if we look at the final message,
+
+239
+00:17:52,000 --> 00:17:58,000
+we can see that we get back our response from both San Francisco and Los Angeles.
+
+240
+00:17:58,000 --> 00:18:01,000
+Let's try an even more complicated question.
+
+241
+00:18:01,000 --> 00:18:04,000
+Who won the Super Bowl in 2024?
+
+242
+00:18:04,000 --> 00:18:08,000
+What is the GDP of that state?
+
+243
+00:18:08,000 --> 00:18:14,000
+We can see first it calls to Ville with the query 2024 Super Bowl winner.
+
+244
+00:18:14,000 --> 00:18:16,000
+It then goes back to the model.
+
+245
+00:18:16,000 --> 00:18:18,000
+It then calls to Ville again.
+
+246
+00:18:18,000 --> 00:18:22,000
+This time with the query GDP of Missouri 2023.
+
+247
+00:18:22,000 --> 00:18:24,000
+Then goes back to the model.
+
+248
+00:18:24,000 --> 00:18:26,000
+And finally, it's done.
+
+249
+00:18:26,000 --> 00:18:28,000
+And if we look at the final response,
+
+250
+00:18:28,000 --> 00:18:32,000
+we can see that we get the Kansas City Chiefs won the Super Bowl in 2024.
+
+251
+00:18:32,000 --> 00:18:35,000
+The GDP of Missouri, where the Kansas City Chiefs are based,
+
+252
+00:18:35,000 --> 00:18:40,000
+was 400 something billion in the third quarter of 2023.
+
+253
+00:18:40,000 --> 00:18:45,000
+So the difference here is that in order to make the second query,
+
+254
+00:18:45,000 --> 00:18:48,000
+it actually had to know the result of the first query.
+
+255
+00:18:48,000 --> 00:18:50,000
+So it calls one tool.
+
+256
+00:18:50,000 --> 00:18:55,000
+Then goes back to the model in order to enable to call the second tool.
+
+257
+00:18:55,000 --> 00:18:58,000
+This is a little bit different from parallel function calling.
+
+258
+00:18:58,000 --> 00:19:00,000
+It's not happening in parallel.
+
+259
+00:19:00,000 --> 00:19:02,000
+It's happening sequentially.
+
+260
+00:19:02,000 --> 00:19:05,000
+And the reason it's happening sequentially is it actually needs the result of the first query
+
+261
+00:19:05,000 --> 00:19:08,000
+in order to make the second query at all.
+
+262
+00:19:08,000 --> 00:19:13,000
+With this, we've seen how we can take that raw LLM and raw Python example
+
+263
+00:19:13,000 --> 00:19:17,000
+with some fake tools and turn it into a real agent that can answer complex questions.
+
+264
+00:19:17,000 --> 00:19:20,000
+Are there the hoodies using the Ville search API?
+
+265
+00:19:20,000 --> 00:19:24,000
+In the next lesson, we'll learn a lot more about that.

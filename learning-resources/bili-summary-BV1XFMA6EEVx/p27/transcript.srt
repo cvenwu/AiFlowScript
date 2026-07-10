@@ -1,0 +1,311 @@
+1
+00:00:00,000 --> 00:00:04,440
+A frequently used to an agent is search.
+
+2
+00:00:04,440 --> 00:00:09,320
+This lesson is going to dive into how agent search is different from standard search,
+
+3
+00:00:09,320 --> 00:00:10,720
+and how to use it.
+
+4
+00:00:10,720 --> 00:00:12,560
+Let's try it out.
+
+5
+00:00:12,560 --> 00:00:18,000
+Alright, so before diving into what an agent search does, let's understand how an agent
+
+6
+00:00:18,000 --> 00:00:19,519
+might use it.
+
+7
+00:00:19,519 --> 00:00:24,280
+In a zero-shot learning, an agent would receive a prompt, and would produce an answer based
+
+8
+00:00:24,280 --> 00:00:26,679
+on its static weights of the model.
+
+9
+00:00:26,679 --> 00:00:31,240
+The powerful as it proven to be, there are many limitations to this process.
+
+10
+00:00:31,240 --> 00:00:37,480
+First, the data around us is dynamic, so it couldn't, for instance, ask about the scores
+
+11
+00:00:37,480 --> 00:00:39,480
+from the game last night.
+
+12
+00:00:39,480 --> 00:00:44,519
+Secondly, in many use cases, we would want to know the sources of the information provided
+
+13
+00:00:44,519 --> 00:00:45,879
+in the result.
+
+14
+00:00:45,879 --> 00:00:51,840
+This can reduce hallucinations and smooth the friction of this human computer interaction.
+
+15
+00:00:51,840 --> 00:00:56,320
+Looking at the slide, we can see the prompt is received by the agent, which then decides
+
+16
+00:00:56,320 --> 00:01:00,880
+to call the search tool, then the information found is returned to the agent.
+
+17
+00:01:00,880 --> 00:01:04,760
+Now, let me show you what happens inside.
+
+18
+00:01:04,760 --> 00:01:08,439
+This is an example of a very basic search tool implementation.
+
+19
+00:01:08,439 --> 00:01:10,599
+Let's go over it step-by-step.
+
+20
+00:01:10,599 --> 00:01:14,319
+If the agent decides, it will send a query to the search tool.
+
+21
+00:01:14,319 --> 00:01:19,319
+The first step would work on understanding the question and divide it to sub-questions
+
+22
+00:01:19,319 --> 00:01:20,920
+it needed.
+
+23
+00:01:20,920 --> 00:01:25,719
+This is an important step, because it can handle complex queries.
+
+24
+00:01:25,719 --> 00:01:30,519
+And for each sub-query, the search tool will have to find the best source, choosing from
+
+25
+00:01:30,519 --> 00:01:32,359
+multiple integrations.
+
+26
+00:01:32,359 --> 00:01:37,359
+For example, if an agent would ask, how is the weather in San Francisco?
+
+27
+00:01:37,359 --> 00:01:41,640
+The search tool should use a weather API for best results.
+
+28
+00:01:41,640 --> 00:01:44,359
+The job doesn't end with finding the correct source.
+
+29
+00:01:44,359 --> 00:01:49,439
+The search tool would then have to extract only the relevant information to the sub-query.
+
+30
+00:01:49,439 --> 00:01:54,879
+A basic implementation of this can be achieved through a process of chunking the source and
+
+31
+00:01:54,879 --> 00:01:59,079
+run a quick vector search to retrieve the top-case chunks.
+
+32
+00:01:59,079 --> 00:02:03,840
+After retrieving the data from its source, the search tool would then score the results
+
+33
+00:02:03,840 --> 00:02:07,679
+and filter out the less relevant information.
+
+34
+00:02:07,679 --> 00:02:09,639
+Okay, so let's test it out.
+
+35
+00:02:09,639 --> 00:02:16,439
+Okay, so first let's import some libraries and do the initial connection to the search tool.
+
+36
+00:02:16,439 --> 00:02:20,960
+Here we loaded the Tavili API key from the environment variables.
+
+37
+00:02:20,960 --> 00:02:26,400
+And then we create the Tavili client, which we imported from the Tavili library.
+
+38
+00:02:26,400 --> 00:02:31,439
+Alright, so after creating the initial connection, let's test it out.
+
+39
+00:02:31,439 --> 00:02:36,240
+Here I'm going to run a search, asking about and videos in your black hole GPU.
+
+40
+00:02:36,240 --> 00:02:38,439
+And let's see what's the answer.
+
+41
+00:02:38,439 --> 00:02:44,520
+Alright, so as you can see there's a pretty simple answer, but very accurate.
+
+42
+00:02:44,520 --> 00:02:50,920
+Okay, so let's do a simple example to see the difference between a regular search tool.
+
+43
+00:02:50,960 --> 00:02:52,880
+And an agent search tool.
+
+44
+00:02:52,880 --> 00:02:58,320
+I'm going to create a simple query about the weather in a certain location.
+
+45
+00:02:58,320 --> 00:03:01,600
+Feel free to change the location to your location.
+
+46
+00:03:01,600 --> 00:03:04,200
+I'm going to do it with San Francisco.
+
+47
+00:03:04,200 --> 00:03:07,520
+So the query is what is the current weather in San Francisco?
+
+48
+00:03:07,520 --> 00:03:09,640
+So they traveled there today.
+
+49
+00:03:09,640 --> 00:03:13,120
+Now let's try to attempt it with regular search.
+
+50
+00:03:16,120 --> 00:03:19,760
+Here I'm going to import the Dr. Go search.
+
+51
+00:03:19,799 --> 00:03:23,159
+I'll try to run a regular search and get the links.
+
+52
+00:03:23,159 --> 00:03:27,359
+The links that might lead me to the answer.
+
+53
+00:03:27,359 --> 00:03:32,199
+Okay, so as you can see, we did get the results, but it's not what the agent need.
+
+54
+00:03:32,199 --> 00:03:36,479
+Now we're going to have to get some answers from these results.
+
+55
+00:03:36,479 --> 00:03:38,319
+Let's do that.
+
+56
+00:03:41,359 --> 00:03:46,319
+Okay, so now we're going to create a function that can scrape the data from the first URL.
+
+57
+00:03:46,359 --> 00:03:50,199
+We're going to use beautiful soup to extract the HTML.
+
+58
+00:03:54,039 --> 00:03:56,239
+As you can see, that's a beautiful output.
+
+59
+00:03:56,239 --> 00:03:59,719
+And if you want, you can keep scrolling down.
+
+60
+00:03:59,719 --> 00:04:02,599
+But let's try to clear it up.
+
+61
+00:04:02,599 --> 00:04:05,719
+Okay, to clear it out, I'm going to use some parsing.
+
+62
+00:04:05,719 --> 00:04:08,879
+I'm going to extract the headers and some content.
+
+63
+00:04:08,879 --> 00:04:14,359
+I'm going to strip it down and use join to get the text.
+
+64
+00:04:14,400 --> 00:04:19,720
+As you can see, the output is much, much better, but still not concise enough.
+
+65
+00:04:20,720 --> 00:04:26,080
+Okay, after seeing this, let's try to run it using the agent search tool.
+
+66
+00:04:26,080 --> 00:04:31,360
+We're going to do the same query and code to build it together as the results.
+
+67
+00:04:31,360 --> 00:04:34,920
+As you can see, we got a simple JSON.
+
+68
+00:04:34,920 --> 00:04:39,240
+We have a lot of information about the weather in San Francisco.
+
+69
+00:04:39,240 --> 00:04:42,840
+Let's clear it out so we can see a parameter JSON.
+
+70
+00:04:42,840 --> 00:04:47,840
+Okay, now we'll parse it and highlight the JSON so we can see it clearly.
+
+71
+00:04:49,840 --> 00:04:53,840
+As you can see, this is not the answer I would want to see as a human.
+
+72
+00:04:53,840 --> 00:04:58,000
+But this is the exact answer an agent would want, a structured data.
+
+73
+00:04:59,520 --> 00:05:06,520
+Okay, I'm going to load the sample from Google search, so you can see the difference here.
+
+74
+00:05:06,520 --> 00:05:09,440
+I get exactly what I want as a human.
+
+75
+00:05:09,439 --> 00:05:16,680
+A nice image showing me the temperature, the humidity, the wind, but not unnecessary data.
+
+76
+00:05:16,680 --> 00:05:21,600
+That's exactly the difference between what a human need and what an agent need.
+
+77
+00:05:21,600 --> 00:05:24,879
+Okay, that was an introduction to agent search.
+
+78
+00:05:24,879 --> 00:05:29,879
+In the next lesson, Harrison will discuss persistence and streaming.

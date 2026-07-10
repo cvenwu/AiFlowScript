@@ -1,0 +1,831 @@
+1
+00:00:00,000 --> 00:00:06,560
+There are many occasions when you would like to put a human in the loop to keep tabs
+
+2
+00:00:06,560 --> 00:00:08,839
+on what an agent is doing.
+
+3
+00:00:08,839 --> 00:00:11,759
+This is pretty easy to do with line graph.
+
+4
+00:00:11,759 --> 00:00:13,839
+Let's see how this works.
+
+5
+00:00:13,839 --> 00:00:16,960
+We're going to resume from where we left off in the last lesson.
+
+6
+00:00:16,960 --> 00:00:23,120
+So let's start by setting up our environment variables.
+
+7
+00:00:23,120 --> 00:00:28,039
+From there, we can make all the relevant imports and set up our checkpointer.
+
+8
+00:00:28,039 --> 00:00:34,600
+We're now going to set up our agent state and we're going to make one small modification.
+
+9
+00:00:34,600 --> 00:00:40,960
+In the previous example, we annotated the messages list with the operator dot add.
+
+10
+00:00:40,960 --> 00:00:44,560
+That added messages to the existing messages array.
+
+11
+00:00:44,560 --> 00:00:51,599
+However, for these human and the loop interactions, we may want to actually replace existing messages.
+
+12
+00:00:51,599 --> 00:00:57,079
+In order to do that, we're going to write a custom reduced messages function that basically
+
+13
+00:00:57,079 --> 00:01:02,119
+looks for messages with the same ID and if it sees that you're inserting one with the
+
+14
+00:01:02,119 --> 00:01:05,959
+same ID as one that already exists, it's just going to replace that.
+
+15
+00:01:05,959 --> 00:01:08,679
+Otherwise, it will append them.
+
+16
+00:01:08,679 --> 00:01:14,920
+After that, we can create our same to Ville tool that we've been using and we can create
+
+17
+00:01:14,920 --> 00:01:16,719
+our same agent.
+
+18
+00:01:16,719 --> 00:01:19,879
+We're actually going to make one small modification.
+
+19
+00:01:19,879 --> 00:01:25,959
+So when we compile the graph in addition to passing in the checkpointer, we're also going
+
+20
+00:01:25,960 --> 00:01:30,960
+to pass this interrupts before equals action parameter.
+
+21
+00:01:30,960 --> 00:01:35,960
+What this is going to do is it's going to add an interrupt before we call the action node.
+
+22
+00:01:35,960 --> 00:01:39,000
+So the action node is where we call the tools.
+
+23
+00:01:39,000 --> 00:01:43,080
+And so the reason that we're going to do this is we're going to add something that requires
+
+24
+00:01:43,080 --> 00:01:46,840
+manual approval before we run any tools.
+
+25
+00:01:46,840 --> 00:01:54,720
+This is useful when you want to make sure that tools are executed correctly.
+
+26
+00:01:54,719 --> 00:02:00,480
+This interrupt happens before we call the action node where all tools are called.
+
+27
+00:02:00,480 --> 00:02:04,280
+Sometimes, you may only want to interrupt if a certain tool is called.
+
+28
+00:02:04,280 --> 00:02:12,120
+That's covered in other parts of the documentation and I encourage you to check that out later.
+
+29
+00:02:12,120 --> 00:02:16,159
+Let's initialize the agent with the same system prompt and model and checkpointer that we've
+
+30
+00:02:16,159 --> 00:02:19,000
+been using.
+
+31
+00:02:19,000 --> 00:02:24,079
+We now call it and we'll pass in this thread config using the thread ID of one because
+
+32
+00:02:24,080 --> 00:02:28,320
+this is a separate notebook, it'll start from fresh.
+
+33
+00:02:28,320 --> 00:02:33,120
+We stream back responses and we stop after this AI message.
+
+34
+00:02:33,120 --> 00:02:36,720
+This is because this AI message is saying that we should call a tool.
+
+35
+00:02:36,720 --> 00:02:41,800
+But we have that interrupt before parameter, which stops it there.
+
+36
+00:02:41,800 --> 00:02:46,760
+One thing we can do from here is get the current state of the graph for this thread.
+
+37
+00:02:46,760 --> 00:02:51,400
+So in order to do that, we'll pass in this thread config.
+
+38
+00:02:51,400 --> 00:02:55,680
+We'll get back this configuration object, which has a few parameters.
+
+39
+00:02:55,680 --> 00:02:58,879
+We can see that the largest ones are this list of messages here.
+
+40
+00:02:58,879 --> 00:03:04,879
+This is the state of the graph at this point in time.
+
+41
+00:03:04,879 --> 00:03:07,560
+We can also see that it has a next parameter.
+
+42
+00:03:07,560 --> 00:03:09,960
+This is the node that is to be called next.
+
+43
+00:03:09,960 --> 00:03:11,719
+We can see here that it's action.
+
+44
+00:03:11,719 --> 00:03:16,840
+This means that we're about to call the action node.
+
+45
+00:03:16,840 --> 00:03:22,319
+In order to continue, we can call stream again with the same thread config and just pass
+
+46
+00:03:22,319 --> 00:03:26,719
+in none as the input.
+
+47
+00:03:26,719 --> 00:03:28,640
+This will stream back results.
+
+48
+00:03:28,640 --> 00:03:34,400
+And we will see that we get the tool message from calling the tool.
+
+49
+00:03:34,400 --> 00:03:38,120
+And then we also get the final AI message.
+
+50
+00:03:38,120 --> 00:03:43,159
+Notice that there was no break in between the action node and the LLM node because we didn't
+
+51
+00:03:43,159 --> 00:03:47,359
+add any interrupt there.
+
+52
+00:03:47,359 --> 00:03:57,280
+If we now get the state, we can see that the messages list contains the full list of messages.
+
+53
+00:03:57,280 --> 00:04:00,120
+And if we get the next parameter, we can see that it's empty.
+
+54
+00:04:00,120 --> 00:04:03,439
+There's nothing left to be done.
+
+55
+00:04:03,439 --> 00:04:08,519
+For fun, we can write some code that runs this in a little loop and prompts us for input
+
+56
+00:04:08,519 --> 00:04:10,680
+about whether to continue or not.
+
+57
+00:04:10,680 --> 00:04:15,800
+We'll pass in a new thread ID so we start afresh.
+
+58
+00:04:15,800 --> 00:04:20,959
+We get this little input box here asking us whether we want to proceed, we can hit yes,
+
+59
+00:04:20,959 --> 00:04:24,280
+and then the agent continues on its way.
+
+60
+00:04:24,280 --> 00:04:28,560
+This is a good time to stop and try it out with other inputs, try adding different
+
+61
+00:04:28,560 --> 00:04:33,240
+places to interrupt before and see what happens.
+
+62
+00:04:33,240 --> 00:04:38,319
+Before we get to the next section, let's talk a little bit more about state memory.
+
+63
+00:04:38,319 --> 00:04:44,599
+As a graph is executing, a snapshot of each state is stored in memory.
+
+64
+00:04:44,599 --> 00:04:46,120
+What's in that snapshot?
+
+65
+00:04:46,120 --> 00:04:51,040
+Well, there's the agent state, which you've already defined, and then there's some other
+
+66
+00:04:51,040 --> 00:04:52,439
+useful things.
+
+67
+00:04:52,439 --> 00:04:58,120
+For example, there's the thread and a unique identifier for each of the snapshots.
+
+68
+00:04:58,120 --> 00:05:00,279
+That's the thread TS right there.
+
+69
+00:05:00,279 --> 00:05:03,959
+You can use that to access the snapshots.
+
+70
+00:05:03,959 --> 00:05:06,759
+There's some commands to access memory.
+
+71
+00:05:06,759 --> 00:05:09,599
+There's get state, which you've already seen.
+
+72
+00:05:09,599 --> 00:05:15,360
+If you provide the thread without the unique identifier and just return that thread ID,
+
+73
+00:05:15,360 --> 00:05:17,759
+it will return the current state.
+
+74
+00:05:17,759 --> 00:05:24,920
+There's also get state history, which returns an iterator over all of the state snapshots.
+
+75
+00:05:24,920 --> 00:05:30,240
+You can use the iterator to get access to all of the unique identifiers for each of the
+
+76
+00:05:30,240 --> 00:05:31,240
+states.
+
+77
+00:05:31,240 --> 00:05:32,240
+What can you do with that?
+
+78
+00:05:32,240 --> 00:05:34,480
+Well, here's an example.
+
+79
+00:05:34,480 --> 00:05:40,160
+In the thread identifier or rather that thread TS, the unique identifier, you could, for
+
+80
+00:05:40,160 --> 00:05:46,200
+example, access that first state, state one, and use that in an invoke command.
+
+81
+00:05:46,200 --> 00:05:51,600
+That'll use state one as the current state or the starting point for the rest of the graph.
+
+82
+00:05:51,600 --> 00:05:54,040
+This is effectively time travel.
+
+83
+00:05:54,040 --> 00:05:58,680
+Conversely, without that thread TS, if you just pass in the thread ID, it will use
+
+84
+00:05:58,680 --> 00:06:01,840
+the current state of the thread as the starting point.
+
+85
+00:06:01,840 --> 00:06:07,840
+You can also use that unique identifier to access a particular state.
+
+86
+00:06:07,840 --> 00:06:13,880
+You can then modify that state, and then you can use update state to update the state
+
+87
+00:06:13,880 --> 00:06:18,520
+and store it back into memory in the location of the current state.
+
+88
+00:06:18,520 --> 00:06:24,760
+From there, if you run stream or invoke, it'll use the new state, the modified state,
+
+89
+00:06:24,760 --> 00:06:26,080
+as its starting point.
+
+90
+00:06:26,080 --> 00:06:30,560
+All right, you'll be seeing some examples of these in the upcoming section, so let's get
+
+91
+00:06:30,560 --> 00:06:32,879
+back to it.
+
+92
+00:06:32,879 --> 00:06:36,280
+Now let's show an example of modifying the state.
+
+93
+00:06:36,280 --> 00:06:44,959
+So let's start a new thread, and let's ask it, what's the weather in LA?
+
+94
+00:06:44,959 --> 00:06:50,319
+At this point in the thread, we have two messages, the human message and then the AI message,
+
+95
+00:06:50,319 --> 00:06:54,639
+which is saying to search Tivoli for current weather in Los Angeles.
+
+96
+00:06:54,639 --> 00:06:55,639
+But let's modify this.
+
+97
+00:06:55,639 --> 00:07:01,800
+Let's pretend we were instead asking about the weather in Louisiana, Nala, Los Angeles.
+
+98
+00:07:01,800 --> 00:07:06,919
+So how would we modify this to correct the agent action?
+
+99
+00:07:06,919 --> 00:07:17,159
+First, let's save the current state of the graph to a variable called current values.
+
+100
+00:07:17,159 --> 00:07:22,879
+The last message we have in this state is the AI message, which is saying to search for
+
+101
+00:07:22,879 --> 00:07:31,079
+a particular search term, in this case, current weather in Los Angeles.
+
+102
+00:07:31,079 --> 00:07:38,759
+We can drill in even further into see the list of tool calls associated with this message.
+
+103
+00:07:38,759 --> 00:07:41,279
+Let's now update these tool calls.
+
+104
+00:07:41,279 --> 00:07:45,839
+In order to do that, we can first get the ID associated with the tool call.
+
+105
+00:07:45,839 --> 00:07:50,040
+We'll then update the tool calls property to be a list.
+
+106
+00:07:50,040 --> 00:07:51,640
+This list will have one element.
+
+107
+00:07:51,640 --> 00:07:53,000
+It's a dictionary.
+
+108
+00:07:53,000 --> 00:07:54,000
+It's got one tool call.
+
+109
+00:07:54,000 --> 00:07:56,280
+It's calling the Tivoli search results JSON.
+
+110
+00:07:56,280 --> 00:07:58,000
+That's the same as before.
+
+111
+00:07:58,000 --> 00:07:59,800
+But the arguments are different this time.
+
+112
+00:07:59,800 --> 00:08:04,400
+We have query with current weather in Louisiana.
+
+113
+00:08:04,400 --> 00:08:08,879
+This doesn't actually do anything until we call update state on the graph.
+
+114
+00:08:08,879 --> 00:08:13,240
+We're going to pass in the thread to config, and this is so we know which thread we're operating
+
+115
+00:08:13,240 --> 00:08:14,240
+on.
+
+116
+00:08:14,240 --> 00:08:21,840
+We're going to pass in the new values that we want to override with.
+
+117
+00:08:21,840 --> 00:08:26,040
+If we get the current state of the graph now, we can see that we have this search term
+
+118
+00:08:26,040 --> 00:08:34,039
+here, current weather in Louisiana.
+
+119
+00:08:34,039 --> 00:08:38,799
+If we continue from here, we can see that it calls Tivoli with the current weather in Louisiana
+
+120
+00:08:38,799 --> 00:08:42,159
+and gets back some response, and then responds accordingly.
+
+121
+00:08:42,159 --> 00:08:45,719
+The current weather in Louisiana shows sunny conditions.
+
+122
+00:08:45,719 --> 00:08:50,279
+We've now shown how we can modify the state of the graph in order to control what the
+
+123
+00:08:50,279 --> 00:08:51,480
+agent does.
+
+124
+00:08:51,480 --> 00:08:57,360
+One important thing to note is that we're actually keeping a running list of all these states.
+
+125
+00:08:57,360 --> 00:09:02,679
+When we modified the state, we actually created a new state, and that became the new state,
+
+126
+00:09:02,679 --> 00:09:07,360
+and then every time we update it with results from the nodes, it's actually creating a new
+
+127
+00:09:07,360 --> 00:09:09,360
+state one after the other.
+
+128
+00:09:09,360 --> 00:09:14,800
+This is really nice because it actually allows us to go back and visit previous states
+
+129
+00:09:14,800 --> 00:09:18,800
+in something we're calling time travel.
+
+130
+00:09:18,800 --> 00:09:24,440
+In order to do this, we can call get state history on the graph, passing in again the
+
+131
+00:09:24,440 --> 00:09:25,440
+thread ID.
+
+132
+00:09:25,440 --> 00:09:35,600
+We'll then start building up this list of states over time.
+
+133
+00:09:35,600 --> 00:09:41,320
+If we get the last state in this list, we can see that it's actually the earliest one.
+
+134
+00:09:41,320 --> 00:09:45,040
+This is the one where it was looking up the current weather in Los Angeles.
+
+135
+00:09:45,040 --> 00:09:50,840
+This was the original state update that was made based on the first language model call.
+
+136
+00:09:50,840 --> 00:09:55,480
+If we wanted to go back in time and resume from this checkpoint where it was looking for
+
+137
+00:09:55,480 --> 00:09:58,600
+Los Angeles, we easily can.
+
+138
+00:09:58,600 --> 00:10:05,160
+In order to do that, all we have to do is call graph.stream again, pass and none, and now
+
+139
+00:10:05,240 --> 00:10:09,399
+notice that we're passing in to replay.config.
+
+140
+00:10:09,399 --> 00:10:14,799
+So to replay is the state where we want to resume from, and config is just the configuration
+
+141
+00:10:14,799 --> 00:10:18,439
+parameters that tell us that we're resuming from this state.
+
+142
+00:10:18,439 --> 00:10:22,959
+So if we run this, we'll start to see that it's searching for the current weather in Los
+
+143
+00:10:22,959 --> 00:10:23,959
+Angeles.
+
+144
+00:10:23,959 --> 00:10:28,959
+It's getting a result back from Tavilly, and then it's generating a response, and that's
+
+145
+00:10:28,959 --> 00:10:31,279
+our final answer.
+
+146
+00:10:31,279 --> 00:10:36,600
+Something we can also do is go back in time, and then edit it from there.
+
+147
+00:10:36,600 --> 00:10:40,860
+So here, we have this two replay config, and this is where it's the current weather in
+
+148
+00:10:40,860 --> 00:10:42,600
+Los Angeles.
+
+149
+00:10:42,600 --> 00:10:51,199
+So we can do the same thing that we did before where we modify this state.
+
+150
+00:10:51,199 --> 00:10:56,159
+And so we'll modify this to do current weather in LA, acu weather, presuming that we want
+
+151
+00:10:56,159 --> 00:10:57,919
+to response from acu weather.
+
+152
+00:10:57,919 --> 00:11:02,679
+The reason this is different than before is that here, we're going back in time, and
+
+153
+00:11:02,679 --> 00:11:09,360
+then editing as opposed to before where we were editing from the most recent state.
+
+154
+00:11:09,360 --> 00:11:15,039
+We can update the state of this two replay, and we'll get back this branch state where
+
+155
+00:11:15,039 --> 00:11:21,360
+we've branched off with this modification.
+
+156
+00:11:21,360 --> 00:11:26,159
+If we now call graph.stream with none on this branch state, we can see that we're looking
+
+157
+00:11:26,159 --> 00:11:30,719
+up acu weather, and getting a result from there, and we're getting back a new answer,
+
+158
+00:11:30,719 --> 00:11:36,360
+and then we're responding from the AI.
+
+159
+00:11:36,360 --> 00:11:41,719
+Another thing we can do is add messages to a state at any given point in time.
+
+160
+00:11:41,719 --> 00:11:46,000
+So here, we have this two replay config, which we've modified to have the current weather
+
+161
+00:11:46,000 --> 00:11:48,240
+in LA, acu weather.
+
+162
+00:11:48,240 --> 00:11:54,120
+Now let's presume that instead of actually calling Tavilly, we wanted to mock out a response.
+
+163
+00:11:54,120 --> 00:11:58,759
+We can do that by appending a new message into the state.
+
+164
+00:11:58,759 --> 00:12:05,639
+We're going to grab the ID of the tool call that we're supposed to be making, and we're
+
+165
+00:12:05,639 --> 00:12:10,399
+going to create this state update, which is a list of messages, and it's a new message
+
+166
+00:12:10,399 --> 00:12:11,399
+this time.
+
+167
+00:12:11,399 --> 00:12:13,159
+It's got a tool call ID of this.
+
+168
+00:12:13,159 --> 00:12:17,919
+It's got a name of Tavilly search, and it's got a content of 54 degrees Celsius.
+
+169
+00:12:17,919 --> 00:12:20,000
+So here, this is a new message.
+
+170
+00:12:20,000 --> 00:12:24,960
+So when we update the state in the graph, it's not going to replace an existing message,
+
+171
+00:12:24,960 --> 00:12:28,759
+it's going to append it to the list of messages.
+
+172
+00:12:28,759 --> 00:12:31,120
+We're now going to update the state of the graph.
+
+173
+00:12:31,120 --> 00:12:35,960
+But because we are actually adding and pretending that an action has taken place, as opposed
+
+174
+00:12:35,960 --> 00:12:40,480
+to modifying the existing state, we need to do an additional thing.
+
+175
+00:12:40,480 --> 00:12:45,240
+We need to add this as node equals action parameter here.
+
+176
+00:12:45,240 --> 00:12:50,360
+What this is basically doing is it's saying that the state update that we're making isn't
+
+177
+00:12:50,360 --> 00:12:51,960
+just a modification.
+
+178
+00:12:51,960 --> 00:12:55,919
+We're actually making this update as if we were the action node.
+
+179
+00:12:55,919 --> 00:13:00,399
+The reason that this is relevant is because before we add this message, the current state
+
+180
+00:13:00,399 --> 00:13:03,720
+of the graph is about to go into the action node.
+
+181
+00:13:03,720 --> 00:13:08,159
+But after we add this message, we don't want it to go into the action mode anymore.
+
+182
+00:13:08,159 --> 00:13:12,919
+So we're basically saying that when we update the state, we're acting as if we were the
+
+183
+00:13:12,920 --> 00:13:16,000
+action node.
+
+184
+00:13:16,000 --> 00:13:21,760
+If we now call stream on this new configuration, we can see that it doesn't take an action
+
+185
+00:13:21,760 --> 00:13:22,760
+anymore.
+
+186
+00:13:22,760 --> 00:13:26,640
+Rather, it just calls the model and responds with this AI message.
+
+187
+00:13:26,640 --> 00:13:29,600
+The current weather in Los Angeles is 54 degrees Celsius.
+
+188
+00:13:29,600 --> 00:13:33,320
+This is what we pretended that the tool had responded with.
+
+189
+00:13:33,320 --> 00:13:38,200
+This has shown off a lot of really advanced and complicated human in the loop interaction
+
+190
+00:13:38,200 --> 00:13:39,200
+patterns.
+
+191
+00:13:39,280 --> 00:13:43,240
+So you've learned how to add a break before a node takes place.
+
+192
+00:13:43,240 --> 00:13:48,280
+This allows for humans to approve or deny specific actions.
+
+193
+00:13:48,280 --> 00:13:53,920
+You've also shown how you can go back in time and how you can modify the state either the
+
+194
+00:13:53,920 --> 00:13:56,759
+current state or the past state.
+
+195
+00:13:56,759 --> 00:14:01,680
+Additionally, you've also shown how you can update the state manually.
+
+196
+00:14:01,680 --> 00:14:06,879
+This allows you to manually give the agent the result of calling a tool rather than actually
+
+197
+00:14:06,879 --> 00:14:08,759
+calling a tool itself.
+
+198
+00:14:08,759 --> 00:14:13,500
+All of these human in the loop patterns better serve to facilitate how you interact with
+
+199
+00:14:13,500 --> 00:14:14,500
+agents.
+
+200
+00:14:14,500 --> 00:14:17,200
+They give you more control over what it's doing.
+
+201
+00:14:17,200 --> 00:14:21,879
+It allows you to go back to a previous point in time, and by editing, it allows you to
+
+202
+00:14:21,879 --> 00:14:24,840
+correct what it has done.
+
+203
+00:14:24,840 --> 00:14:27,279
+So far, we've been working with a pretty simple agent.
+
+204
+00:14:27,279 --> 00:14:31,480
+It's got one LLM call, one prompt, and it's got a pretty simple state, just a list
+
+205
+00:14:31,480 --> 00:14:32,759
+of messages.
+
+206
+00:14:32,759 --> 00:14:37,360
+And the next and final example in this course, we're going to create a much more complicated
+
+207
+00:14:37,360 --> 00:14:42,360
+agent, made up of multiple LLM calls that has a pretty complex state.
+
+208
+00:14:42,360 --> 00:14:42,800
+See you there.

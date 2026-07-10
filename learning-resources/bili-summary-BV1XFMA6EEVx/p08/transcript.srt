@@ -1,0 +1,44 @@
+1
+00:00:00,000 --> 00:00:29,980
+请不吝点赞 订阅 转发 打赏支持明镜与点点栏目
+
+2
+00:00:30,000 --> 00:00:59,980
+请不吝点赞 订阅 转发 打赏支持明镜与点点栏目
+
+3
+00:01:00,000 --> 00:01:07,020
+ be answering questions about csvs querying sql databases interacting with apis there's a lot of
+
+4
+00:01:07,020 --> 00:01:12,840
+ different examples of using chains and the combinations of prompts and output parsers and
+
+5
+00:01:12,840 --> 00:01:17,540
+ then more chains to do all these things in link chain and most of that is due to the link chain
+
+6
+00:01:17,540 --> 00:01:21,740
+ community so i want to also give a really big thank out to everyone in the community who's
+
+7
+00:01:21,740 --> 00:01:26,000
+ contributed whether it be improvements in the documentation making it easier for others to get
+
+8
+00:01:26,000 --> 00:01:29,760
+ started or new types of chains opening up a whole new world of possibilities
+
+9
+00:01:29,760 --> 00:01:36,600
+ and so with that if you have not yet already done so i hope you go to your laptop your desktop and run
+
+10
+00:01:36,600 --> 00:01:42,020
+ pip install landchain and then go use this too to go build some amazing applications
+
+11
+00:01:42,020 --> 00:01:44,020
+ you
+

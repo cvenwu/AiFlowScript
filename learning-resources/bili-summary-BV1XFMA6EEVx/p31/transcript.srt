@@ -1,0 +1,111 @@
+1
+00:00:00,000 --> 00:00:04,960
+Look, we have only covered some of the basics here today.
+
+2
+00:00:04,960 --> 00:00:11,160
+I want to point out where you can find some more information to continue your agent journey.
+
+3
+00:00:11,160 --> 00:00:13,040
+We've covered a lot of info.
+
+4
+00:00:13,040 --> 00:00:19,039
+Here are some of my favorite resources for diving deeper into all that we just talked about.
+
+5
+00:00:19,039 --> 00:00:22,920
+The Langtrain documentation is a great place to start.
+
+6
+00:00:22,920 --> 00:00:28,039
+Specifically, it provides a great high-level overview of all the packages and services
+
+7
+00:00:28,039 --> 00:00:29,960
+in the Langtrain ecosystem.
+
+8
+00:00:29,960 --> 00:00:35,399
+So we break down the different Langtrain core packages as well as all the Langtrain community
+
+9
+00:00:35,399 --> 00:00:36,399
+packages.
+
+10
+00:00:36,399 --> 00:00:41,160
+So we use Tavilia as part of Langtrain community and then we also use Langtrain OpenAI, which
+
+11
+00:00:41,160 --> 00:00:43,079
+is a separate partner package.
+
+12
+00:00:43,079 --> 00:00:47,480
+But we have a ton of other integrations and you can explore those here.
+
+13
+00:00:47,480 --> 00:00:51,799
+Langtrain itself is more high-level and covers agents and other chains and different retrieval
+
+14
+00:00:51,799 --> 00:00:56,760
+strategies that are good high-level entry points if you just want to get started.
+
+15
+00:00:56,759 --> 00:01:01,280
+We also have a bunch of templates that can be deployed easily with Langserve.
+
+16
+00:01:01,280 --> 00:01:06,920
+Langserve is just a really easy way to turn your Langtrain application into a web server.
+
+17
+00:01:06,920 --> 00:01:09,000
+Helping out with all of this is Langsmith.
+
+18
+00:01:09,000 --> 00:01:14,039
+From the beginning, Langsmith can help with debugging and then it can also help with monitoring
+
+19
+00:01:14,039 --> 00:01:17,719
+and production and it also has a playground, which we saw earlier.
+
+20
+00:01:17,719 --> 00:01:22,319
+Looking at a few other sites, the Langtrain GitHub repo has a lot of good resources, a lot
+
+21
+00:01:22,320 --> 00:01:26,800
+of good cookbooks and a lot of templates for getting started.
+
+22
+00:01:26,800 --> 00:01:32,160
+The Langgraph repo, of course, has in-depth documentation on Langgraph, everything that
+
+23
+00:01:32,160 --> 00:01:38,520
+we just covered, so great reference docs, great tutorials and great Pouch2 guides.
+
+24
+00:01:38,520 --> 00:01:43,320
+We've also done previous courses on Langtrain with deep learning that I'd highly recommend
+
+25
+00:01:43,320 --> 00:01:49,200
+checking out in particular functions, tools, and agents with Langtrain is a really good precursor
+
+26
+00:01:49,200 --> 00:01:51,720
+to this lesson.
+
+27
+00:01:51,719 --> 00:01:56,840
+We already saw the prompt hub once, but just to reiterate, this is a great place to go
+
+28
+00:01:56,840 --> 00:02:00,319
+to get inspiration and see what other expert prompters are doing.

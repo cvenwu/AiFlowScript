@@ -1,0 +1,295 @@
+1
+00:00:00,000 --> 00:00:05,240
+Welcome to AI Agents in LineDraft, built in partnership with LineChain
+
+2
+00:00:05,240 --> 00:00:09,960
+and Tuvelli, taught by Harrison Chase, co-founder and CEO of LineChain, as well
+
+3
+00:00:09,960 --> 00:00:14,740
+as Droughton Vice, who is co-founder and CEO of Tuvelli. Harrison, it was not
+
+4
+00:00:14,740 --> 00:00:20,100
+quite a year ago that we're working on our first course on OM Frameworks and
+
+5
+00:00:20,100 --> 00:00:24,260
+back then, we had an agent example, but you know, it was a little bit of a
+
+6
+00:00:24,260 --> 00:00:29,240
+struggle to get it to work. Since then, I've seen many teams successfully built
+
+7
+00:00:29,240 --> 00:00:34,760
+AI agents. What was your view on that? Yeah, that's exactly right, Andrew. We've
+
+8
+00:00:34,760 --> 00:00:39,120
+seen many people successfully building agentic applications now, and I think
+
+9
+00:00:39,120 --> 00:00:43,440
+there were a couple of key improvements over the last year. First, function
+
+10
+00:00:43,440 --> 00:00:48,439
+calling alums have made tool use much more predictable and stable, and also
+
+11
+00:00:48,439 --> 00:00:54,040
+specific tools like search have been adapted for agentic use. Yes, if you think
+
+12
+00:00:54,040 --> 00:00:58,920
+about it, when you do a aquarium search engine, it will return multiple links that
+
+13
+00:00:58,920 --> 00:01:03,000
+you can then follow to find answers. However, what an agent really wants or
+
+14
+00:01:03,000 --> 00:01:07,439
+answered that you can then reference to the link. Also, the agent needs
+
+15
+00:01:07,439 --> 00:01:12,159
+predictable format for its results. This is exactly what agentic search provides.
+
+16
+00:01:12,159 --> 00:01:17,359
+That makes sense, and by the way, I'm personally a user of LineChain and Langsworth
+
+17
+00:01:17,359 --> 00:01:22,879
+and to the reason for the excitement of both of you here. And let me start by
+
+18
+00:01:22,879 --> 00:01:27,359
+describing agents and agentic workflows. Let's say that the fee of us
+
+19
+00:01:27,359 --> 00:01:32,760
+are going to write a paper together. Maybe I will start with some planning and
+
+20
+00:01:32,760 --> 00:01:37,719
+try to put together an initial outline of the paper. Yeah, and I can take it
+
+21
+00:01:37,719 --> 00:01:42,480
+from there and do some research, maybe run some queries and compile documents
+
+22
+00:01:42,480 --> 00:01:47,039
+related to our topic. Okay, I guess that leaves me to write the first draft,
+
+23
+00:01:47,039 --> 00:01:52,760
+they hope it's not a long paper. Yeah, short paper, hopefully. And then after that,
+
+24
+00:01:52,760 --> 00:01:57,159
+I might read up the paper, try to make some constructors suggestions and hand it
+
+25
+00:01:57,159 --> 00:02:00,840
+back to Harrison to see if he wants to make some changes or the role terms to see if he
+
+26
+00:02:00,840 --> 00:02:07,560
+wants to do some more search and so on. And this would be an example of an
+
+27
+00:02:07,560 --> 00:02:12,719
+agentic or an agent like workflow in which we iterate to produce the word
+
+28
+00:02:12,719 --> 00:02:19,079
+product. And in contrast to how people often use LMS to write essays today,
+
+29
+00:02:19,079 --> 00:02:23,000
+which is to write a prompt and to write the essay from the first word to the
+
+30
+00:02:23,039 --> 00:02:28,520
+last word in one shot. This type of iterative workflow gives a much better
+
+31
+00:02:28,520 --> 00:02:32,240
+word product. In fact, as a person, I don't write that well. If you force me to
+
+32
+00:02:32,240 --> 00:02:37,840
+just write from start to finish with no backspacing allowed. So concretely, you
+
+33
+00:02:37,840 --> 00:02:44,639
+can similarly prompt an LM to tell it to write an outline, prompt an LM to write a
+
+34
+00:02:44,639 --> 00:02:49,560
+draft or revise it, prompt an LM to do search and so on. But to that with the
+
+35
+00:02:49,560 --> 00:02:53,879
+deeper, let me share what I think are the key design patterns of agentic
+
+36
+00:02:53,879 --> 00:02:59,039
+workflows. First, I think this planning, which is thinking through the steps to
+
+37
+00:02:59,039 --> 00:03:04,039
+take like the outline and what to do after that. Then to use knowing what
+
+38
+00:03:04,039 --> 00:03:09,840
+tools are available and how to use them like our search tool. Reflection, which
+
+39
+00:03:09,840 --> 00:03:15,719
+refers to iteratively improving a result, possibly with multiple LMS critiquing and
+
+40
+00:03:15,719 --> 00:03:19,680
+making useful suggestions to drive that type of editing cycle, multi-agent
+
+41
+00:03:19,680 --> 00:03:24,479
+communications. So you can think of each of us as playing a row akin to an LM with
+
+42
+00:03:24,479 --> 00:03:30,039
+a unique prompt to play a unique row in this process. And then memory that is
+
+43
+00:03:30,039 --> 00:03:34,520
+tracking the progress and results over the multiple steps. Now, some of these
+
+44
+00:03:34,520 --> 00:03:38,960
+capabilities are related to the LM itself, like function calling for two
+
+45
+00:03:38,960 --> 00:03:43,800
+years. But many of these capabilities are actually implemented outside the LM by
+
+46
+00:03:43,800 --> 00:03:48,280
+the framework that they operate in. Exactly. And the Langtrain framework has had
+
+47
+00:03:48,280 --> 00:03:52,640
+many of these elements for some time. Memory is available in multiple forms.
+
+48
+00:03:52,640 --> 00:03:57,320
+Supporting function calling, LMS and tool execution are available. And we talked
+
+49
+00:03:57,320 --> 00:04:01,800
+about this in the last deep learning class we did functions, tools and agents
+
+50
+00:04:01,800 --> 00:04:07,360
+course. But Langtrain has recently updated its support for agentic workflows. Here
+
+51
+00:04:07,360 --> 00:04:12,080
+are some examples of agents that we now better support. So react agents was an
+
+52
+00:04:12,080 --> 00:04:18,120
+early paradigm for building agents and reactants for reasoning and action. Another
+
+53
+00:04:18,120 --> 00:04:22,000
+example that we recently added support for is the example presented in the
+
+54
+00:04:22,000 --> 00:04:25,600
+self-refined paper where it does the iterative refinement that you were talking
+
+55
+00:04:25,600 --> 00:04:30,759
+about. And most recently, you can see the alphacodium example, which creates a
+
+56
+00:04:30,759 --> 00:04:36,000
+coding agent using flow engineering. And from all these diagrams, you can see
+
+57
+00:04:36,000 --> 00:04:41,600
+that these agents and their behavior is defined by a cyclical graph. And so to
+
+58
+00:04:41,600 --> 00:04:46,800
+support directly building agents like this, Langtrain has extended to support
+
+59
+00:04:46,800 --> 00:04:52,520
+Lang graph. In this course, you will start by building an agent from scratch with
+
+60
+00:04:52,520 --> 00:04:56,960
+just an alpham and Python. Then you'll learn about the components of Lang graph
+
+61
+00:04:56,960 --> 00:05:02,060
+by rebuilding that same agent using the Lang graph components directly.
+
+62
+00:05:02,060 --> 00:05:07,000
+Since search tools are such an important part of many agent applications, you
+
+63
+00:05:07,000 --> 00:05:11,639
+learned capabilities of agentic search and how to use it. There are two
+
+64
+00:05:11,639 --> 00:05:15,759
+additional capabilities that are helpful when building agents. First is being
+
+65
+00:05:15,759 --> 00:05:20,240
+able to receive human input. This allows you to guide an agent at critical
+
+66
+00:05:20,240 --> 00:05:25,439
+points. The second is persistence. This is the ability to store the current
+
+67
+00:05:25,439 --> 00:05:30,040
+state of information so that you can return to it later. This is great for both
+
+68
+00:05:30,040 --> 00:05:35,319
+debugging agents and for productionizing them. We will build a project using
+
+69
+00:05:35,319 --> 00:05:39,000
+Lang graph. But you'll have to reach the last lesson to figure out what it is.
+
+70
+00:05:39,000 --> 00:05:42,639
+And at the end, I'll describe some of the cool applications and future
+
+71
+00:05:42,639 --> 00:05:47,560
+directions I see for this technology. Many people have worked to create this
+
+72
+00:05:47,560 --> 00:05:53,120
+course. From Langtrain, I'd like to thank Lance Martin and Nuno Compos from
+
+73
+00:05:53,120 --> 00:05:59,399
+Tuvelli, Arsaf, Elovik, and from deepland.ai Jeff Lodzwey. All right, we don't
+
+74
+00:05:59,399 --> 00:06:03,600
+want to keep those agents waiting. Let's go on to the next video to get started.

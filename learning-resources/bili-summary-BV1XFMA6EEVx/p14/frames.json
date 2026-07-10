@@ -1,0 +1,34 @@
+{
+  "frames": [
+    {
+      "file": "frames/scene_001.jpg",
+      "ts_seconds": 20.15,
+      "ts_display": "00:20"
+    },
+    {
+      "file": "frames/scene_002.jpg",
+      "ts_seconds": 324.09,
+      "ts_display": "05:24"
+    },
+    {
+      "file": "frames/scene_003.jpg",
+      "ts_seconds": 423.72,
+      "ts_display": "07:03"
+    },
+    {
+      "file": "frames/scene_004.jpg",
+      "ts_seconds": 427.16,
+      "ts_display": "07:07"
+    },
+    {
+      "file": "frames/scene_005.jpg",
+      "ts_seconds": 427.93,
+      "ts_display": "07:07"
+    },
+    {
+      "file": "frames/scene_006.jpg",
+      "ts_seconds": 987.12,
+      "ts_display": "16:27"
+    }
+  ]
+}
